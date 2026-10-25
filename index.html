@@ -265,10 +265,17 @@ const fonte = {
     return {...q.estado, snapshots: D.snapshots.slice(0, q.estado.n_snap)};
   },
   async municipios() {
-    if (vivo()) return (await fetch(API() + 'api/publico/municipios', {cache: 'no-cache'})).json();
-    const D = await this.dados(), q = D.quadros[this.i], f = D.mun_fixo;
-    const cols = [...f.cols, ...Object.keys(q.mun)];
-    return {cols, rows: f.rows.map((r, j) => [...r, ...Object.keys(q.mun).map(k => q.mun[k][j])])};
+    // parte fixa (nomes, 1º turno) uma vez; a cada ciclo, só as colunas que mudam
+    let f, var_;
+    if (vivo()) {
+      const v = await (await fetch(API() + 'api/publico/municipios', {cache: 'no-cache'})).json();
+      if (!this.base || this.base.chave !== v.chave) this.base = await (await fetch(API() + 'api/publico/mun_base')).json();
+      f = this.base; var_ = v.mun;
+    } else {
+      const D = await this.dados(); f = D.mun_fixo; var_ = D.quadros[this.i].mun;
+    }
+    const ks = Object.keys(var_);
+    return {cols: [...f.cols, ...ks], rows: f.rows.map((r, j) => [...r, ...ks.map(k => var_[k][j])])};
   },
   async dados() {
     if (!this.D[this.ano]) this.D[this.ano] = await (await fetch(`dados/${this.ano}.json`)).json();
