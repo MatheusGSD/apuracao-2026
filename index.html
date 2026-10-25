@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apuração comparada: como funciona</title>
+<meta name="description" content="Como o painel de apuração comparada projeta o 2º turno presidencial a partir das mesmas urnas no 1º turno, e como a projeção se saiu nas noites reais de 2018 e 2022.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,600..800&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --ink: #14171c; --ink-2: #4a505b; --ink-3: #6f7682;
+  --rule: #dfe2e8; --grid: #e9ebef; --accent: #1d5fa8;
+  --s-proj: #2a78d6; --s-parc: #eb6834; --s-final: #14171c; --band: rgba(42, 120, 214, .15);
+  --n-indef: #c9cdd4; --n-tend: #f3c64a; --n-alta: #1f8a4c; --n-inst: #c23434;
+  --aviso-bg: #fff5e0; --aviso: #7a4f00; --good: #0a7f0a; --crit: #c23434;
+  --f-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #191c21; --ink: #eceef2; --ink-2: #b9bec8; --ink-3: #8d94a0;
+    --rule: #2c3038; --grid: #252930; --accent: #6aa6ec;
+    --s-proj: #4b94ea; --s-parc: #e2703f; --s-final: #eceef2; --band: rgba(75, 148, 234, .2);
+    --n-indef: #4a505b; --n-tend: #d9ad35; --n-alta: #2fa565; --n-inst: #e05555;
+    --aviso-bg: #2d2513; --aviso: #f0c46a; --good: #4cc24c; --crit: #ef7272;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #191c21; --ink: #eceef2; --ink-2: #b9bec8; --ink-3: #8d94a0;
+  --rule: #2c3038; --grid: #252930; --accent: #6aa6ec;
+  --s-proj: #4b94ea; --s-parc: #e2703f; --s-final: #eceef2; --band: rgba(75, 148, 234, .2);
+  --n-indef: #4a505b; --n-tend: #d9ad35; --n-alta: #2fa565; --n-inst: #e05555;
+  --aviso-bg: #2d2513; --aviso: #f0c46a; --good: #4cc24c; --crit: #ef7272;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--f-body);
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px)); }
+.wrap { max-width: 68rem; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.25rem; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 800; font-stretch: 80%; letter-spacing: -.01em; }
+h2 { font-size: clamp(1.4rem, 3.4vw, 1.85rem); font-weight: 700; font-stretch: 85%; }
+h3 { font-size: 1.12rem; font-weight: 700; font-stretch: 90%; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--f-mono); font-size: .88em; }
+.eyebrow { font: 500 .78rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.prosa { display: grid; gap: .9rem; max-width: 44rem; min-width: 0; }
+.prosa ul, .prosa ol { margin: 0; padding-left: 1.3rem; display: grid; gap: .4rem; }
+header.topo { padding-top: 2.5rem; display: grid; gap: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 1.5rem; }
+.lede { font-size: 1.15rem; color: var(--ink-2); max-width: 44rem; }
+nav.indice { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; font: 500 .85rem/1.4 var(--f-mono); }
+nav.indice a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+nav.indice a:hover { color: var(--accent); border-color: var(--accent); }
+.aviso { background: var(--aviso-bg); color: var(--aviso); border-left: 3px solid currentColor; padding: .8rem 1rem; max-width: 44rem; }
+.aviso b { color: inherit; }
+section { display: grid; gap: 1.25rem; min-width: 0; scroll-margin-top: 1rem; }
+section > header { display: grid; gap: .3rem; }
+.num-sec { font: 500 .8rem var(--f-mono); color: var(--accent); }
+
+.fluxo { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: .75rem; counter-reset: passo; }
+.fluxo li { counter-increment: passo; background: var(--surface); border: 1px solid var(--rule); padding: .9rem 1rem 1rem; display: grid; gap: .45rem; align-content: start; }
+.fluxo li::before { content: counter(passo); font: 600 .8rem var(--f-mono); color: var(--accent); }
+.fluxo strong { font-family: var(--f-display); font-stretch: 90%; font-size: 1.05rem; }
+.formula { font: .84rem/1.5 var(--f-mono); color: var(--ink-2); background: var(--bg); padding: .4rem .55rem; overflow-x: auto; }
+
+.exemplo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); max-width: 44rem; }
+.exemplo div { background: var(--surface); padding: .8rem 1rem; display: grid; gap: .2rem; }
+.exemplo .k { font: 700 1.6rem/1 var(--f-display); font-stretch: 80%; font-variant-numeric: tabular-nums; }
+.exemplo .l { font-size: .9rem; color: var(--ink-2); line-height: 1.35; }
+
+/* noites reais */
+.noite { background: var(--surface); border: 1px solid var(--rule); padding: 1rem; display: grid; gap: 1rem; min-width: 0; }
+.seg { display: inline-flex; border: 1px solid var(--rule); justify-self: start; }
+.seg button { font: 600 .95rem var(--f-body); background: none; color: var(--ink-2); border: 0; padding: .45rem .9rem; cursor: pointer; min-height: 44px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.tela { border: 1px solid var(--rule); background: var(--bg); padding: .85rem 1rem; display: grid; gap: .5rem; }
+.tela .rot { font: 500 .72rem var(--f-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+.tela p { font-size: 1rem; }
+.pill { display: inline-block; font: 600 .82rem/1 var(--f-body); padding: .38rem .6rem; border-radius: 3px; margin-right: .5rem; vertical-align: .1em; }
+.pill.alta { background: var(--n-alta); color: #fff; } .pill.tendencia { background: var(--n-tend); color: #3a2a00; }
+.pill.indefinido { background: var(--n-indef); color: var(--ink); } .pill.instavel { background: var(--n-inst); color: #fff; }
+.tela .real { font-size: .92rem; color: var(--ink-2); border-top: 1px dashed var(--rule); padding-top: .45rem; }
+.ok { color: var(--good); font-weight: 600; } .erro { color: var(--crit); font-weight: 600; }
+.slider { display: grid; gap: .3rem; }
+.slider label { font-size: .9rem; color: var(--ink-2); }
+.slider input { width: 100%; min-height: 44px; accent-color: var(--accent); }
+.chart { width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { font: 12px var(--f-body); fill: var(--ink-3); }
+.chart .lbl { font-weight: 600; }
+.legenda { display: flex; flex-wrap: wrap; gap: .35rem 1rem; font-size: .88rem; color: var(--ink-2); }
+.legenda span { display: inline-flex; align-items: center; gap: .4rem; }
+.legenda i { display: inline-block; width: 1.3rem; height: 0; border-top: 3px solid; }
+.legenda i.tr { border-top-style: dashed; border-top-width: 2px; }
+.legenda i.bx { height: .7rem; border: 0; width: .9rem; }
+.fatos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.fatos div { background: var(--surface); padding: .8rem 1rem; display: grid; gap: .25rem; align-content: start; }
+.fatos .k { font: 700 1.55rem/1.05 var(--f-display); font-stretch: 80%; font-variant-numeric: tabular-nums; }
+.fatos .l { font-size: .9rem; color: var(--ink-2); line-height: 1.35; }
+
+.niveis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: .75rem; }
+.niveis div { background: var(--surface); border: 1px solid var(--rule); padding: .85rem 1rem; display: grid; gap: .45rem; align-content: start; }
+.niveis p { font-size: .95rem; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.tiles div { background: var(--surface); padding: .9rem 1rem; display: grid; gap: .3rem; align-content: start; }
+.tiles .k { font: 700 2rem/1 var(--f-display); font-stretch: 80%; font-variant-numeric: tabular-nums; }
+.tiles .l { font-size: .9rem; color: var(--ink-2); line-height: 1.35; }
+.tabela-wrap { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; font-variant-numeric: tabular-nums; }
+th, td { padding: .5rem .65rem; text-align: left; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { font: 600 .76rem/1.25 var(--f-body); color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; white-space: normal; vertical-align: bottom; }
+td.n, th.n { text-align: right; }
+tr.destaque td { background: var(--aviso-bg); }
+tr.pres td:first-child { font-weight: 600; }
+details { background: var(--surface); border: 1px solid var(--rule); padding: .6rem .9rem; min-width: 0; }
+details summary { cursor: pointer; color: var(--accent); min-height: 32px; }
+details[open] summary { margin-bottom: .7rem; }
+.limite { border-left: 3px solid var(--n-inst); padding: .2rem 0 .2rem 1rem; }
+footer { font-size: .88rem; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 1rem; display: grid; gap: .4rem; }
+@media (max-width: 30rem) { body { font-size: 1rem; } .noite { padding: .75rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="topo">
+  <span class="eyebrow">Apuração comparada · 2º turno · 25/10/2026</span>
+  <h1>Como o painel projeta o resultado</h1>
+  <p class="lede">Cada urna apurada no 2º turno é comparada com a mesma urna no 1º turno. Assim dá para estimar o resultado final bem antes do placar oficial se firmar, e dizer com quanta confiança.</p>
+  <p class="aviso"><b>A projeção é uma estimativa estatística, não o resultado oficial.</b> O resultado é o divulgado pelo TSE em <a href="https://resultados.tse.jus.br">resultados.tse.jus.br</a>. A margem de erro e o nível de confiança mostram quanto a projeção ainda pode mudar.</p>
+  <nav class="indice" aria-label="Seções">
+    <a href="#ideia">A ideia</a><a href="#metodo">Passo a passo</a><a href="#noites">2022 e 2018</a><a href="#confianca">Confiança</a><a href="#validacao">Validação</a><a href="#limites">Limites</a>
+  </nav>
+</header>
+
+<section id="ideia">
+  <header><span class="num-sec">1</span><h2>A ideia: comparar a mesma urna</h2></header>
+  <div class="prosa">
+    <p>O placar parcial engana no começo da noite porque as urnas não chegam misturadas: algumas regiões e cidades pequenas são totalizadas antes das capitais. Em 2022, quem olhava o placar só via o vencedor final na frente a partir de 68% das urnas apuradas (18h44).</p>
+    <p>Em vez de olhar o placar, o painel pergunta: <em>nas urnas que já chegaram, quanto cada candidato melhorou ou piorou em relação ao 1º turno?</em> Essa diferença, o <b>swing</b>, não depende de onde as urnas vêm. Como sabemos como votou cada uma das urnas que faltam no 1º turno, dá para aplicar o swing a elas e estimar o total.</p>
+  </div>
+  <div class="exemplo" aria-label="Exemplo">
+    <div><span class="k">40%</span><span class="l">fatia de A, entre os dois finalistas, nas urnas já apuradas no 2º turno</span></div>
+    <div><span class="k">37%</span><span class="l">fatia de A nessas <b>mesmas urnas</b> no 1º turno</span></div>
+    <div><span class="k">+3 pt</span><span class="l">swing para A: aplicado às urnas que faltam, que no 1º turno deram 55% a A, sugere ~58% nelas</span></div>
+  </div>
+</section>
+
+<section id="metodo">
+  <header><span class="num-sec">2</span><h2>Passo a passo</h2></header>
+  <ol class="fluxo">
+    <li><strong>Mesmas urnas</strong><span>A cada atualização do TSE, o painel soma o 1º turno exatamente das seções que já foram apuradas no 2º. Só os dois finalistas contam: a fatia de A é A ÷ (A + B).</span></li>
+    <li><strong>Swing</strong><span>Fatia de A agora menos a fatia de A nessas mesmas urnas no 1º turno. Inclui a migração dos eleitores de outros candidatos, brancos e nulos e a mudança de comparecimento.</span><span class="formula">swing = A2/(A2+B2) − A1/(A1+B1)</span></li>
+    <li><strong>Urnas que faltam</strong><span>Em município que já tem urnas apuradas, aplica-se o swing do próprio município. Em município ainda sem nenhuma urna, a estimativa é a média de dois modelos: <em>transferência</em> (que fração dos eleitores dos outros candidatos foi para A, por UF) e <em>regressão</em> (fatia de A no 2º turno explicada pelo 1º turno, pelos “outros”, pelo tamanho do município, pela abstenção e por brancos+nulos).</span></li>
+    <li><strong>Projeção</strong><span>Votos já apurados + estimativa das urnas que faltam, somadas no Brasil.</span><span class="formula">projeção = apurado + restante estimado</span></li>
+    <li><strong>Margem de erro</strong><span>O quanto a projeção errou, no mesmo ponto da apuração, em 28 apurações reais de 2018 e 2022 (95% dos casos dentro dela). Ela se alarga se, na própria noite, a projeção errar ao prever municípios já apurados ou se os dois modelos discordarem.</span></li>
+    <li><strong>Virada estimada</strong><span>Quando o placar mostra um líder e a projeção outro, o painel estima em que % das urnas (e a que horas, no ritmo atual) o placar deve virar. Com % e horário só quando a confiança é “tendência” ou “alta”; antes disso, diz apenas que a virada é possível.</span></li>
+  </ol>
+</section>
+
+<section id="noites">
+  <header><span class="num-sec">3</span><h2>O que o painel teria mostrado em 2022 e 2018</h2></header>
+  <div class="prosa"><p>As duas últimas noites de 2º turno presidencial, reproduzidas urna por urna na ordem e no horário oficiais de totalização, com o mesmo código que roda no painel. Arraste para ver o que a faixa do topo diria em cada momento.</p></div>
+  <div class="noite">
+    <div class="seg" role="group" aria-label="Eleição">
+      <button type="button" data-ano="2022" aria-pressed="true">2022</button>
+      <button type="button" data-ano="2018" aria-pressed="false">2018</button>
+    </div>
+    <div class="tela" aria-live="polite">
+      <span class="rot" id="t-rot">Faixa do topo do painel</span>
+      <p id="t-frase"></p>
+      <p class="real" id="t-real"></p>
+    </div>
+    <div class="slider">
+      <label for="momento" id="momento-l">Momento da noite</label>
+      <input type="range" id="momento" min="0" max="100" step="1" value="10">
+    </div>
+    <div class="chart" id="chart"></div>
+    <div class="legenda" id="legenda"></div>
+    <div class="fatos" id="fatos"></div>
+  </div>
+</section>
+
+<section id="confianca">
+  <header><span class="num-sec">4</span><h2>Níveis de confiança</h2></header>
+  <div class="niveis">
+    <div><span><span class="pill indefinido">Indefinido</span></span><p>A projeção ainda está dentro da margem de erro histórica: qualquer um dos dois pode vencer.</p></div>
+    <div><span><span class="pill tendencia">Tendência</span></span><p>A projeção saiu da faixa de 90% do erro histórico: um candidato está à frente, mas ainda não com segurança.</p></div>
+    <div><span><span class="pill alta">Alta confiança</span></span><p>A projeção está fora da faixa de 95%, do mesmo lado, por pelo menos 2 pontos de apuração seguidos, com pelo menos 10% apurado em cada região, e com uma folga extra para presidente (abaixo). Só então o painel diz “projetado vencedor”.</p></div>
+    <div><span><span class="pill instavel">Instável</span></span><p>A projeção mudou, nos últimos 5% apurados, mais que o dobro do que costuma mudar nesse trecho. Sinal de que as urnas que estão chegando votam diferente das anteriores. Retira a alta confiança.</p></div>
+  </div>
+</section>
+
+<section id="validacao">
+  <header><span class="num-sec">5</span><h2>Validação</h2></header>
+  <div class="prosa">
+    <h3>28 apurações reais</h3>
+    <p>Reproduzimos 28 apurações de 2º turno (presidente em 2018 e 2022 e 26 de governador), urna por urna, na ordem real de totalização, medindo o erro da projeção em 103 momentos da noite.</p>
+  </div>
+  <div class="tiles">
+    <div><span class="k">26 de 28</span><span class="l">casos com o vencedor certo na projeção desde 1% das urnas (placar parcial: 21 de 28)</span></div>
+    <div><span class="k">0,75 pt</span><span class="l">erro mediano da projeção entre 1% e 30% apurado (placar parcial: ~3 pt)</span></div>
+    <div><span class="k">4,5%</span><span class="l">mediana do ponto em que a projeção fica estável (vencedor certo e erro ≤ 1 pt até o fim)</span></div>
+    <div><span class="k">0 erradas</span><span class="l">chamadas de “alta confiança” erradas nos 28 casos (validação deixando cada caso de fora)</span></div>
+  </div>
+  <details>
+    <summary>Ver os 28 casos</summary>
+    <div class="tabela-wrap"><table id="t-bt"></table></div>
+    <p style="margin-top:.6rem;font-size:.9rem;color:var(--ink-3)">Erro = projeção − resultado final, em pontos da fatia de A entre os dois finalistas. “Estável desde”: % apurado a partir do qual a projeção acerta o vencedor e erra ≤ 1 pt até o fim; para o placar, basta mostrar o vencedor na frente até o fim.</p>
+  </details>
+
+  <div class="prosa">
+    <h3>12 noites de ensaio para 2026</h3>
+    <p>Como 2018 e 2022 são só duas noites, também geramos 12 noites sintéticas sobre o 1º turno real de 2026: disputas apertadas e folgadas, viradas regionais, cidades grandes votando diferente, São Paulo atrasando 1h30 e urnas tardias votando diferente das primeiras. Os candidatos aparecem como A e B.</p>
+  </div>
+  <div class="tabela-wrap"><table id="t-ens"></table></div>
+  <div class="prosa limite">
+    <h3>O limite conhecido: urnas tardias que votam diferente</h3>
+    <p>A projeção supõe que as urnas que faltam se movem como as já apuradas do mesmo município ou de municípios parecidos. Se as últimas urnas a chegar votarem de forma sistematicamente diferente, isso só aparece quando elas chegam. Em 2022 o swing das últimas 40% das urnas diferiu 0,1 pt do resto; em 2018, 1,3 pt.</p>
+    <p>No ensaio 12 (urnas tardias contra A, no nível de 2018), o painel dava “alta confiança” para o candidato errado entre 53% e 67% apurado. Por isso a regra de alta para presidente ganhou uma <b>folga extra de 0,75 pt × fração ainda não apurada</b>: com ela, o erro do ensaio 12 some e nenhum dos 28 casos reais passa a errar. O custo é chegar mais tarde à alta confiança: em 2022, de ~50% para ~65–74% apurado.</p>
+    <p>O ensaio 8 é um extremo de propósito (urnas tardias 9 pt diferentes, cerca de 7 vezes 2018): nele o painel erra, mas o alarme de instabilidade dispara. Nenhuma regra antecipa uma virada concentrada só nas urnas que faltam, sem relação com região ou porte do município.</p>
+  </div>
+</section>
+
+<section id="limites">
+  <header><span class="num-sec">6</span><h2>Limites</h2></header>
+  <div class="prosa">
+    <ul>
+      <li><b>Só duas eleições presidenciais com horário por urna.</b> As 26 eleições de governador são de 2018 e 2022 e compartilham o clima nacional; não são testes independentes. Presidentes de 2002 a 2014 (sem horário por urna) foram testados com a ordem de 2022: vencedor certo desde 1% nos 4, erro máximo 0,45 pt.</li>
+      <li><b>Modelos escolhidos com os mesmos casos.</b> Há risco de sobreajuste: o desempenho numa eleição nova pode ser pior.</li>
+      <li><b>Depende dos dados do TSE.</b> Se a divulgação atrasar o detalhe por seção, o painel usa a base do município inteiro, menos precisa.</li>
+      <li><b>Não é pesquisa nem previsão antes da apuração.</b> Só começa com as primeiras urnas apuradas.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span>Dados: TSE (dados abertos por seção de 2018 e 2022; divulgação de resultados de 2026). Projeção e confiança calculadas pelo mesmo motor do painel.</span>
+  <span id="gerado"></span>
+</footer>
+</div>
+
+<script>
+const D = {"noites":{"2022":{"ano":"2022","a":"Lula","b":"Bolsonaro","final":50.902,"r1":52.856,"swing":-1.95,"parcial_desde":68,"parcial_desde_hora":"18:44","resumo":{"final_a":50.9,"vencedor":"a","erro_proj":{"2%":0.11,"5%":0.17,"10%":0.17,"20%":0.16,"40%":0.1,"60%":0.06,"80%":0.02},"erro_max_apos_10":0.24,"dentro_faixa95":1.0,"alta_desde_pct":66.7,"alta_desde_hora":"18h42","alta_errada_pts":0,"instavel_pts":0,"viradas":[{"pct":68.3,"hora":"18h44","quem":"a"}],"virada_estimada_falsa_pts":0,"virada_estimada_falsa_ate_pct":null,"virada_estimada_em_10":{"em_pct":46.1,"estimou_pct":62.6,"real_pct":68.3,"estimou_hora":"18h42","real_hora":"18h44"},"virada_estimada_em_30":{"em_pct":46.1,"estimou_pct":62.6,"real_pct":68.3,"estimou_hora":"18h42","real_hora":"18h44"},"pontos":123},"pts":[[1020,0.012,50.59,51.73,11.17,"indefinido",null,null,null],[1022,0.122,57.3,52.32,11.17,"indefinido",null,null,null],[1024,0.124,57.07,51.69,11.17,"indefinido",null,null,null],[1026,0.155,53.9,50.72,11.17,"indefinido",null,null,null],[1028,0.307,47.36,50.69,11.17,"indefinido",null,null,null],[1030,0.559,44.42,50.62,10.5,"indefinido",null,null,null],[1032,0.769,43.89,50.97,10.02,"indefinido",null,null,null],[1034,1.165,43.32,51.31,9.62,"indefinido",83.8,2037.3,"a"],[1036,1.643,43.29,50.95,9.62,"indefinido",87.8,1880.9,"a"],[1038,2.051,43.59,51.01,7.53,"indefinido",86.7,1739.8,"a"],[1040,2.928,44.53,51.02,7.53,"indefinido",84.7,1506.7,"a"],[1042,3.818,45.8,51.02,6.62,"indefinido",81.1,1379.8,"a"],[1044,4.597,46.38,51.01,6.62,"indefinido",79.2,1322.2,"a"],[1046,5.791,47.05,51.07,6.62,"indefinido",75.0,1257.6,"a"],[1048,6.957,47.38,51.03,6.62,"indefinido",73.7,1220.6,"a"],[1050,8.06,47.61,51.07,5.74,"indefinido",71.6,1197.5,"a"],[1052,9.442,47.91,51.08,5.73,"indefinido",69.2,1174.5,"a"],[1054,10.724,47.98,51.07,5.73,"indefinido",69.1,1161.8,"a"],[1056,12.029,48.14,51.14,5.73,"indefinido",66.6,1152.0,"a"],[1058,13.255,48.23,51.11,4.74,"indefinido",66.7,1148.5,"a"],[1060,14.377,48.31,51.12,4.61,"indefinido",65.8,1144.1,"a"],[1062,15.82,48.44,51.05,4.61,"indefinido",66.1,1142.2,"a"],[1064,17.2,48.34,51.04,4.5,"indefinido",68.1,1143.4,"a"],[1066,18.538,48.37,51.05,4.24,"indefinido",68.2,1141.8,"a"],[1068,19.985,48.43,51.07,4.24,"indefinido",67.6,1140.2,"a"],[1070,21.501,48.52,51.06,3.69,"indefinido",67.2,1137.8,"a"],[1072,22.952,48.65,51.06,3.36,"indefinido",66.0,1135.1,"a"],[1074,24.384,48.74,51.05,3.19,"indefinido",65.7,1133.4,"a"],[1076,25.78,48.73,51.06,3.08,"indefinido",66.1,1132.6,"a"],[1078,27.293,48.81,51.06,2.55,"indefinido",65.8,1131.7,"a"],[1080,28.786,48.91,51.05,2.3,"indefinido",65.1,1130.2,"a"],[1082,30.105,48.94,51.05,2.06,"indefinido",65.1,1130.5,"a"],[1084,31.67,49.01,51.05,2.02,"indefinido",64.8,1129.4,"a"],[1086,33.124,49.12,51.04,1.93,"indefinido",63.8,1128.2,"a"],[1088,34.644,49.16,51.05,1.93,"indefinido",63.8,1127.9,"a"],[1090,36.003,49.16,51.02,1.86,"indefinido",64.9,1129.8,"a"],[1092,37.464,49.28,51.01,1.82,"indefinido",63.5,1127.6,"a"],[1094,38.966,49.3,51.01,1.81,"indefinido",64.1,1128.4,"a"],[1096,40.783,49.36,51.0,1.76,"indefinido",63.9,1126.8,"a"],[1098,42.693,49.42,50.99,1.65,"indefinido",63.8,1124.8,"a"],[1100,44.371,49.5,50.99,1.53,"indefinido",63.0,1123.5,"a"],[1102,46.05,49.56,50.99,1.05,"tendencia",62.6,1122.4,"a"],[1104,47.998,49.61,50.98,1.05,"tendencia",62.8,1121.8,"a"],[1106,49.835,49.71,50.98,0.99,"tendencia",61.2,1119.1,"a"],[1108,51.967,49.74,50.97,0.89,"tendencia",62.1,1119.2,"a"],[1110,54.263,49.82,50.96,0.76,"tendencia",61.5,1117.5,"a"],[1112,56.242,49.81,50.96,0.76,"tendencia",63.5,1119.5,"a"],[1114,58.369,49.85,50.96,0.74,"tendencia",64.0,1119.8,"a"],[1116,60.26,49.89,50.96,0.7,"tendencia",64.5,1120.3,"a"],[1118,62.29,49.92,50.95,0.69,"tendencia",65.1,1120.7,"a"],[1120,64.53,49.94,50.95,0.69,"tendencia",66.6,1122.0,"a"],[1122,66.721,49.99,50.95,0.64,"alta",67.1,1122.3,"a"],[1124,68.337,50.0,50.94,0.57,"alta",null,null,null],[1126,70.299,50.06,50.94,0.43,"alta",null,null,null],[1128,72.286,50.1,50.93,0.37,"alta",null,null,null],[1130,74.279,50.15,50.93,0.35,"alta",null,null,null],[1132,76.181,50.2,50.93,0.35,"alta",null,null,null],[1134,78.32,50.23,50.92,0.35,"alta",null,null,null],[1136,80.043,50.29,50.92,0.31,"alta",null,null,null],[1138,82.055,50.35,50.92,0.31,"alta",null,null,null],[1140,84.331,50.4,50.92,0.25,"alta",null,null,null],[1142,85.873,50.45,50.91,0.25,"alta",null,null,null],[1144,87.324,50.47,50.91,0.25,"alta",null,null,null],[1146,88.644,50.51,50.91,0.25,"alta",null,null,null],[1148,89.53,50.52,50.91,0.25,"alta",null,null,null],[1150,90.677,50.54,50.91,0.25,"alta",null,null,null],[1152,91.415,50.57,50.91,0.25,"alta",null,null,null],[1154,92.25,50.58,50.91,0.18,"alta",null,null,null],[1156,92.992,50.61,50.91,0.18,"alta",null,null,null],[1158,93.461,50.62,50.91,0.11,"alta",null,null,null],[1160,94.101,50.63,50.91,0.09,"alta",null,null,null],[1162,94.794,50.65,50.91,0.09,"alta",null,null,null],[1164,95.205,50.66,50.91,0.08,"alta",null,null,null],[1166,96.316,50.71,50.9,0.07,"alta",null,null,null],[1168,96.731,50.71,50.9,0.07,"alta",null,null,null],[1170,96.948,50.72,50.9,0.07,"alta",null,null,null],[1172,97.139,50.73,50.9,0.06,"alta",null,null,null],[1174,97.332,50.73,50.9,0.06,"alta",null,null,null],[1176,97.545,50.75,50.9,0.06,"alta",null,null,null],[1178,97.729,50.76,50.9,0.06,"alta",null,null,null],[1180,97.883,50.76,50.9,0.06,"alta",null,null,null],[1182,98.045,50.77,50.9,0.05,"alta",null,null,null],[1184,98.225,50.79,50.9,0.05,"alta",null,null,null],[1186,98.342,50.8,50.9,0.05,"alta",null,null,null],[1188,98.452,50.8,50.9,0.05,"alta",null,null,null],[1190,98.502,50.81,50.9,0.05,"alta",null,null,null],[1192,98.619,50.82,50.9,0.05,"alta",null,null,null],[1194,98.727,50.82,50.9,0.05,"alta",null,null,null],[1196,98.815,50.83,50.9,0.05,"alta",null,null,null],[1198,98.918,50.83,50.9,0.05,"alta",null,null,null],[1200,99.011,50.84,50.9,0.03,"alta",null,null,null],[1202,99.06,50.84,50.9,0.03,"alta",null,null,null],[1204,99.162,50.84,50.9,0.03,"alta",null,null,null],[1206,99.205,50.85,50.9,0.03,"alta",null,null,null],[1208,99.261,50.85,50.9,0.03,"alta",null,null,null],[1210,99.298,50.86,50.9,0.03,"alta",null,null,null],[1212,99.345,50.86,50.9,0.03,"alta",null,null,null],[1214,99.381,50.87,50.9,0.03,"alta",null,null,null],[1216,99.432,50.87,50.9,0.03,"alta",null,null,null],[1218,99.474,50.87,50.9,0.03,"alta",null,null,null],[1220,99.522,50.88,50.9,0.03,"alta",null,null,null],[1222,99.553,50.88,50.9,0.03,"alta",null,null,null],[1224,99.581,50.88,50.9,0.03,"alta",null,null,null],[1226,99.6,50.88,50.9,0.03,"alta",null,null,null],[1228,99.648,50.88,50.9,0.03,"alta",null,null,null],[1230,99.666,50.88,50.9,0.03,"alta",null,null,null],[1232,99.684,50.88,50.9,0.03,"alta",null,null,null],[1234,99.705,50.88,50.9,0.03,"alta",null,null,null],[1236,99.734,50.88,50.9,0.03,"alta",null,null,null],[1238,99.742,50.89,50.9,0.03,"alta",null,null,null],[1240,99.751,50.89,50.9,0.03,"alta",null,null,null],[1242,99.76,50.89,50.9,0.03,"alta",null,null,null],[1244,99.774,50.89,50.9,0.03,"alta",null,null,null],[1246,99.806,50.89,50.9,0.03,"alta",null,null,null],[1248,99.83,50.89,50.9,0.03,"alta",null,null,null],[1250,99.84,50.89,50.9,0.03,"alta",null,null,null],[1252,99.866,50.9,50.9,0.03,"alta",null,null,null],[1254,99.875,50.9,50.9,0.03,"alta",null,null,null],[1256,99.882,50.9,50.9,0.03,"alta",null,null,null],[1258,99.889,50.9,50.9,0.03,"alta",null,null,null],[1260,99.895,50.9,50.9,0.03,"alta",null,null,null],[1262,99.896,50.9,50.9,0.03,"alta",null,null,null],[1264,99.902,50.9,50.9,0.03,"alta",null,null,null]]},"2018":{"ano":"2018","a":"Haddad","b":"Bolsonaro","final":44.87,"r1":38.877,"swing":5.99,"parcial_desde":0.25,"parcial_desde_hora":"17:12","resumo":{"final_a":44.87,"vencedor":"b","erro_proj":{"2%":0.75,"5%":0.23,"10%":0.75,"20%":0.79,"40%":0.54,"60%":0.27,"80%":0.15},"erro_max_apos_10":0.84,"dentro_faixa95":1.0,"alta_desde_pct":24.4,"alta_desde_hora":"17h45","alta_errada_pts":0,"instavel_pts":0,"viradas":[],"virada_estimada_falsa_pts":0,"virada_estimada_falsa_ate_pct":null,"virada_estimada_em_10":null,"virada_estimada_em_30":null,"pontos":125},"pts":[[1063,0.002,null,38.08,11.17,"tendencia",null,null,null],[1069,0.005,null,38.08,11.17,"tendencia",null,null,null],[1073,0.008,null,38.08,11.17,"tendencia",null,null,null],[1079,0.009,null,38.08,11.17,"tendencia",null,null,null],[2461,0.015,84.16,43.86,11.56,"indefinido",null,null,null],[2463,0.016,74.02,45.05,11.17,"indefinido",null,null,null],[2465,0.022,77.48,44.18,11.17,"indefinido",null,null,null],[2467,0.023,74.14,43.71,11.17,"indefinido",null,null,null],[2469,0.031,58.09,42.8,11.17,"indefinido",null,null,null],[2471,0.101,56.98,45.97,11.17,"indefinido",null,null,null],[2473,0.335,38.44,44.66,11.17,"indefinido",null,null,null],[2475,0.764,42.73,45.45,10.02,"indefinido",null,null,null],[2477,0.913,41.52,45.67,10.02,"indefinido",null,null,null],[2479,2.084,35.2,45.62,7.53,"indefinido",null,null,null],[2481,3.222,38.77,44.98,6.62,"indefinido",null,null,null],[2483,4.05,37.72,45.14,6.62,"indefinido",null,null,null],[2485,5.356,40.44,45.1,6.62,"indefinido",null,null,null],[2487,6.659,39.2,45.38,6.62,"indefinido",null,null,null],[2489,7.81,38.75,45.41,6.21,"indefinido",null,null,null],[2491,11.063,39.97,45.62,5.73,"tendencia",null,null,null],[2493,11.86,40.33,45.66,5.73,"tendencia",null,null,null],[2495,13.805,41.83,45.63,4.74,"tendencia",null,null,null],[2497,14.953,42.16,45.63,4.61,"tendencia",null,null,null],[2499,16.839,41.43,45.71,4.5,"tendencia",null,null,null],[2501,19.54,42.19,45.69,4.24,"tendencia",null,null,null],[2503,21.399,42.6,45.66,3.69,"tendencia",null,null,null],[2505,24.362,42.73,45.64,3.19,"alta",null,null,null],[2507,25.43,42.88,45.63,3.08,"alta",null,null,null],[2509,27.001,42.8,45.61,2.55,"alta",null,null,null],[2511,31.23,42.75,45.56,2.02,"alta",null,null,null],[2513,32.12,43.21,45.55,1.94,"alta",null,null,null],[2515,34.926,43.82,45.51,1.93,"alta",null,null,null],[2517,38.277,43.19,45.45,1.81,"alta",null,null,null],[2519,39.578,43.3,45.42,1.78,"alta",null,null,null],[2521,41.545,43.88,45.41,1.67,"alta",null,null,null],[2523,44.831,43.56,45.37,1.53,"alta",null,null,null],[2525,47.306,43.93,45.35,1.05,"alta",null,null,null],[2527,48.078,44.12,45.35,1.05,"alta",null,null,null],[2529,49.923,43.88,45.34,0.99,"alta",null,null,null],[2531,53.008,43.93,45.23,0.81,"alta",null,null,null],[2533,54.107,44.17,45.23,0.76,"alta",null,null,null],[2535,56.87,44.35,45.18,0.76,"alta",null,null,null],[2537,59.983,44.1,45.15,0.72,"alta",null,null,null],[2539,60.472,44.07,45.14,0.7,"alta",null,null,null],[2541,63.135,44.3,45.12,0.69,"alta",null,null,null],[2543,64.292,44.42,45.12,0.69,"alta",null,null,null],[2545,66.886,44.12,45.09,0.64,"alta",null,null,null],[2547,69.033,44.22,45.09,0.54,"alta",null,null,null],[2549,69.19,44.24,45.09,0.54,"alta",null,null,null],[2551,73.419,44.11,45.06,0.37,"alta",null,null,null],[2553,75.336,44.09,45.05,0.35,"alta",null,null,null],[2555,76.462,44.19,45.05,0.35,"alta",null,null,null],[2557,77.558,44.32,45.03,0.35,"alta",null,null,null],[2559,78.464,44.24,45.03,0.35,"alta",null,null,null],[2561,80.585,44.26,45.02,0.31,"alta",null,null,null],[2563,81.641,44.3,45.01,0.31,"alta",null,null,null],[2565,82.356,44.32,45.0,0.31,"alta",null,null,null],[2567,83.164,44.24,45.0,0.29,"alta",null,null,null],[2569,83.338,44.3,45.0,0.29,"alta",null,null,null],[2571,86.342,44.24,44.98,0.25,"alta",null,null,null],[2573,86.954,44.2,44.98,0.25,"alta",null,null,null],[2575,87.381,44.21,44.98,0.25,"alta",null,null,null],[2577,88.44,44.3,44.97,0.25,"alta",null,null,null],[2579,88.444,44.3,44.97,0.25,"alta",null,null,null],[2581,90.049,44.53,44.96,0.25,"alta",null,null,null],[2583,91.553,44.37,44.94,0.25,"alta",null,null,null],[2585,91.704,44.36,44.94,0.25,"alta",null,null,null],[2587,92.074,44.37,44.94,0.18,"alta",null,null,null],[2589,92.077,44.37,44.94,0.18,"alta",null,null,null],[2591,93.279,44.52,44.93,0.11,"alta",null,null,null],[2593,93.867,44.47,44.93,0.11,"alta",null,null,null],[2595,94.185,44.44,44.92,0.09,"alta",null,null,null],[2597,94.438,44.46,44.91,0.09,"alta",null,null,null],[2599,94.96,44.41,44.9,0.09,"alta",null,null,null],[2601,95.797,44.53,44.89,0.08,"alta",null,null,null],[2603,95.995,44.5,44.89,0.08,"alta",null,null,null],[2605,96.115,44.5,44.89,0.07,"alta",null,null,null],[2607,96.267,44.51,44.89,0.07,"alta",null,null,null],[2609,96.271,44.51,44.89,0.07,"alta",null,null,null],[2611,96.887,44.6,44.88,0.07,"alta",null,null,null],[2613,96.891,44.6,44.88,0.07,"alta",null,null,null],[2615,97.266,44.57,44.88,0.06,"alta",null,null,null],[2617,97.369,44.58,44.88,0.06,"alta",null,null,null],[2619,97.374,44.58,44.88,0.06,"alta",null,null,null],[2621,97.794,44.65,44.88,0.06,"alta",null,null,null],[2623,97.796,44.65,44.88,0.06,"alta",null,null,null],[2625,98.048,44.63,44.88,0.05,"alta",null,null,null],[2627,98.145,44.64,44.88,0.05,"alta",null,null,null],[2629,98.152,44.64,44.88,0.05,"alta",null,null,null],[2631,98.491,44.68,44.87,0.05,"alta",null,null,null],[2633,98.492,44.68,44.87,0.05,"alta",null,null,null],[2635,98.524,44.69,44.87,0.05,"alta",null,null,null],[2637,98.678,44.69,44.88,0.05,"alta",null,null,null],[2639,98.679,44.69,44.88,0.05,"alta",null,null,null],[2641,98.928,44.72,44.88,0.05,"alta",null,null,null],[2643,98.929,44.72,44.88,0.05,"alta",null,null,null],[2645,98.954,44.73,44.88,0.05,"alta",null,null,null],[2647,99.063,44.73,44.88,0.03,"alta",null,null,null],[2649,99.065,44.73,44.88,0.03,"alta",null,null,null],[2651,99.231,44.76,44.87,0.03,"alta",null,null,null],[2653,99.259,44.77,44.87,0.03,"alta",null,null,null],[2655,99.281,44.77,44.87,0.03,"alta",null,null,null],[2657,99.332,44.77,44.87,0.03,"alta",null,null,null],[2659,99.339,44.77,44.87,0.03,"alta",null,null,null],[2661,99.486,44.79,44.87,0.03,"alta",null,null,null],[2663,99.489,44.79,44.87,0.03,"alta",null,null,null],[2665,99.51,44.79,44.87,0.03,"alta",null,null,null],[2667,99.533,44.79,44.87,0.03,"alta",null,null,null],[2669,99.541,44.79,44.87,0.03,"alta",null,null,null],[2671,99.616,44.8,44.87,0.03,"alta",null,null,null],[2673,99.626,44.8,44.87,0.03,"alta",null,null,null],[2675,99.64,44.8,44.87,0.03,"alta",null,null,null],[2677,99.66,44.81,44.87,0.03,"alta",null,null,null],[2681,99.732,44.82,44.87,0.03,"alta",null,null,null],[2683,99.734,44.82,44.87,0.03,"alta",null,null,null],[2685,99.761,44.83,44.87,0.03,"alta",null,null,null],[2687,99.774,44.83,44.87,0.03,"alta",null,null,null],[2689,99.778,44.83,44.87,0.03,"alta",null,null,null],[2691,99.825,44.83,44.87,0.03,"alta",null,null,null],[2695,99.841,44.84,44.87,0.03,"alta",null,null,null],[2697,99.852,44.84,44.87,0.03,"alta",null,null,null],[2699,99.863,44.84,44.87,0.03,"alta",null,null,null],[2701,99.884,44.85,44.87,0.03,"alta",null,null,null],[2703,99.885,44.85,44.87,0.03,"alta",null,null,null],[2705,99.899,44.85,44.87,0.03,"alta",null,null,null]]}},"bt":[{"caso":"Governador AM 2018","pres":false,"final":58.5,"swing":7.76,"e5":-5.48,"e10":-6.46,"e25":-6.77,"proj_desde":45.0,"parc_desde":6.0},{"caso":"Governador AP 2018","pres":false,"final":52.35,"swing":-0.37,"e5":1.7,"e10":1.89,"e25":0.73,"proj_desde":22.0,"parc_desde":14.0},{"caso":"Governador DF 2018","pres":false,"final":69.79,"swing":-5.28,"e5":-0.21,"e10":0.47,"e25":0.09,"proj_desde":2.0,"parc_desde":0.5},{"caso":"Governador MG 2018","pres":false,"final":71.8,"swing":12.28,"e5":-4.04,"e10":-4.25,"e25":-2.9,"proj_desde":64.0,"parc_desde":0.25},{"caso":"Governador MS 2018","pres":false,"final":52.35,"swing":-6.17,"e5":-2.12,"e10":-1.64,"e25":-1.08,"proj_desde":26.0,"parc_desde":0.25},{"caso":"Governador PA 2018","pres":false,"final":55.43,"swing":-5.79,"e5":1.5,"e10":1.01,"e25":0.38,"proj_desde":11.0,"parc_desde":0.25},{"caso":"Governador RJ 2018","pres":false,"final":59.87,"swing":-7.98,"e5":-4.18,"e10":-2.58,"e25":-1.34,"proj_desde":32.0,"parc_desde":0.25},{"caso":"Governador RN 2018","pres":false,"final":57.6,"swing":-1.12,"e5":-0.43,"e10":0.04,"e25":-0.37,"proj_desde":2.0,"parc_desde":0.25},{"caso":"Governador RO 2018","pres":false,"final":33.66,"swing":-23.18,"e5":6.73,"e10":6.2,"e25":3.16,"proj_desde":40.0,"parc_desde":0.25},{"caso":"Governador RR 2018","pres":false,"final":53.34,"swing":1.19,"e5":2.39,"e10":0.83,"e25":0.46,"proj_desde":12.0,"parc_desde":10.0},{"caso":"Governador RS 2018","pres":false,"final":53.62,"swing":0.05,"e5":-0.89,"e10":-0.72,"e25":-0.65,"proj_desde":2.0,"parc_desde":23.0},{"caso":"Governador SC 2018","pres":false,"final":28.91,"swing":-22.24,"e5":11.0,"e10":2.83,"e25":0.08,"proj_desde":15.0,"parc_desde":0.25},{"caso":"Governador SE 2018","pres":false,"final":64.72,"swing":-0.8,"e5":-0.73,"e10":-0.34,"e25":-0.14,"proj_desde":5.0,"parc_desde":0.25},{"caso":"Governador SP 2018","pres":false,"final":51.75,"swing":-7.86,"e5":0.24,"e10":0.89,"e25":0.82,"proj_desde":2.0,"parc_desde":0.25},{"caso":"Presidente 2018","pres":true,"final":44.87,"swing":5.99,"e5":0.19,"e10":0.63,"e25":0.77,"proj_desde":0.25,"parc_desde":0.25},{"caso":"Governador AL 2022","pres":false,"final":52.33,"swing":-11.19,"e5":-2.75,"e10":-1.46,"e25":-0.64,"proj_desde":14.0,"parc_desde":2.0},{"caso":"Governador AM 2022","pres":false,"final":56.65,"swing":-10.45,"e5":0.72,"e10":-0.34,"e25":-1.24,"proj_desde":31.0,"parc_desde":0.25},{"caso":"Governador BA 2022","pres":false,"final":52.79,"swing":-2.0,"e5":-0.04,"e10":-0.09,"e25":-0.53,"proj_desde":2.0,"parc_desde":23.0},{"caso":"Governador ES 2022","pres":false,"final":53.8,"swing":-1.16,"e5":0.29,"e10":0.34,"e25":0.39,"proj_desde":0.5,"parc_desde":0.25},{"caso":"Governador MS 2022","pres":false,"final":43.1,"swing":-8.4,"e5":0.68,"e10":0.74,"e25":0.03,"proj_desde":4.0,"parc_desde":0.25},{"caso":"Governador PB 2022","pres":false,"final":52.51,"swing":-9.89,"e5":-0.57,"e10":-0.13,"e25":0.5,"proj_desde":0.25,"parc_desde":0.75},{"caso":"Governador PE 2022","pres":false,"final":41.3,"swing":-12.5,"e5":0.67,"e10":1.27,"e25":1.0,"proj_desde":20.0,"parc_desde":0.75},{"caso":"Governador RO 2022","pres":false,"final":52.47,"swing":1.26,"e5":-0.95,"e10":-0.37,"e25":-0.71,"proj_desde":3.0,"parc_desde":0.25},{"caso":"Governador RS 2022","pres":false,"final":42.88,"swing":-15.44,"e5":0.72,"e10":0.5,"e25":0.05,"proj_desde":0.25,"parc_desde":0.25},{"caso":"Governador SC 2022","pres":false,"final":70.69,"swing":1.78,"e5":-0.33,"e10":-0.01,"e25":0.0,"proj_desde":3.0,"parc_desde":0.25},{"caso":"Governador SE 2022","pres":false,"final":48.3,"swing":-5.16,"e5":-4.45,"e10":-2.83,"e25":-0.89,"proj_desde":50.0,"parc_desde":0.25},{"caso":"Governador SP 2022","pres":false,"final":55.27,"swing":1.03,"e5":-0.05,"e10":-0.14,"e25":-0.22,"proj_desde":0.25,"parc_desde":0.25},{"caso":"Presidente 2022","pres":true,"final":50.9,"swing":-1.95,"e5":0.11,"e10":0.16,"e25":0.16,"proj_desde":0.25,"parc_desde":68.0}],"ens":[{"s":1,"nome":"Apertada, A vence","final":50.6,"e5":0.01,"emax":0.04,"alta":76.2,"alta_h":"18h52","errada":0,"inst":0,"dentro":1.0},{"s":2,"nome":"B vence com folga","final":46.5,"e5":-0.12,"emax":0.13,"alta":30.2,"alta_h":"18h02","errada":0,"inst":0,"dentro":1.0},{"s":3,"nome":"A vence com folga","final":54.0,"e5":-0.08,"emax":0.13,"alta":27.3,"alta_h":"18h22","errada":0,"inst":0,"dentro":1.0},{"s":4,"nome":"B por um fio","final":49.8,"e5":0.36,"emax":0.14,"alta":95.2,"alta_h":"19h24","errada":0,"inst":0,"dentro":1.0},{"s":5,"nome":"Nordeste esfria para A","final":50.3,"e5":0.06,"emax":0.14,"alta":94.8,"alta_h":"19h22","errada":0,"inst":0,"dentro":1.0},{"s":6,"nome":"Cidades grandes vão para B","final":49.4,"e5":-0.17,"emax":0.23,"alta":74.7,"alta_h":"19h16","errada":0,"inst":0,"dentro":1.0},{"s":7,"nome":"Municípios muito heterogêneos","final":51.5,"e5":0.36,"emax":0.33,"alta":49.8,"alta_h":"18h26","errada":0,"inst":0,"dentro":1.0},{"s":8,"nome":"Urnas tardias contra A","final":49.6,"e5":3.41,"emax":3.58,"alta":30.2,"alta_h":"18h02","errada":18,"inst":21,"dentro":0.556},{"s":9,"nome":"Lavada de A","final":58.0,"e5":-0.45,"emax":0.28,"alta":20.4,"alta_h":"18h14","errada":0,"inst":0,"dentro":1.0},{"s":10,"nome":"SP atrasa 1h30","final":50.2,"e5":-0.45,"emax":0.46,"alta":95.4,"alta_h":"20h30","errada":0,"inst":0,"dentro":1.0},{"s":11,"nome":"Urnas tardias contra A, nível 2018","final":49.7,"e5":1.0,"emax":1.03,"alta":95.2,"alta_h":"19h24","errada":0,"inst":0,"dentro":0.903},{"s":12,"nome":"Urnas tardias contra A, nível 2018 (ordem 2026)","final":49.8,"e5":1.27,"emax":1.26,"alta":97.1,"alta_h":"20h56","errada":0,"inst":0,"dentro":0.857}]};
+const f1 = new Intl.NumberFormat('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const f2 = new Intl.NumberFormat('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const p1 = x => x == null ? '—' : f1.format(x) + '%';
+const pp = (x, s = true) => x == null ? '—' : (s && x > 0 ? '+' : x < 0 ? '−' : '') + f1.format(Math.abs(x));
+const hm = m => m == null ? '—' : `${String(Math.floor(m / 60) % 24).padStart(2, '0')}h${String(Math.round(m) % 60).padStart(2, '0')}`;
+const NIVEL = {alta: 'Alta confiança', tendencia: 'Tendência', indefinido: 'Indefinido', instavel: 'Instável'};
+const COR = {alta: 'var(--n-alta)', tendencia: 'var(--n-tend)', indefinido: 'var(--n-indef)', instavel: 'var(--n-inst)'};
+let ano = '2022', idx = 0;
+
+function pontos() {
+  return D.noites[ano].pts.map(p => ({min: p[0], pct: p[1], a: p[2], proj: p[3], fx: p[4], nivel: p[5], ve: p[6], veMin: p[7], veQuem: p[8]}))
+    .filter(p => p.a != null);
+}
+
+function tela() {
+  const N = D.noites[ano], P = pontos(), p = P[idx];
+  const lid = p.proj >= 50 ? N.a : N.b, pl = Math.max(p.proj, 100 - p.proj);
+  const lidPlacar = p.a >= 50 ? N.a : N.b, plPlacar = Math.max(p.a, 100 - p.a);
+  const pill = p.nivel ? `<span class="pill ${p.nivel}">${p.nivel === 'alta' ? `Alta confiança · ${lid} vence` : p.nivel === 'tendencia' ? `Tendência · ${lid} à frente` : NIVEL[p.nivel]}</span>` : '';
+  let s = `${pill}Com ${p1(p.pct)} das urnas (${hm(p.min)}), a projeção dá <b>${lid} com ${p1(pl)}</b> dos votos válidos`;
+  s += p.fx != null ? ` (±${f1.format(p.fx)} pt). ` : '. ';
+  s += `No placar, ${lidPlacar} tem ${p1(plPlacar)}.`;
+  const firme = p.nivel === 'tendencia' || p.nivel === 'alta';
+  if (p.ve != null && p.nivel !== 'instavel') {
+    const quem = p.veQuem === 'a' ? N.a : N.b;
+    s += firme ? ` <b>Virada estimada:</b> ${quem} passa à frente no placar com ~${f1.format(p.ve)}% apurado${p.veMin ? `, por volta de ${hm(p.veMin)}` : ''}.` : ` Virada possível no placar.`;
+  }
+  document.getElementById('t-frase').innerHTML = s;
+  const venc = N.final > 50 ? N.a : N.b, err = p.proj - N.final;
+  const certo = (p.proj > 50) === (N.final > 50);
+  document.getElementById('t-real').innerHTML = `Resultado final: <b>${venc} ${p1(Math.max(N.final, 100 - N.final))}</b>. Nesse momento a projeção errava <span class="${Math.abs(err) <= 1 && certo ? 'ok' : 'erro'}">${f2.format(Math.abs(err))} pt</span> e apontava ${certo ? 'o vencedor certo' : 'o candidato errado'}; o placar errava ${f1.format(Math.abs(p.a - N.final))} pt.`;
+  document.getElementById('momento-l').textContent = `Momento da noite: ${hm(p.min)} · ${p1(p.pct)} das urnas`;
+  desenha();
+}
+
+function desenha() {
+  // o gráfico mostra a fatia de quem venceu a noite (sobe para 50%+), seja A ou B
+  const N0 = D.noites[ano], V = N0.final >= 50 ? v => v : v => 100 - v;
+  const N = {...N0, a: N0.final >= 50 ? N0.a : N0.b, final: V(N0.final)};
+  const P = pontos().map(p => ({...p, a: V(p.a), proj: V(p.proj)})), cur = P[idx];
+  const el = document.getElementById('chart');
+  const W = Math.max(300, el.clientWidth), H = W < 520 ? 300 : 360;
+  const m = {l: 34, r: 12, t: 14, b: 38};
+  const pw = W - m.l - m.r, ph = H - m.t - m.b;
+  const Q = P.filter(p => p.pct >= 0.5);
+  let lo = Math.min(...Q.map(p => Math.min(p.a, p.proj - (p.fx || 0)))), hi = Math.max(...Q.map(p => Math.max(p.a, p.proj + (p.fx || 0))));
+  lo = Math.max(lo, N.final - 9, 30); hi = Math.min(hi, N.final + 9, 70);
+  lo = Math.floor(Math.min(lo, 49)); hi = Math.ceil(Math.max(hi, 51));
+  const x = v => m.l + pw * Math.sqrt(Math.max(v, 0) / 100), y = v => m.t + ph * (1 - (Math.min(Math.max(v, lo), hi) - lo) / (hi - lo));
+  const linha = k => P.map((p, i) => `${i ? 'L' : 'M'}${x(p.pct).toFixed(1)},${y(p[k]).toFixed(1)}`).join('');
+  const B = P.filter(p => p.fx != null);
+  const banda = B.map((p, i) => `${i ? 'L' : 'M'}${x(p.pct).toFixed(1)},${y(p.proj + p.fx).toFixed(1)}`).join('') +
+    B.slice().reverse().map(p => `L${x(p.pct).toFixed(1)},${y(p.proj - p.fx).toFixed(1)}`).join('') + 'Z';
+  let g = '';
+  const passo = hi - lo > 12 ? 5 : 2;
+  for (let v = Math.ceil(lo / passo) * passo; v <= hi; v += passo)
+    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  for (const v of (W < 520 ? [0, 5, 25, 50, 100] : [0, 1, 5, 10, 25, 50, 75, 100])) g += `<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${m.t + ph}" stroke="var(--grid)"/><text x="${x(v)}" y="${m.t + ph + 30}" text-anchor="${v === 0 ? 'start' : v === 100 ? 'end' : 'middle'}">${v}%</text>`;
+  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(50)}" y2="${y(50)}" stroke="var(--ink-3)" stroke-width="1"/>`;
+  // faixa de confiança sob o eixo
+  let fx = '';
+  for (let i = 0; i < P.length; i++) {
+    const a = x(P[i].pct), b = i + 1 < P.length ? x(P[i + 1].pct) : x(100);
+    if (P[i].nivel) fx += `<rect x="${a.toFixed(1)}" y="${m.t + ph + 6}" width="${Math.max(b - a, .5).toFixed(1)}" height="8" fill="${COR[P[i].nivel]}"/>`;
+  }
+  const yf = y(N.final);
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Fatia de ${N.a} entre os dois finalistas ao longo da apuração de ${ano}: placar parcial, projeção com margem de erro e resultado final">
+    ${g}
+    <path d="${banda}" fill="var(--band)"/>
+    <line x1="${m.l}" x2="${W - m.r}" y1="${yf}" y2="${yf}" stroke="var(--s-final)" stroke-dasharray="5 4" stroke-width="1.5"/>
+    <path d="${linha('a')}" fill="none" stroke="var(--s-parc)" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="${linha('proj')}" fill="none" stroke="var(--s-proj)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${fx}
+    <line x1="${x(cur.pct)}" x2="${x(cur.pct)}" y1="${m.t}" y2="${m.t + ph + 14}" stroke="var(--ink)" stroke-width="1"/>
+    <circle cx="${x(cur.pct)}" cy="${y(cur.proj)}" r="4.5" fill="var(--s-proj)" stroke="var(--surface)" stroke-width="2"/>
+    <circle cx="${x(cur.pct)}" cy="${y(cur.a)}" r="4.5" fill="var(--s-parc)" stroke="var(--surface)" stroke-width="2"/>
+  </svg>`;
+  el.innerHTML = svg;
+  document.getElementById('legenda').innerHTML =
+    `<span><i style="border-color:var(--s-parc)"></i>Placar parcial</span><span><i style="border-color:var(--s-proj)"></i>Projeção</span>` +
+    `<span><i class="bx" style="background:var(--band)"></i>Margem de erro (95%)</span><span><i class="tr" style="border-color:var(--s-final)"></i>Resultado final</span>` +
+    Object.keys(NIVEL).map(k => `<span><i class="bx" style="background:${COR[k]}"></i>${NIVEL[k]}</span>`).join('') +
+    `<span style="flex-basis:100%;color:var(--ink-3)">Eixo horizontal: % das urnas apuradas, ampliado no início. Eixo vertical: % de ${N.a}, o vencedor, entre os dois finalistas. A faixa colorida sob o gráfico é o nível de confiança.</span>`;
+}
+
+function fatos() {
+  const N = D.noites[ano], P = pontos(), R = N.resumo, venc = N.final > 50 ? N.a : N.b;
+  const em = q => P.find(p => p.pct >= q);
+  const p1c = em(1), p5 = em(5);
+  document.getElementById('fatos').innerHTML = [
+    [`${venc} ${p1(Math.max(N.final, 100 - N.final))}`, `resultado final entre os dois. No 1º turno, nas mesmas urnas, ${N.a} tinha ${p1(N.r1)} (swing ${pp(N.swing)} pt)`],
+    [`${f2.format(Math.abs(p1c.proj - N.final))} pt`, `erro da projeção com 1% das urnas (${hm(p1c.min)}); com 5%, ${f2.format(Math.abs(p5.proj - N.final))} pt`],
+    [N.parcial_desde < 1 ? 'desde o início' : `${f1.format(N.parcial_desde)}%`, `quando o placar parcial passou a mostrar o vencedor na frente até o fim${N.parcial_desde < 1 ? '' : ` (${N.parcial_desde_hora.replace(':', 'h')})`}`],
+    [R.alta_desde_pct == null ? 'não chegou' : `${f1.format(R.alta_desde_pct)}%`, `“alta confiança” no vencedor desde${R.alta_desde_hora ? ` ${R.alta_desde_hora}` : ''}, com a folga para presidente; ${R.alta_errada_pts ? `<span class="erro">${R.alta_errada_pts} momentos com alta errada</span>` : 'nunca para o candidato errado'}`],
+  ].map(([k, l]) => `<div><span class="k">${k}</span><span class="l">${l}</span></div>`).join('');
+}
+
+function escolhe(a) {
+  ano = a;
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ano === a)));
+  const P = pontos(), s = document.getElementById('momento');
+  s.max = P.length - 1;
+  idx = P.findIndex(p => p.pct >= 5); s.value = idx;
+  fatos(); tela();
+}
+
+function tabelas() {
+  const td = (v, cls = 'n') => `<td class="${cls}">${v}</td>`;
+  document.getElementById('t-bt').innerHTML = '<thead><tr><th>Caso</th><th class="n">Final A</th><th class="n">Swing</th><th class="n">Erro c/ 5%</th><th class="n">Erro c/ 10%</th><th class="n">Erro c/ 25%</th><th class="n">Projeção estável desde</th><th class="n">Placar estável desde</th></tr></thead><tbody>' +
+    D.bt.sort((a, b) => (b.pres - a.pres) || a.caso.localeCompare(b.caso)).map(c => `<tr class="${c.pres ? 'pres' : ''}"><td>${c.caso}</td>${td(p1(c.final))}${td(pp(c.swing))}${td(pp(c.e5))}${td(pp(c.e10))}${td(pp(c.e25))}${td(p1(c.proj_desde))}${td(p1(c.parc_desde))}</tr>`).join('') + '</tbody>';
+  document.getElementById('t-ens').innerHTML = '<thead><tr><th>Noite</th><th class="n">Final A</th><th class="n">Erro c/ 5%</th><th class="n">Erro máx. após 10%</th><th class="n">Alta confiança desde</th><th class="n">Momentos com alta errada</th><th class="n">Momentos “instável”</th></tr></thead><tbody>' +
+    D.ens.map(e => `<tr class="${e.errada || e.s === 12 || e.s === 11 ? 'destaque' : ''}"><td>${e.s}. ${e.nome}</td>${td(p1(e.final))}${td(pp(e.e5))}${td(f2.format(e.emax))}${td(e.alta == null ? '—' : `${p1(e.alta)} (${e.alta_h})`)}${td(e.errada ? `<span class="erro">${e.errada}</span>` : '0')}${td(e.inst)}</tr>`).join('') + '</tbody>';
+}
+
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => escolhe(b.dataset.ano)));
+document.getElementById('momento').addEventListener('input', e => { idx = +e.target.value; tela(); });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(desenha, 120); });
+tabelas(); escolhe('2022');
+</script>
+</body>
+</html>
