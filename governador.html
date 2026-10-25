@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Governador · 2º turno 2026 · Apuração comparada</title>
+<meta name="description" content="Apuração do 2º turno para governador (AC, AM, DF, ES, RN e TO) comparando cada urna com a mesma urna no 1º turno, com projeção do resultado e nível de confiança.">
+<!--
+  Painel público. Mesmo desenho do web/index.html (faixa do topo, cards, gráfico, mapa, mesmas urnas, regiões),
+  sem controles de ensaio nem urna a urna, e com as explicações recolhidas.
+  Duas fontes de dados:
+    ao vivo  -> api/publico/estado e api/publico/municipios (servidor com --publico; respostas prontas por ciclo)
+    demo     -> dados/<ano>.json (noites reais de 2022 e 2018 em quadros; python -m apuracao.publico)
+  A versão estática (site/gerar.py) liga a demo trocando FONTE_DEMO.
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+:root {
+  --bg: #f6f5f2; --card: #ffffff; --ink: #1d1d1f; --mute: #6b6b70; --line: #e3e1dc;
+  --a: #d1342f; --b: #2463c9; --hl: #fff6d6; --proj: #9a7b20; --aviso-bg: #fff5e0; --aviso: #7a4f00; --link: #1d5fa8;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #141416; --card: #1d1d20; --ink: #ececee; --mute: #9a9aa2; --line: #303035;
+          --a: #f0605a; --b: #5b93ee; --hl: #3a3420; --proj: #d8b44a; --aviso-bg: #2d2513; --aviso: #f0c46a; --link: #7cb2ef; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1380px; margin: 0 auto; padding: 14px 20px 60px; }
+a { color: var(--link); }
+.num { font-variant-numeric: tabular-nums; }
+.pa { color: var(--a); font-weight: 600; } .pb { color: var(--b); font-weight: 600; }
+.mute { color: var(--mute); } .nota { font-size: 12px; color: var(--mute); }
+.hidden { display: none !important; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.card h2 { font-size: 14px; margin: 0 0 2px; font-weight: 650; }
+.sub { color: var(--mute); font-size: 12.5px; margin: 0 0 10px; }
+button { font: inherit; padding: 5px 11px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+button.on { background: var(--ink); color: var(--card); }
+.seg { display: inline-flex; gap: 0; } .seg button { border-radius: 0; margin-left: -1px; font-size: 12.5px; min-height: 34px; }
+.seg button:first-child { border-radius: 7px 0 0 7px; margin-left: 0; } .seg button:last-child { border-radius: 0 7px 7px 0; }
+.conf { font-weight: 700; padding: 2px 9px; border-radius: 6px; font-size: 13px; white-space: nowrap; }
+.conf.alta { background: #1f8a4c; color: #fff; } .conf.tendencia { background: #f3c64a; color: #3a2a00; }
+.conf.indefinido { background: var(--line); color: var(--ink); } .conf.instavel { background: #c23434; color: #fff; }
+.chartbox { position: relative; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th, td { padding: 5px 7px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--mute); font-weight: 500; position: sticky; top: 0; background: var(--card); cursor: pointer; user-select: none; white-space: normal; vertical-align: bottom; }
+th:first-child, td:first-child, td.l, th.l { text-align: left; }
+tbody tr:hover { background: var(--hl); }
+.scroll { max-height: 560px; overflow: auto; -webkit-overflow-scrolling: touch; }
+.swing { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.swing i { display: inline-block; height: 9px; border-radius: 2px; }
+
+/* cabeçalho */
+.topo { position: sticky; top: 0; z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
+.topo .in { max-width: 1380px; margin: 0 auto; padding: 8px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.topo .tit { font-weight: 750; font-size: 15px; }
+.topo .vivo { background: #c23434; color: #fff; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
+.topo .demo { background: #f3c64a; color: #3a2a00; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
+.topo .dir { margin-left: auto; display: flex; gap: 12px; align-items: center; font-size: 13px; }
+.aviso { background: var(--aviso-bg); color: var(--aviso); font-size: 12.5px; padding: 6px 20px; text-align: center; }
+.aviso b { color: inherit; }
+.demobar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 12px; padding: 10px 14px; }
+.demobar input[type=range] { flex: 1 1 220px; accent-color: var(--proj); min-height: 34px; }
+.demobar .hora { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; min-width: 9.5em; }
+.demobar .play { min-width: 44px; min-height: 34px; }
+#segAno button[data-ano="2026"] { font-weight: 700; }
+#segAno button[data-ano="2026"]::before { content: "● "; color: #c23434; }
+#segAno button.on[data-ano="2026"]::before { color: #ff7b7b; }
+.espera { display: grid; gap: 14px; }
+.espera .msg { padding: 22px 22px; display: grid; gap: 10px; }
+.espera h1 { font-size: clamp(22px, 4vw, 30px); margin: 0; line-height: 1.15; }
+.espera .cont { font-size: clamp(28px, 6vw, 44px); font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.5px; }
+.espera p { margin: 0; font-size: 15px; max-width: 60rem; }
+.espera .cands { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.espera .cand { display: flex; align-items: center; gap: 14px; }
+.espera .cand .nm { font-size: 18px; }
+.espera .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.espera .acoes button { min-height: 40px; }
+@media (max-width: 600px) { .espera .cands { grid-template-columns: 1fr; } }
+
+/* ajuda recolhida */
+details.ajuda { margin-top: 8px; font-size: 12.5px; color: var(--mute); }
+details.ajuda > summary { cursor: pointer; color: var(--link); list-style: none; display: inline-block; padding: 2px 0; }
+details.ajuda > summary::-webkit-details-marker { display: none; }
+details.ajuda > summary::before { content: "ⓘ "; }
+details.ajuda[open] > summary { margin-bottom: 4px; }
+details.ajuda p { margin: 4px 0; }
+
+/* mapa */
+.mapa svg { width: 100%; height: 100%; display: block; }
+.mapa path.m { stroke: var(--card); stroke-width: .15; }
+.mapa path.u { fill: none; stroke: var(--ink); stroke-opacity: .45; stroke-width: .6; pointer-events: none; }
+.escala { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mute); flex-wrap: wrap; }
+.escala .g { height: 9px; width: 130px; border-radius: 3px; }
+#tip { position: fixed; pointer-events: none; z-index: 50; background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+       padding: 6px 9px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); display: none; max-width: 260px; }
+
+/* faixa do topo e cards no estilo do TSE */
+.faixa { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 12px; font-size: 14px; }
+.faixa .resumo { flex: 1 1 420px; }
+.faixa .chip { border: 1px solid var(--line); border-left-width: 4px; border-radius: 7px; padding: 4px 10px; background: var(--card); }
+.faixa .chip.fraco { border-left-width: 1px; color: var(--mute); }
+.tse { display: grid; grid-template-columns: 1fr 1.25fr 1.25fr; gap: 14px; }
+.tse .kv2 { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.prog { position: relative; height: 22px; border-radius: 5px; background: var(--line); overflow: hidden; margin: 8px 0 4px; }
+.prog i { position: absolute; left: 0; top: 0; bottom: 0; background: #9bb83a; }
+.prog span { position: absolute; inset: 0; text-align: center; font-weight: 700; font-size: 13px; line-height: 22px; color: var(--ink); }
+#tCands { display: contents; }
+.cand-tse { display: flex; flex-direction: column; gap: 6px; }
+.cand-tse .topo2 { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.anel { position: relative; width: 96px; height: 96px; flex: none; }
+.anel svg { position: absolute; inset: 0; }
+.anel img, .anel .sig { position: absolute; left: 10px; top: 10px; width: 76px; height: 76px; border-radius: 50%; object-fit: cover; }
+.anel .sig { display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 750; background: var(--bg); }
+.cand-tse .apur { text-align: right; }
+.cand-tse .rot { font-size: 11.5px; color: var(--mute); text-transform: uppercase; letter-spacing: .04em; }
+.cand-tse .pct { font-size: 34px; font-weight: 750; letter-spacing: -.5px; line-height: 1.1; }
+.cand-tse .nm { font-size: 19px; }
+.cand-tse .proj { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 4px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.cand-tse .pjn { font-size: 26px; font-weight: 750; }
+
+/* corpo */
+.corpo { display: grid; grid-template-columns: 1.55fr 1fr; gap: 14px; margin-top: 14px; }
+.linha3 { display: grid; grid-template-columns: 1fr 1.6fr; gap: 14px; margin-top: 14px; }
+.mesmas .linha { display: grid; grid-template-columns: 90px 1fr 64px; align-items: center; gap: 8px; margin: 9px 0; }
+.mesmas .trilho { height: 12px; border-radius: 6px; background: var(--b); position: relative; overflow: hidden; }
+.mesmas .trilho i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--a); }
+.mesmas .trilho b { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--card); }
+.swingbig { font-size: 26px; font-weight: 750; }
+.regioes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start; }
+.regioes .card { padding: 10px 12px; }
+.regioes b { display: block; font-size: 12.5px; }
+details.bloco { margin-top: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; }
+details.bloco > summary { cursor: pointer; font-weight: 650; font-size: 14px; min-height: 28px; }
+details.bloco[open] > summary { margin-bottom: 10px; }
+
+/* como funciona */
+#como-funciona { margin-top: 28px; scroll-margin-top: 70px; }
+#como-funciona > h2 { font-size: 20px; margin: 0 0 4px; }
+.metodo { font-size: 14px; line-height: 1.55; max-width: 60rem; }
+.metodo p, .metodo ul, .metodo ol { margin: 0 0 10px; }
+.metodo ul, .metodo ol { padding-left: 1.3rem; }
+.metodo li { margin: 4px 0; }
+.formula { font: 12.5px/1.5 ui-monospace, Consolas, monospace; background: var(--bg); padding: 4px 8px; border-radius: 5px; display: inline-block; max-width: 100%; overflow-x: auto; }
+.niveis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 10px; margin-bottom: 10px; }
+.niveis div { border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; }
+.niveis p { margin: 6px 0 0; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 10px; margin: 6px 0 12px; }
+.tiles div { border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; }
+.tiles .k { font-size: 24px; font-weight: 750; display: block; }
+tr.destaque td { background: var(--aviso-bg); }
+tr.pres td:first-child { font-weight: 650; }
+.limite { border-left: 3px solid #c23434; padding-left: 12px; }
+footer { margin-top: 22px; }
+
+@media (max-width: 1000px) { .tse, .corpo, .linha3 { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  main { padding: 10px 16px 40px; } .topo .in { padding: 8px 16px; } .aviso { padding: 6px 16px; }
+  .regioes { grid-template-columns: repeat(2, 1fr); }
+  .card { padding: 14px; } .cand-tse .pct { font-size: 30px; } .swingbig { font-size: 20px; }
+  .topo .dir { margin-left: 0; width: 100%; justify-content: space-between; }
+}
+</style>
+</head>
+<body>
+<header class="topo"><div class="in">
+  <span class="tit" id="tit">2º turno · Governador</span>
+  <span id="selo"></span>
+  <span class="dir"><span class="nota" id="atu"></span><a href="./">Presidente</a><a href="#como-funciona">Como funciona</a></span>
+</div></header>
+<div class="aviso"><b>Projeção é estimativa estatística, não resultado oficial.</b> O resultado oficial é o do TSE (<a href="https://resultados.tse.jus.br" style="color:inherit">resultados.tse.jus.br</a>).</div>
+<main id="root"></main>
+<div id="tip"></div>
+
+<script>
+const FONTE_DEMO = true;
+// governador (gerado por python -m apuracao.gov html a partir de web/publico.html): uma UF por vez, em ?uf=
+const UFS_GOV = ["ac", "am", "df", "es", "rn", "to"], UF_NOME = {"ac": "Acre", "am": "Amazonas", "df": "Distrito Federal", "es": "Espírito Santo", "rn": "Rio Grande do Norte", "to": "Tocantins"}, IBGE_UF = {"ac": "12", "am": "13", "df": "53", "es": "32", "rn": "24", "to": "17"}, GOV_CANDS = {"ac": {"a": {"numero": "11", "nome": "Mailza Assis", "curto": "Mailza"}, "b": {"numero": "10", "nome": "Alan Rick", "curto": "Alan Rick"}}, "am": {"a": {"numero": "55", "nome": "Omar Aziz", "curto": "Omar"}, "b": {"numero": "22", "nome": "Professora Maria do Carmo", "curto": "Maria do Carmo"}}, "df": {"a": {"numero": "11", "nome": "Celina Leão", "curto": "Celina"}, "b": {"numero": "13", "nome": "Leandro Grass", "curto": "Grass"}}, "es": {"a": {"numero": "10", "nome": "Lorenzo Pazolini", "curto": "Pazolini"}, "b": {"numero": "15", "nome": "Ricardo Ferraço", "curto": "Ferraço"}}, "rn": {"a": {"numero": "44", "nome": "Allyson", "curto": "Allyson"}, "b": {"numero": "13", "nome": "Cadu de Lula", "curto": "Cadu"}}, "to": {"a": {"numero": "44", "nome": "Professora Dorinha", "curto": "Dorinha"}, "b": {"numero": "45", "nome": "Vicentinho Júnior", "curto": "Vicentinho"}}};
+const UF = (q => UFS_GOV.includes(q) ? q : 'rn')(new URLSearchParams(location.search).get('uf'));
+document.getElementById('tit').textContent = `2º turno · Governador · ${UF_NOME[UF]}`;
+document.title = `Governador ${UF.toUpperCase()} · 2º turno 2026 · Apuração comparada`;
+// ================================================================ utilidades
+const fmt = new Intl.NumberFormat('pt-BR');
+const f1 = new Intl.NumberFormat('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const f2 = new Intl.NumberFormat('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const n = v => v == null ? '—' : fmt.format(Math.round(v));
+const p1 = v => v == null ? '—' : f1.format(v) + '%';
+const p2 = v => v == null ? '—' : f2.format(v) + '%';
+const sn = v => v == null ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + fmt.format(Math.abs(Math.round(v)));
+const pp = v => v == null ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + f1.format(Math.abs(v));
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const $ = id => document.getElementById(id);
+const txt = (id, h) => { const e = $(id); if (e) e.innerHTML = h; };
+let E = null, A = 'A', B = 'B', MUN = null;
+const curto = s => ([...(E ? [E.candidatos.a, E.candidatos.b] : []), GOV_CANDS[UF].a, GOV_CANDS[UF].b].find(c => c.nome === s) || {}).curto || s.split(' ')[0];
+const hm = m => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}h${String(Math.round(m) % 60).padStart(2, '0')}`;
+
+function swingTxt(s, unid = ' pt') {
+  if (s == null) return '—';
+  if (Math.abs(s) < 0.05) return '0,0' + unid;
+  return s > 0 ? `<span class="pa">${curto(A)} +${f1.format(s)}${unid}</span>` : `<span class="pb">${curto(B)} +${f1.format(-s)}${unid}</span>`;
+}
+function swingCel(s, max = 8) {
+  if (s == null) return '—';
+  const w = Math.min(Math.abs(s) / max, 1) * 40;
+  return `<span class="swing">${s > 0 ? curto(A) : s < 0 ? curto(B) : ''} ${f1.format(Math.abs(s))}<i style="width:${w}px;background:${s >= 0 ? 'var(--a)' : 'var(--b)'}"></i></span>`;
+}
+function pctApurado() { const o = E.oficial_br; return o && o.ts ? 100 * o.st / o.ts : 0; }
+function confDica(cf) {
+  let d = `Margem de erro (95%): ±${f1.format(cf.faixa95)} pt`;
+  if (cf.faixa95_hist != null && cf.faixa95 > cf.faixa95_hist + 0.01) d += ` (ampliada pela noite atual; histórica ±${f1.format(cf.faixa95_hist)})`;
+  if (cf.cobertura_min_regiao != null && cf.cobertura_min_regiao < 10) d += '. Alguma região tem menos de 10% apurado: ainda não pode haver confiança alta';
+  if (cf.nivel === 'instavel') d += `. A projeção mudou ${f1.format(cf.variacao_5pp)} pt nos últimos 5% apurados: as urnas que estão chegando votam diferente das anteriores`;
+  return d + '.';
+}
+function confPill() {
+  const cf = E.confianca;
+  if (!cf) return '<span class="conf indefinido">Aguardando urnas</span>';
+  const lid = cf.lider === 'a' ? curto(A) : curto(B);
+  const t = {alta: `Alta confiança · ${lid} vence`, tendencia: `Tendência · ${lid} à frente`, instavel: 'Instável', indefinido: 'Indefinido'}[cf.nivel];
+  return `<span class="conf ${cf.nivel}" title="${confDica(cf)}">${t}</span>`;
+}
+function frase() {
+  const t = E.total, cf = E.confianca, ap = pctApurado();
+  if (!t.st2) return 'Nenhuma urna apurada ainda. A projeção começa com as primeiras urnas.';
+  const lid = t.proj_a_pct >= 50 ? A : B, pl = Math.max(t.proj_a_pct, 100 - t.proj_a_pct);
+  const sw = t.swing, quem = sw >= 0 ? A : B;
+  let s = `Com ${p1(ap)} das urnas, a projeção dá <b>${lid} com ${p1(pl)}</b> dos votos válidos. `;
+  s += `Nas mesmas urnas, ${curto(quem)} está ${f1.format(Math.abs(sw))} pt melhor que no 1º turno. `;
+  if (cf && cf.nivel === 'alta') s += `Confiança alta desde ${p1(cf.desde_pct)} apurado.`;
+  else if (cf && cf.nivel === 'instavel') s += `Atenção: a projeção mudou ${f1.format(cf.variacao_5pp)} pt nos últimos 5% apurados.`;
+  else if (cf) s += `Ainda dentro da margem de erro (±${f1.format(cf.faixa95)} pt): pode mudar.`;
+  return s;
+}
+
+// ---- cores
+function mix(c1, c2, t) {
+  const h = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
+  const a = h(c1), b = h(c2);
+  return `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',')})`;
+}
+const escuro = matchMedia('(prefers-color-scheme: dark)').matches;
+const NEUTRO = escuro ? '#34343a' : '#e6e3dc', CA = escuro ? '#f0605a' : '#d1342f', CB = escuro ? '#5b93ee' : '#2463c9';
+const div = (v, max) => v == null ? NEUTRO : v >= 0 ? mix(NEUTRO, CA, Math.min(v / max, 1)) : mix(NEUTRO, CB, Math.min(-v / max, 1));
+
+// ================================================================ fonte de dados: ao vivo (servidor) ou demonstração (quadros estáticos)
+const Q = new URLSearchParams(location.search);
+const DEMO = FONTE_DEMO || Q.has('demo');
+// versão estática: config.json diz onde está o servidor ao vivo (túnel) e quem são os candidatos de 2026
+let CFG = {api: null, candidatos: null};
+async function config() {
+  if (!DEMO) return;
+  try { CFG = await (await fetch('config.json', {cache: 'no-cache'})).json(); } catch (e) {}
+}
+const vivo = () => !DEMO || fonte.ano === '2026';
+const API = () => DEMO ? (CFG.api || null) : '';
+const fonte = {
+  ano: '2026', D: {}, i: 0, n: 0,
+  async estado() {
+    if (vivo()) {
+      if (API() == null) throw new Error('sem servidor');
+      const r = await fetch(API() + 'api/publico/gov/' + UF + '/estado', {cache: 'no-cache'});
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }
+    const D = await this.dados(), q = D.quadros[this.i];
+    return {...q.estado, snapshots: D.snapshots.slice(0, q.estado.n_snap)};
+  },
+  async municipios() {
+    // parte fixa (nomes, 1º turno) uma vez; a cada ciclo, só as colunas que mudam
+    let f, var_;
+    if (vivo()) {
+      const v = await (await fetch(API() + 'api/publico/gov/' + UF + '/municipios', {cache: 'no-cache'})).json();
+      if (!this.base || this.base.chave !== v.chave) this.base = await (await fetch(API() + 'api/publico/gov/' + UF + '/mun_base')).json();
+      f = this.base; var_ = v.mun;
+    } else {
+      const D = await this.dados(); f = D.mun_fixo; var_ = D.quadros[this.i].mun;
+    }
+    const ks = Object.keys(var_);
+    return {cols: [...f.cols, ...ks], rows: f.rows.map((r, j) => [...r, ...ks.map(k => var_[k][j])])};
+  },
+  async dados() {
+    if (!this.D[this.ano]) this.D[this.ano] = await (await fetch(`dados/${this.ano}.json`)).json();
+    this.n = this.D[this.ano].quadros.length;
+    return this.D[this.ano];
+  },
+};
+
+// ================================================================ mapa por município
+let GEO = null;
+async function geo() {
+  if (GEO) return GEO;
+  const [mun, uf, tse] = await Promise.all(['municipios_leve.geojson', 'uf_leve.geojson', 'tse_ibge.json'].map(f => fetch('geo/' + f).then(r => r.json())));
+  const ibge2tse = Object.fromEntries(Object.entries(tse).map(([k, v]) => [v, k]));
+  mun.features.forEach(f => f.properties.k = ibge2tse[f.properties.codarea]);
+  mun.features = mun.features.filter(f => (f.properties.k || '').startsWith(UF + '-'));
+  uf.features = uf.features.filter(f => f.properties.codarea === IBGE_UF[UF]);
+  return GEO = {mun, uf};
+}
+async function criaMapa(el) {
+  const g = await geo();
+  const w = el.clientWidth || 600, h = el.clientHeight || 600;
+  const proj = d3.geoIdentity().reflectY(true).fitExtent([[6, 6], [w - 6, h - 6]], g.uf);
+  const path = d3.geoPath(proj);
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('role', 'img').attr('aria-label', 'Mapa do estado por município');
+  const sel = svg.append('g').selectAll('path').data(g.mun.features).join('path').attr('class', 'm').attr('d', path);
+  svg.append('g').selectAll('path').data(g.uf.features).join('path').attr('class', 'u').attr('d', path);
+  const tip = $('tip');
+  let fnTip = () => '';
+  const mostra = (ev, d) => { const h = fnTip(d); if (!h) return; tip.innerHTML = h; tip.style.display = 'block';
+    tip.style.left = Math.max(8, Math.min(ev.clientX + 14, innerWidth - 270)) + 'px'; tip.style.top = Math.min(ev.clientY + 14, innerHeight - 140) + 'px'; };
+  // no celular não há "passar o mouse": um toque mostra o município
+  sel.on('mousemove', mostra).on('click', (ev, d) => { ev.stopPropagation(); mostra(ev, d); }).on('mouseleave', () => tip.style.display = 'none');
+  addEventListener('click', () => tip.style.display = 'none');
+  addEventListener('scroll', () => tip.style.display = 'none', {passive: true});
+  return { colorir(fnCor, tipFn) { fnTip = tipFn; sel.attr('fill', fnCor); } };
+}
+const CAMADAS = {
+  swing: {cor: m => m && m.st2 ? div(m.swing, 5) : NEUTRO,
+          esc: () => [`${curto(B)} melhorou`, `${curto(A)} melhorou`, `linear-gradient(90deg,${CB},${NEUTRO},${CA})`],
+          sub: 'Quanto cada município mudou desde o 1º turno, nas urnas já apuradas (cinza = nenhuma urna ainda).'},
+  proj:  {cor: m => m && m.proj_a_pct != null ? div(m.proj_a_pct - 50, 25) : NEUTRO,
+          esc: () => [`${curto(B)} vence`, `${curto(A)} vence`, `linear-gradient(90deg,${CB},${NEUTRO},${CA})`],
+          sub: 'Quem a projeção dá como vencedor em cada município, inclusive os ainda sem urnas.'},
+  pct:   {cor: m => m ? mix(NEUTRO, escuro ? '#ececee' : '#3d3d45', Math.min((m.st2 || 0) / (m.n_sec || 1), 1)) : NEUTRO,
+          esc: () => ['0%', '100%', `linear-gradient(90deg,${NEUTRO},${escuro ? '#ececee' : '#3d3d45'})`],
+          sub: 'Quanto de cada município já foi apurado.'},
+};
+function tipMun(m) {
+  if (!m) return '';
+  const ap = m.n_sec ? 100 * m.st2 / m.n_sec : 0;
+  return `<b>${m.mun_nome}</b> · ${m.uf.toUpperCase()}<br>${p1(ap)} apurado (${n(m.st2)}/${n(m.n_sec)} urnas)<br>` +
+    (m.st2 ? `Mesmas urnas: 1º turno <span class="pa">${p1(m.r1s_a_2c)}</span> → agora <span class="pa">${p1(m.r2_a_pct)}</span><br>Swing ${swingTxt(m.swing)}<br>` : `1º turno: <span class="pa">${curto(A)} ${p1(m.r1_a_2c)}</span> (só os dois)<br>`) +
+    `Projeção: <b>${curto(A)} ${p1(m.proj_a_pct)}</b>`;
+}
+function escalaHtml(c) { const e = CAMADAS[c].esc(); return `${e[0]} <span class="g" style="background:${e[2]}"></span> ${e[1]}`; }
+
+// ================================================================ gráfico principal (x = % das urnas apuradas)
+const linha = (label, pts, cor, extra = {}) => ({label, data: pts, borderColor: cor, borderWidth: 2, pointRadius: 0, ...extra});
+const MODOS_GRAF = {1: 'Para onde vai', 3: 'Projeção ao longo da noite'};
+const SUB_GRAF = {
+  1: 'Linha sólida: o apurado pelo TSE. Tracejado: o caminho até o fim da contagem segundo a projeção; o cone é a margem de erro.',
+  3: 'Linha sólida: o apurado pelo TSE. Pontilhada: o resultado final que a projeção apontava em cada momento, com a margem de erro.',
+};
+let MODO_G = (() => { try { const v = localStorage.getItem('grafPub'); return MODOS_GRAF[v] ? v : '1'; } catch (e) { return '1'; } })();
+function viradaEstimada() {
+  const s = E.snapshots, ult = s[s.length - 1];
+  if (!ult || ult.proj_a_pct == null || ult.a_pct == null || ult.pct < 1) return null;
+  const a = ult.a_pct, pj = ult.proj_a_pct;
+  if ((a - 50) * (pj - 50) >= 0) return null;
+  const x = ult.pct + (50 - a) / (pj - a) * (100 - ult.pct);
+  const ant = s.filter(p => p.minuto <= ult.minuto - 15);
+  const ref = ant.length ? ant[ant.length - 1] : s[0];
+  const ritmo = ult.minuto > ref.minuto ? (ult.pct - ref.pct) / (ult.minuto - ref.minuto) : null;
+  const minuto = ritmo > 0 ? ult.minuto + (x - ult.pct) / ritmo : null;
+  const nv = E.confianca && E.confianca.nivel;
+  if (nv === 'instavel') return null;
+  return {pct: x, minuto, quem: pj > 50 ? A : B, cor: pj > 50 ? 'a' : 'b', faltam: x - ult.pct, firme: nv === 'tendencia' || nv === 'alta'};
+}
+function virada(s) {
+  let v = null;
+  for (let i = 1; i < s.length; i++) {
+    if (s[i].pct < 5) continue;
+    if ((s[i - 1].a_pct - 50) * (s[i].a_pct - 50) < 0) v = s[i];
+  }
+  return v;
+}
+Chart.register({
+  id: 'anot',
+  afterDatasetsDraw(ch) {
+    const o = ch.options.plugins.anot;
+    if (!o) return;
+    const {ctx, chartArea: c, scales: {x, y}} = ch;
+    const peq = c.right - c.left < 420;
+    ctx.save();
+    if (o.virada) {
+      const px = x.getPixelForValue(o.virada.x);
+      ctx.strokeStyle = css('--mute'); ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(px, c.top + 18); ctx.lineTo(px, c.bottom); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = css('--ink'); ctx.font = '600 12px system-ui'; ctx.textAlign = px > c.right - 140 ? 'right' : 'left';
+      const dx = ctx.textAlign === 'left' ? 5 : -5;
+      ctx.fillText(o.virada.txt, px + dx, c.top + 12);
+      ctx.font = '11.5px system-ui'; ctx.fillStyle = css('--mute'); ctx.fillText(o.virada.sub, px + dx, c.top + 27);
+    }
+    if (o.estimada) {
+      const px = x.getPixelForValue(o.estimada.x), py = y.getPixelForValue(50);
+      ctx.fillStyle = css('--card'); ctx.strokeStyle = o.estimada.cor; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(px, py - 8); ctx.lineTo(px + 8, py); ctx.lineTo(px, py + 8); ctx.lineTo(px - 8, py); ctx.closePath(); ctx.fill(); ctx.stroke();
+      const ty = c.bottom - 40;
+      ctx.strokeStyle = o.estimada.cor; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(px, py + 9); ctx.lineTo(px, ty - 2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.textBaseline = 'top';
+      ctx.textAlign = px > c.right - 90 ? 'right' : px < c.left + 90 ? 'left' : 'center';
+      ctx.font = '700 12.5px system-ui'; const w = Math.max(ctx.measureText(o.estimada.txt).width, 90) + 10;
+      const bx = ctx.textAlign === 'right' ? px - w + 5 : ctx.textAlign === 'left' ? px - 5 : px - w / 2;
+      ctx.fillStyle = css('--card') + 'dd'; ctx.fillRect(bx, ty, w, o.estimada.sub ? 34 : 19);
+      ctx.fillStyle = o.estimada.cor; ctx.fillText(o.estimada.txt, px, ty + 2);
+      ctx.font = '11.5px system-ui'; ctx.fillStyle = css('--mute'); ctx.fillText(o.estimada.sub, px, ty + 18);
+    }
+    const rot = (o.rotulos || []).map(r => ({...r, py: y.getPixelForValue(r.y), px: x.getPixelForValue(r.x)}));
+    rot.sort((p, q) => p.py - q.py);
+    for (let i = 1; i < rot.length; i++) if (rot[i].py - rot[i - 1].py < 32 && rot[i].px === rot[i - 1].px) rot[i].py = rot[i - 1].py + 32;
+    for (const r of rot) {
+      ctx.textAlign = r.lado === 'esq' ? 'right' : 'left'; ctx.textBaseline = 'middle';
+      const dx = r.lado === 'esq' ? -9 : 9;
+      ctx.font = `700 ${peq ? 13 : 15}px system-ui`; const w = Math.max(ctx.measureText(r.t1).width, 70);
+      ctx.fillStyle = css('--card') + 'cc';
+      ctx.fillRect(r.lado === 'esq' ? r.px + dx - w - 3 : r.px + dx - 3, r.py - 17, w + 6, 34);
+      ctx.fillStyle = r.cor; ctx.fillText(r.t1, r.px + dx, r.py - 7);
+      ctx.font = '11.5px system-ui'; ctx.fillText(r.t2, r.px + dx, r.py + 9);
+    }
+    ctx.restore();
+  },
+});
+function grafico(canvas, chartAnt) {
+  const s = E.snapshots, ult = s[s.length - 1];
+  const ca = css('--a'), cb = css('--b'), ink = css('--ink');
+  const nA = curto(A), nB = curto(B);
+  const vir = virada(s), temProj = ult && ult.proj_a_pct != null;
+  const fx = ult && ult.faixa95 != null ? ult.faixa95 : 0;
+  const inst = E.confianca && E.confianca.nivel === 'instavel';
+  const mg = inst ? ' · instável' : ` ±${f1.format(fx)}`;
+  const estreito = canvas.parentElement.clientWidth < 520;
+  const ds = [
+    linha(`${nA}: apurado`, s.map(p => ({x: p.pct, y: p.a_pct})), ca, {borderWidth: 3}),
+    linha(`${nB}: apurado`, s.map(p => ({x: p.pct, y: 100 - p.a_pct})), cb, {borderWidth: 3}),
+    linha('50%', [{x: 0, y: 50}, {x: 100, y: 50}], ink + '66', {borderWidth: 1, borderDash: [2, 3]}),
+  ];
+  const anot = {rotulos: [], virada: null, estimada: null};
+  const ve = viradaEstimada();
+  if (ve && ve.firme && MODO_G === '1') anot.estimada = {x: ve.pct, cor: ve.cor === 'a' ? ca : cb, txt: `Virada estimada: ${p1(ve.pct)}`, sub: ve.minuto ? `por volta de ${hm(ve.minuto)}` : ''};
+  if (vir) anot.virada = {x: vir.pct, txt: `Virada com ${p1(vir.pct)} das urnas`, sub: `${vir.a_pct > 50 ? nA : nB} passou à frente (${hm(vir.minuto)})`};
+  if (ult && (MODO_G === '3' || ult.pct <= 88)) {
+    const lado = MODO_G === '3' || ult.pct <= 25 ? 'dir' : 'esq';
+    const off = (v, o) => MODO_G === '3' ? v : v >= 50 ? v + o : v - o;
+    anot.rotulos.push({x: ult.pct, y: off(ult.a_pct, 0.6), cor: ca, t1: `${nA} ${p1(ult.a_pct)}`, t2: 'apurado', lado});
+    anot.rotulos.push({x: ult.pct, y: off(100 - ult.a_pct, 0.6), cor: cb, t1: `${nB} ${p1(100 - ult.a_pct)}`, t2: 'apurado', lado});
+  }
+  if (MODO_G === '3') {
+    const ok = s.filter(p => p.proj_a_pct != null);
+    for (const [f, cor, nome] of [[v => v, ca, nA], [v => 100 - v, cb, nB]]) {
+      const fo = ok.filter(p => p.faixa95 != null);
+      ds.push(linha('Faixa', fo.map(p => ({x: p.pct, y: f(p.proj_a_pct) + p.faixa95})), cor, {borderWidth: 0, backgroundColor: cor + '14', fill: '+1'}));
+      ds.push(linha('Faixa', fo.map(p => ({x: p.pct, y: f(p.proj_a_pct) - p.faixa95})), cor, {borderWidth: 0, fill: false}));
+      ds.push(linha(`${nome}: projeção naquele momento`, ok.map(p => ({x: p.pct, y: f(p.proj_a_pct)})), cor, {borderDash: [2, 3], borderWidth: 2.2}));
+    }
+    if (temProj) {
+      anot.rotulos.push({x: ult.pct, y: ult.proj_a_pct, cor: ca, t1: `${nA} ${p1(ult.proj_a_pct)}`, t2: `projeção${mg}`, lado: 'dir'});
+      anot.rotulos.push({x: ult.pct, y: 100 - ult.proj_a_pct, cor: cb, t1: `${nB} ${p1(100 - ult.proj_a_pct)}`, t2: `projeção${mg}`, lado: 'dir'});
+    }
+  }
+  if (temProj && MODO_G === '1') {
+    for (const [v0, v1, cor, nome] of [[ult.a_pct, ult.proj_a_pct, ca, nA], [100 - ult.a_pct, 100 - ult.proj_a_pct, cb, nB]]) {
+      ds.push(linha('Cone', [{x: ult.pct, y: v0}, {x: 100, y: v1 + fx}], cor, {borderWidth: 0, backgroundColor: cor + '26', fill: '+1'}));
+      ds.push(linha('Cone', [{x: ult.pct, y: v0}, {x: 100, y: v1 - fx}], cor, {borderWidth: 0, fill: false}));
+      ds.push(linha(`${nome}: projetado`, [{x: ult.pct, y: v0}, {x: 100, y: v1}], cor, {borderDash: [5, 4], borderWidth: 2, pointRadius: [0, 6], pointBackgroundColor: cor}));
+    }
+    anot.rotulos.push({x: 100, y: ult.proj_a_pct, cor: ca, t1: `${nA} ${p1(ult.proj_a_pct)}`, t2: ult.pct > 88 ? `projetado · apurado ${p1(ult.a_pct)}` : `projetado${mg}`, lado: 'esq'});
+    anot.rotulos.push({x: 100, y: 100 - ult.proj_a_pct, cor: cb, t1: `${nB} ${p1(100 - ult.proj_a_pct)}`, t2: ult.pct > 88 ? `projetado · apurado ${p1(100 - ult.a_pct)}` : `projetado${mg}`, lado: 'esq'});
+  }
+  const ys = s.filter(p => p.pct > 5).map(p => Math.abs(p.a_pct - 50));
+  const amp = Math.min(Math.max(4, ...ys.map(v => v + 1), temProj ? Math.abs(ult.proj_a_pct - 50) + fx + 2 : 0), 30);
+  const opts = {
+    animation: false, parsing: false, maintainAspectRatio: false, interaction: {mode: 'nearest', intersect: false},
+    layout: {padding: {right: MODO_G === '3' ? (estreito ? 96 : 130) : 14, top: 6}},
+    plugins: {legend: {display: false}, anot,
+      tooltip: {filter: c => !['Faixa', 'Cone', '50%'].includes(c.dataset.label),
+        callbacks: {title: c => c.length ? `${f1.format(c[0].parsed.x)}% das urnas apuradas` : '', label: c => `${c.dataset.label}: ${f2.format(c.parsed.y)}%`}}},
+    scales: {
+      x: {type: 'linear', min: 0, max: 100, ticks: {stepSize: estreito ? 25 : 10, callback: v => v + '%'}, title: {display: !estreito, text: '% das urnas apuradas'}},
+      y: {min: 50 - Math.ceil(amp), max: 50 + Math.ceil(amp), ticks: {callback: v => v + '%', stepSize: amp > 12 ? 5 : amp > 6 ? 2 : 1}, title: {display: !estreito, text: '% dos votos válidos'}},
+    },
+  };
+  Chart.defaults.color = css('--mute'); Chart.defaults.borderColor = css('--line');
+  if (!chartAnt) return new Chart(canvas, {type: 'line', data: {datasets: ds}, options: opts});
+  chartAnt.data.datasets = ds; chartAnt.options.scales = opts.scales; chartAnt.options.plugins = opts.plugins; chartAnt.options.layout = opts.layout;
+  chartAnt.update('none'); return chartAnt;
+}
+
+// ================================================================ faixa do topo e cards no estilo do site do TSE
+function anel(pct, cor, sigla, foto) {
+  const r = 40, c = 2 * Math.PI * r, f = Math.max(0, Math.min(100, pct || 0)) / 100;
+  return `<div class="anel"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+      <circle cx="48" cy="48" r="${r}" fill="none" stroke="var(--line)" stroke-width="5"/>
+      ${f > 0 ? `<circle cx="48" cy="48" r="${r}" fill="none" stroke="${cor}" stroke-width="5" stroke-linecap="round"
+        stroke-dasharray="${c * f} ${c}" transform="rotate(-90 48 48)"/>` : ''}</svg>
+    <span class="sig" style="color:${cor}">${sigla}</span>
+    ${foto ? `<img src="${foto}" alt="" onerror="this.remove()">` : ''}</div>`;
+}
+function fotoUrl(lado, num, nome) {
+  if (/^Candidat[oa] [A-Z]$/.test(nome) || (DEMO && !vivo())) return null;
+  // na versão estática, as fotos oficiais de 2026 vão junto com a página; no servidor, vêm do TSE
+  return DEMO ? `fotos/gov_${UF}_${lado}.jpeg` : `foto/${lado}?n=${encodeURIComponent(num + nome)}`;
+}
+function faixaTopo() {
+  const ve = viradaEstimada(), vir = virada(E.snapshots), cf = E.confianca;
+  let v = '';
+  if (ve && !ve.firme) {
+    v = `<span class="chip fraco">Virada possível: <b class="${ve.cor === 'a' ? 'pa' : 'pb'}">${curto(ve.quem)}</b> à frente na projeção, mas dentro da margem de erro</span>`;
+  } else if (ve) {
+    v = `<span class="chip" style="border-color:var(--${ve.cor})">◆ Virada estimada: <b class="${ve.cor === 'a' ? 'pa' : 'pb'}">${curto(ve.quem)}</b> passa à frente com <b class="num">${p1(ve.pct)}</b> das urnas${ve.minuto ? `, por volta das <b class="num">${hm(ve.minuto)}</b>` : ''}</span>`;
+  } else if (vir) {
+    v = `<span class="chip">Virada: <b class="${vir.a_pct > 50 ? 'pa' : 'pb'}">${curto(vir.a_pct > 50 ? A : B)}</b> passou à frente com ${p1(vir.pct)} das urnas, às ${hm(vir.minuto)}</span>`;
+  }
+  txt('tFaixa', `${confPill()}<span class="resumo">${frase()}</span>${v}`);
+  txt('confDet', cf ? confDica(cf) : '');
+}
+function cardsTse() {
+  const o = E.oficial_br || {a: 0, b: 0, st: 0, ts: 0}, t = E.total, cf = E.confianca;
+  const vv = o.a + o.b, ap = pctApurado(), pa = t.st2 ? t.proj_a_pct : null;
+  const fx = cf ? cf.faixa95 : null;
+  txt('tGeral', `
+    <h2 style="font-size:17px">Dados gerais</h2>
+    <div class="kv2"><span>Seções totalizadas</span><b class="num">${n(o.st)} de ${n(o.ts)}</b></div>
+    <div class="prog"><i style="width:${ap}%"></i><span class="num">${p2(ap)}</span></div>
+    <div class="kv2"><span>Votos válidos apurados</span><b class="num">${n(vv)}</b></div>
+    <div class="kv2" style="align-items:center;border-bottom:0"><span>Projeção</span>${confPill()}</div>`);
+  faixaTopo();
+  const cands = [
+    {lado: 'a', nome: A, num: E.candidatos.a.numero, cor: 'var(--a)', cls: 'pa', votos: o.a, ap: vv ? 100 * o.a / vv : null, pj: pa},
+    {lado: 'b', nome: B, num: E.candidatos.b.numero, cor: 'var(--b)', cls: 'pb', votos: o.b, ap: vv ? 100 * o.b / vv : null, pj: pa == null ? null : 100 - pa},
+  ].sort((x, y) => y.votos - x.votos);
+  const venc = cf && cf.nivel === 'alta' ? (cf.lider === 'a' ? A : B) : null;
+  txt('tCands', cands.map(c => {
+    const sig = c.nome.split(' ').map(p => p[0]).slice(0, 2).join('');
+    return `<div class="card cand-tse">
+      <div class="topo2">${anel(c.ap, c.cor, sig, fotoUrl(c.lado, c.num, c.nome))}
+        <div class="apur"><div class="rot">Apurado (TSE)</div><div class="pct ${c.cls} num">${p2(c.ap)}</div><div class="nota num">${n(c.votos)} votos</div></div></div>
+      <div class="nm">${c.num ? `<span class="nota">${c.num}</span> ` : ''}<b>${c.nome.toUpperCase()}</b></div>
+      <div class="proj">
+        <div><div class="rot">Projeção do resultado final</div>
+          <div class="pjn ${c.cls} num">${p1(c.pj)} <span class="nota">${cf && cf.nivel === 'instavel' && c.pj != null ? '<span class="conf instavel">instável</span>' : fx != null && c.pj != null ? `±${f1.format(fx)} pt` : ''}</span></div></div>
+        ${venc === c.nome ? '<span class="conf alta">Projetado vencedor</span>' : ''}</div>
+    </div>`;
+  }).join(''));
+}
+
+// ================================================================ tabela por UF (recolhida)
+let ordUf = {k: 'v1', d: -1};
+function tabela(el, cols, rows, ord, onSort) {
+  const head = '<thead><tr>' + cols.map(c => `<th data-k="${c.k}" class="${c.l ? 'l' : ''}">${c.t}${ord.k === c.k ? (ord.d > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead>';
+  const sorted = [...rows].sort((x, y) => {
+    const a = x[ord.k], b = y[ord.k];
+    if (a == null) return 1; if (b == null) return -1;
+    return (typeof a === 'string' ? a.localeCompare(b) : a - b) * ord.d;
+  });
+  el.innerHTML = head + '<tbody>' + sorted.map(r => '<tr>' + cols.map(c => `<td class="${c.l ? 'l' : ''} num">${c.f ? c.f(r[c.k], r) : (r[c.k] ?? '—')}</td>`).join('') + '</tr>').join('') + '</tbody>';
+  el.querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k = th.dataset.k; ord.d = ord.k === k ? -ord.d : (typeof rows[0]?.[k] === 'string' ? 1 : -1); ord.k = k; onSort();
+  });
+}
+function tabelaUf() {
+  if (!$('blocoUf').open) return;
+  const cols = [
+    {k: 'nome', t: 'UF', l: true},
+    {k: 'pct_secoes', t: '% apurado', f: p1},
+    {k: 'r2_a_pct', t: `${curto(A)} agora`, f: v => `<span class="pa">${p1(v)}</span>`},
+    {k: 'r1s_a_2c', t: `${curto(A)} nas mesmas urnas no 1º turno`, f: p1},
+    {k: 'swing', t: 'Swing', f: v => swingCel(v)},
+    {k: 'proj_a_pct', t: `${curto(A)} projetado`, f: v => `<b>${p1(v)}</b>`},
+    {k: 'proj_margem', t: 'Margem projetada (votos)', f: v => v == null ? '—' : v >= 0 ? `<span class="pa">${curto(A)} +${n(v)}</span>` : `<span class="pb">${curto(B)} +${n(-v)}</span>`},
+  ];
+  tabela($('tUf'), cols, E.ufs.map(r => ({...r, nome: r.uf === 'zz' ? 'Exterior' : r.uf.toUpperCase()})), ordUf, tabelaUf);
+}
+
+// ================================================================ como funciona (dados de validação de dados/metodos.json)
+async function metodos() {
+  let M;
+  try { M = await (await fetch('dados/metodos.json')).json(); } catch (e) { return; }
+  const td = v => `<td class="num">${v}</td>`;
+  $('tBt').innerHTML = '<thead><tr><th class="l">Caso</th><th>Final A</th><th>Swing</th><th>Erro com 5%</th><th>Erro com 10%</th><th>Erro com 25%</th><th>Projeção estável desde</th><th>Placar estável desde</th></tr></thead><tbody>' +
+    M.bt.map(c => `<tr class="${c.pres ? 'pres' : ''}"><td class="l">${c.caso}</td>${td(p1(c.final))}${td(pp(c.swing))}${td(pp(c.e5))}${td(pp(c.e10))}${td(pp(c.e25))}${td(p1(c.proj_desde))}${td(p1(c.parc_desde))}</tr>`).join('') + '</tbody>';
+  $('tEns').innerHTML = '<thead><tr><th class="l">Noite de ensaio</th><th>Final A</th><th>Erro com 5%</th><th>Erro máx. após 10%</th><th>Alta confiança desde</th><th>Momentos com alta errada</th></tr></thead><tbody>' +
+    M.ens.map(e => `<tr class="${e.errada || e.s === 11 || e.s === 12 ? 'destaque' : ''}"><td class="l">${e.s}. ${e.nome}</td>${td(p1(e.final))}${td(pp(e.e5))}${td(f2.format(e.emax))}${td(e.alta == null ? '—' : `${p1(e.alta)} (${e.alta_h})`)}${td(e.errada || 0)}</tr>`).join('') + '</tbody>';
+  $('tNoites').innerHTML = '<thead><tr><th class="l">Noite real</th><th>Resultado</th><th>Erro com 1%</th><th>Erro com 5%</th><th>Erro máx. após 10%</th><th>Placar mostra o vencedor desde</th><th>Alta confiança desde</th></tr></thead><tbody>' +
+    M.noites.map(x => `<tr><td class="l">Presidente ${x.ano}</td>${td(`${x.venc} ${p1(x.final)}`)}${td(f2.format(x.e1))}${td(f2.format(x.e5))}${td(f2.format(x.emax))}${td(x.parc)}${td(x.alta)}</tr>`).join('') + '</tbody>';
+}
+
+// ================================================================ página
+const P = {
+  montar() {
+    $('root').innerHTML = `
+      <div class="card demobar ${DEMO ? '' : 'hidden'}" id="demobar">
+        <div class="seg" id="segUf">${UFS_GOV.map(u => `<button data-uf="${u}" class="${u === UF ? 'on' : ''}">${u.toUpperCase()}</button>`).join('')}</div><span id="segAno" class="hidden"><button data-ano="2026"></button></span>
+        <span id="dControles" style="display:contents">
+        <button class="play" id="dPlay" aria-label="Reproduzir">▶</button>
+        <span class="hora" id="dHora">—</span>
+        <input type="range" id="dSlider" min="0" max="10" step="1" aria-label="Momento da apuração">
+        <span class="nota" style="flex-basis:100%">Demonstração com os votos reais do 2º turno, urna por urna, na ordem e no horário oficiais de totalização. Arraste para avançar ou voltar na noite.</span>
+        </span>
+        <span class="nota" id="dVivo" style="flex:1 1 220px">Governador, 2º turno em seis estados: atualiza sozinho a cada 15 segundos. <a href="./">Presidente ▸</a></span>
+      </div>
+      <section class="espera hidden" id="espera"></section>
+      <div id="painel">
+      <section class="faixa" id="tFaixa"></section>
+      <section class="tse">
+        <div class="card" id="tGeral"></div>
+        <div id="tCands"></div>
+      </section>
+      <details class="ajuda" style="margin-top:10px"><summary>Como ler a projeção e o selo de confiança</summary>
+        <p><b>Apurado</b> é o que o TSE já contou. <b>Projeção</b> é a nossa estimativa do resultado quando todas as urnas forem contadas: compara cada urna já apurada com a mesma urna no 1º turno e aplica essa mudança às que faltam. O <b>±</b> é a margem de erro: em 95% das apurações passadas, o resultado final ficou dentro dela.</p>
+        <p><b>Indefinido</b>: qualquer um ainda pode vencer. <b>Tendência</b>: um candidato está à frente, sem segurança. <b>Alta confiança</b>: a projeção está bem fora da margem de erro; só então aparece "Projetado vencedor". <b>Instável</b>: as urnas que estão chegando votam diferente das anteriores, e a projeção pode estar mudando.</p>
+        <p id="confDet"></p>
+        <p><a href="#como-funciona">Como funciona, em detalhe →</a></p>
+      </details>
+      <section class="corpo">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <h2>Apuração e projeção</h2>
+            <div class="seg" id="segGraf">${Object.entries(MODOS_GRAF).map(([k, v]) => `<button data-k="${k}">${v}</button>`).join('')}</div></div>
+          <p class="sub" id="grafSub"></p>
+          <div class="chartbox" id="chBox" style="height:440px"><canvas id="ch" role="img" aria-label="Gráfico da apuração e da projeção"></canvas></div>
+          <details class="ajuda"><summary>Como ler o gráfico</summary>
+            <p>O eixo horizontal é o quanto das urnas já foi apurado. As linhas cheias são o placar do TSE em cada momento. No começo da noite o placar engana, porque as urnas não chegam misturadas (algumas regiões são contadas antes de outras).</p>
+            <p>Em "Para onde vai", o tracejado liga o placar de agora ao resultado que a projeção espera quando 100% estiver apurado; o cone é a margem de erro. Se o placar e a projeção apontam líderes diferentes e a confiança já é "tendência" ou "alta", aparece no gráfico a marca "Virada estimada", com o % das urnas e o horário em que o placar deve virar. Depois que a virada acontece, uma linha vertical marca o momento em que ela ocorreu.</p>
+          </details>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <h2>Mapa por município</h2>
+            <div class="seg" id="segMapa"><button data-c="swing" class="on">Mudança</button><button data-c="proj">Projeção</button><button data-c="pct">Apurado</button></div></div>
+          <p class="sub" id="mapaSub"></p>
+          <div class="mapa" id="mapa" style="flex:1;min-height:380px"></div>
+          <div class="escala" id="mapaEsc"></div>
+          <p class="nota" style="margin:6px 0 0">Toque ou passe o mouse num município para ver os números.</p>
+        </div>
+      </section>
+      <section class="linha3">
+        <div class="card mesmas">
+          <h2>As mesmas urnas, 1º turno → 2º turno</h2>
+          <p class="sub">Só as urnas já apuradas, comparadas com elas mesmas. Fatia de <span class="nA"></span> entre os dois.</p>
+          <div class="linha"><span class="mute">1º turno</span><div class="trilho"><i id="t1"></i><b></b></div><span class="num" id="v1">—</span></div>
+          <div class="linha"><span><b>2º turno</b></span><div class="trilho"><i id="t2"></i><b></b></div><span class="num pa" id="v2">—</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:12px">
+            <span class="mute">Mudança (swing)</span><span class="swingbig num" id="sw">—</span></div>
+          <div class="nota" id="deltas" style="margin-top:4px"></div>
+          <div class="nota" id="r1ref" style="margin-top:10px"></div>
+          <details class="ajuda"><summary>Por que comparar as mesmas urnas</summary>
+            <p>Comparar o placar de agora com o resultado do 1º turno inteiro engana, porque as urnas já apuradas não são uma amostra do país. Aqui somamos o 1º turno exatamente das urnas que já chegaram no 2º turno. A diferença entre as duas barras, o <b>swing</b>, mostra quanto o eleitorado dessas urnas mudou de um turno para o outro, sem depender de quais regiões chegaram primeiro.</p>
+          </details>
+        </div>
+        <div>
+          <section class="regioes" id="reg"></section>
+          <details class="ajuda"><summary>Como ler as regiões</summary>
+            <p>Para cada região: quanto já foi apurado, quanto o eleitorado mudou nas urnas apuradas (swing) e a projeção de <span class="nA"></span> na região. A cor do topo indica para quem a região se moveu.</p>
+          </details>
+        </div>
+      </section>
+      <details class="bloco" id="blocoUf"><summary>Tabela por estado</summary>
+        <p class="sub">Swing = fatia de <span class="nA"></span> agora − fatia nas mesmas urnas no 1º turno (só os dois). Toque no título de uma coluna para ordenar.</p>
+        <div class="scroll"><table id="tUf"></table></div>
+      </details>
+      </div>
+
+      <section id="como-funciona">
+        <h2>Como funciona</h2>
+        <p class="sub">Método, validação e limites. Abra o que quiser ler. No governador o método é o mesmo, aplicado dentro de cada estado (o "Brasil" das explicações é o estado); a folga extra e a exigência por região da alta confiança valem só para presidente. A validação inclui 26 apurações de governador de 2018 e 2022.</p>
+        <details class="bloco"><summary>O método: as mesmas urnas</summary><div class="metodo">
+          <ol>
+            <li><b>Mesmas urnas.</b> A cada atualização do TSE, somamos o 1º turno exatamente das seções já apuradas no 2º. Só os dois finalistas contam: a fatia de A é A ÷ (A + B).</li>
+            <li><b>Swing.</b> Fatia de A agora menos a fatia de A nessas mesmas urnas no 1º turno. Já inclui para onde foram os eleitores dos outros candidatos, brancos e nulos e a mudança de comparecimento.<br><span class="formula">swing = A2/(A2+B2) − A1/(A1+B1)</span></li>
+            <li><b>Urnas que faltam.</b> Em município que já tem urnas apuradas, aplicamos o swing do próprio município às urnas restantes. Em município ainda sem nenhuma urna, a estimativa é a média de dois modelos: <i>transferência</i> (que fração dos eleitores dos outros candidatos foi para A, estimada por estado) e <i>regressão</i> (a fatia de A no 2º turno explicada pelo 1º turno, pelos "outros", pelo tamanho do município, pela abstenção e por brancos e nulos).</li>
+            <li><b>Projeção.</b> Votos já apurados + estimativa das urnas que faltam, somados no Brasil.</li>
+            <li><b>Margem de erro.</b> Quanto a projeção errou, no mesmo ponto da apuração, em 28 apurações reais de 2018 e 2022 (95% dos casos dentro dela). Ela se alarga se, na própria noite, a projeção errar ao prever municípios já apurados ou se os dois modelos discordarem.</li>
+            <li><b>Virada estimada.</b> Quando o placar mostra um líder e a projeção outro, estimamos em que % das urnas (e, no ritmo atual, a que horas) o placar deve virar. Com % e horário só com "tendência" ou "alta"; antes disso, só "virada possível".</li>
+          </ol>
+        </div></details>
+        <details class="bloco"><summary>Níveis de confiança</summary><div class="metodo">
+          <div class="niveis">
+            <div><span class="conf indefinido">Indefinido</span><p>A projeção está dentro da margem de erro histórica: qualquer um dos dois pode vencer.</p></div>
+            <div><span class="conf tendencia">Tendência</span><p>A projeção saiu da faixa de 90% do erro histórico: um candidato está à frente, mas sem segurança.</p></div>
+            <div><span class="conf alta">Alta confiança</span><p>Fora da faixa de 95%, do mesmo lado, por pelo menos 2 pontos de apuração seguidos, com pelo menos 10% apurado em cada região e com uma folga extra para presidente. Só então aparece "Projetado vencedor".</p></div>
+            <div><span class="conf instavel">Instável</span><p>A projeção mudou, nos últimos 5% apurados, mais que o dobro do que costuma mudar nesse trecho: as urnas que chegam votam diferente das anteriores. Retira a alta confiança.</p></div>
+          </div>
+        </div></details>
+        <details class="bloco"><summary>Como se saiu em 2022 e 2018</summary><div class="metodo">
+          <p>As duas últimas noites de 2º turno presidencial passadas pelo mesmo código do painel, urna por urna, na ordem e no horário oficiais de totalização. Erros em pontos da fatia do vencedor entre os dois. Dá para assistir às duas noites na <a href="./?demo=2022">demonstração</a>.</p>
+          <div class="scroll"><table id="tNoites"></table></div>
+        </div></details>
+        <details class="bloco"><summary>Validação: 28 apurações reais</summary><div class="metodo">
+          <p>Reproduzimos 28 apurações de 2º turno (presidente em 2018 e 2022 e 26 de governador), urna por urna, na ordem real de totalização, medindo o erro da projeção em 103 momentos da noite.</p>
+          <div class="tiles">
+            <div><span class="k">26 de 28</span>casos com o vencedor certo na projeção desde 1% das urnas (placar: 21 de 28)</div>
+            <div><span class="k">0,75 pt</span>erro mediano da projeção entre 1% e 30% apurado (placar: ~3 pt)</div>
+            <div><span class="k">4,5%</span>mediana do ponto em que a projeção fica estável (vencedor certo e erro ≤ 1 pt até o fim)</div>
+            <div><span class="k">0</span>chamadas de "alta confiança" erradas nos 28 casos</div>
+          </div>
+          <div class="scroll"><table id="tBt"></table></div>
+          <p class="nota">Erro = projeção − resultado final, em pontos da fatia de A entre os dois. "Estável desde": % apurado a partir do qual a projeção acerta o vencedor e erra ≤ 1 pt até o fim; para o placar, basta mostrar o vencedor na frente até o fim. Presidentes de 2002 a 2014 (sem horário por urna), testados com a ordem de 2022: vencedor certo desde 1% nos 4, erro máximo 0,45 pt.</p>
+        </div></details>
+        <details class="bloco"><summary>12 noites de ensaio para 2026 e o limite conhecido</summary><div class="metodo">
+          <p>Como 2018 e 2022 são só duas noites presidenciais, geramos 12 noites sintéticas sobre o 1º turno real de 2026: disputas apertadas e folgadas, viradas regionais, cidades grandes votando diferente, São Paulo atrasando 1h30 e urnas tardias votando diferente das primeiras. Os candidatos aparecem como A e B.</p>
+          <div class="scroll"><table id="tEns"></table></div>
+          <div class="limite" style="margin-top:12px">
+            <p><b>O limite: urnas tardias que votam diferente.</b> A projeção supõe que as urnas que faltam se movem como as já apuradas do mesmo município ou de municípios parecidos. Se as últimas urnas votarem de forma sistematicamente diferente, isso só aparece quando elas chegam. Em 2022 o swing das últimas 40% das urnas diferiu 0,1 pt do resto; em 2018, 1,3 pt.</p>
+            <p>No ensaio 12 (urnas tardias contra A, no nível de 2018) o painel chegou a dar "alta confiança" ao candidato errado. Por isso a regra de alta para presidente tem uma <b>folga extra de 0,75 pt × fração ainda não apurada</b>: com ela o erro do ensaio 12 some e nenhum dos 28 casos reais passa a errar. O custo é chegar mais tarde à alta confiança (em 2022, com ~67% apurado em vez de ~50%).</p>
+            <p>O ensaio 8 é um extremo de propósito (urnas tardias 9 pt diferentes, cerca de 7 vezes 2018): o painel erra, mas o alarme de instabilidade dispara. Nenhuma regra antecipa uma virada concentrada só nas urnas que faltam, sem relação com região ou porte do município.</p>
+          </div>
+        </div></details>
+        <details class="bloco"><summary>Limites e fontes</summary><div class="metodo">
+          <ul>
+            <li>Só duas eleições presidenciais com horário por urna; as 26 de governador compartilham o clima nacional de 2018 e 2022.</li>
+            <li>Os modelos foram escolhidos olhando os mesmos casos: o desempenho numa eleição nova pode ser pior.</li>
+            <li>Depende dos arquivos de divulgação do TSE. Se o detalhe por seção atrasar, o painel usa a base do município inteiro, menos precisa.</li>
+            <li>Não é pesquisa nem previsão antes da apuração: começa com as primeiras urnas apuradas.</li>
+          </ul>
+          <p>Fontes: divulgação oficial de resultados do TSE (resultados.tse.jus.br) e dados abertos do TSE por seção (1º turno de 2026; 2º turnos de 2018 e 2022).</p>
+        </div></details>
+      </section>
+      <footer class="nota">A projeção é uma estimativa estatística, não resultado oficial. Atualiza sozinho.</footer>`;
+    $('blocoUf').ontoggle = tabelaUf;
+    const marcaGraf = () => { document.querySelectorAll('#segGraf button').forEach(b => b.classList.toggle('on', b.dataset.k === MODO_G)); txt('grafSub', SUB_GRAF[MODO_G]); };
+    document.querySelectorAll('#segGraf button').forEach(b => b.onclick = () => {
+      MODO_G = b.dataset.k; try { localStorage.setItem('grafPub', MODO_G); } catch (e) {}
+      marcaGraf(); if (E) this.ch = grafico($('ch'), this.ch);
+    });
+    marcaGraf();
+    if (innerWidth < 600) $('chBox').style.height = '340px';
+    this.camada = 'swing';
+    document.querySelectorAll('#segMapa button').forEach(b => b.onclick = () => {
+      this.camada = b.dataset.c; document.querySelectorAll('#segMapa button').forEach(x => x.classList.toggle('on', x === b)); this.mapa();
+    });
+    metodos();
+  },
+  mapa() {
+    if (!this.m) {
+      if (!this.criando && !$('painel').classList.contains('hidden')) { this.criando = true; criaMapa($('mapa')).then(m => { this.m = m; this.mapa(); }); }
+      return;
+    }
+    if (!MUN) return;
+    this.m.colorir(d => CAMADAS[this.camada].cor(MUN[d.properties.k]), d => tipMun(MUN[d.properties.k]));
+    txt('mapaEsc', escalaHtml(this.camada));
+    txt('mapaSub', CAMADAS[this.camada].sub);
+  },
+  desenhar() {
+    const t = E.total;
+    document.querySelectorAll('.nA').forEach(e => e.textContent = curto(A));
+    cardsTse();
+    const h = t.r1s_a_2c, a = E.oficial_br && E.oficial_br.a + E.oficial_br.b ? 100 * E.oficial_br.a / (E.oficial_br.a + E.oficial_br.b) : null;
+    $('t1').style.width = (h ?? 50) + '%'; $('t2').style.width = (t.r2_a_pct ?? a ?? 50) + '%';
+    txt('v1', p1(h)); txt('v2', p1(t.r2_a_pct ?? a));
+    txt('sw', swingTxt(t.swing));
+    txt('deltas', t.st2 ? `Nessas urnas: <span class="pa">${curto(A)} ${sn(t.delta_a)}</span> · <span class="pb">${curto(B)} ${sn(t.delta_b)}</span> votos em relação ao 1º turno` : '');
+    const r = E.referencia_r1;
+    const ref = x => x ? `${x.hora}, ${p1(x.pct)} apurado: <span class="pa">${curto(A)} ${p1(x.a_2c)}</span>` : '—';
+    txt('r1ref', `1º turno inteiro: <span class="pa">${curto(A)} ${p1(t.r1_a_val)}</span> × <span class="pb">${curto(B)} ${p1(t.r1_b_val)}</span> (todos os candidatos)` +
+      (r && r.mesmo_pct ? `<br>No 1º turno, com o mesmo % apurado (${ref(r.mesmo_pct)})` : ''));
+    this.ch = grafico($('ch'), this.ch);
+    const ORD = ['Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul', 'Exterior'];
+    txt('reg', E.regioes.slice().sort((x, y) => ORD.indexOf(x.regiao) - ORD.indexOf(y.regiao)).map(r =>
+      `<div class="card" style="border-top:4px solid ${r.st2 ? div(r.swing, 6) : 'var(--line)'}"><b>${r.regiao}</b>
+        <div class="nota">${p1(r.pct_secoes)} apurado</div><div class="num">${swingTxt(r.swing)}</div>
+        <div class="nota">projeção ${curto(A)} <b>${p1(r.proj_a_pct)}</b></div></div>`).join(''));
+    this.mapa(); tabelaUf();
+  },
+};
+
+// ================================================================ espera (antes da primeira urna publicada pelo TSE)
+const INICIO = Date.parse('2026-10-25T17:00:00-03:00');
+function falta() {
+  const ms = INICIO - Date.now();
+  if (ms <= 0) return null;
+  const h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
+  return h ? `${h}h ${String(m).padStart(2, '0')}min` : `${m}min ${String(s).padStart(2, '0')}s`;
+}
+function espera(mostrar) {
+  $('espera').classList.toggle('hidden', !mostrar);
+  $('painel').classList.toggle('hidden', mostrar);
+  if (!mostrar) return;
+  const c = (E && E.candidatos) || GOV_CANDS[UF];
+  const f = falta();
+  const card = (l, x, cor) => `<div class="card cand">${anel(0, cor, x.nome.split(' ').map(p => p[0]).slice(0, 2).join(''), fotoUrl(l, x.numero, x.nome))}
+    <div><div class="nota">${x.numero}</div><div class="nm"><b>${x.nome.toUpperCase()}</b></div></div></div>`;
+  txt('espera', `
+    <div class="card msg">
+      <span class="nota">2º turno · Governador · ${UF_NOME[UF]} · domingo, 25 de outubro de 2026</span>
+      <h1>${f ? 'A apuração começa às 17h (horário de Brasília)' : 'As urnas fecharam. Aguardando as primeiras urnas totalizadas pelo TSE.'}</h1>
+      ${f ? `<div class="cont" id="cont">faltam ${f}</div>` : ''}
+      <p>Este painel só mostra números depois que o TSE publicar as primeiras urnas totalizadas no site oficial de resultados (<a href="https://resultados.tse.jus.br">resultados.tse.jus.br</a>). A partir daí, cada urna apurada é comparada com a mesma urna no 1º turno, e a projeção do resultado final aparece com a sua margem de erro e o nível de confiança.</p>
+      <p class="mute">A projeção é uma estimativa estatística, não o resultado oficial. Esta página se atualiza sozinha: não precisa recarregar.</p>
+      <div class="acoes"><a href="./">Presidente ▸</a><a href="#como-funciona">Como funciona</a></div>
+    </div>
+    <div class="cands">${card('a', c.a, 'var(--a)')}${card('b', c.b, 'var(--b)')}</div>`);
+  document.querySelectorAll('#espera [data-ir]').forEach(b => b.onclick = () => document.querySelector(`#segAno [data-ano="${b.dataset.ir}"]`).click());
+}
+setInterval(() => { const e = $('cont'), f = falta(); if (e && f) e.textContent = 'faltam ' + f; }, 1000);
+
+// ================================================================ ciclo
+P.montar();
+let nSnapMun = -1;
+async function atualiza() {
+  let novo;
+  try { novo = await fonte.estado(); }
+  catch (e) {
+    // antes das 17h (ou com o servidor ainda fora do ar) é só espera; depois de ter havido dados, avisa a falha
+    if (E && E.oficial_br && E.oficial_br.st && vivo()) { E.ok = false; txt('tFaixa', '<span class="conf instavel">Sem conexão com o servidor. Tentando de novo…</span>'); }
+    else { E = null; espera(true); cabecalho(); }
+    return;
+  }
+  E = novo;
+  if (!E.oficial_br || !E.oficial_br.st || !E.snapshots.length) { espera(true); cabecalho(); return; }
+  espera(false);
+  A = E.candidatos.a.nome; B = E.candidatos.b.nome;
+  // municípios só quando chega dado novo (não a cada atualização da página)
+  const ns = E.snapshots.length + (DEMO ? fonte.ano + fonte.i : '');
+  if (ns !== nSnapMun || !MUN) {
+    try {   // se falhar, fica o mapa anterior e tenta de novo no próximo ciclo
+      const j = await fonte.municipios();
+      MUN = Object.fromEntries(j.rows.map(r => { const o = Object.fromEntries(j.cols.map((c, i) => [c, r[i]])); return [`${o.uf}-${o.mun}`, o]; }));
+      nSnapMun = ns;
+    } catch (e) {}
+  }
+  P.desenhar();
+  cabecalho();
+}
+function cabecalho() {
+  if (DEMO) {
+    document.querySelectorAll('#segAno button').forEach(b => b.classList.toggle('on', b.dataset.ano === fonte.ano));
+    $('dControles').classList.toggle('hidden', vivo()); $('dVivo').classList.toggle('hidden', !vivo());
+  }
+  if (DEMO && !vivo()) {
+    txt('selo', `<span class="demo">DEMONSTRAÇÃO · ${fonte.ano}, votos reais</span>`);
+    const ult = E.snapshots.at(-1);
+    txt('atu', ''); txt('dHora', ult ? `${hm(ult.minuto)} · ${p1(pctApurado())}` : '—');
+    $('dSlider').max = fonte.n - 1; $('dSlider').value = fonte.i;
+    document.querySelectorAll('#segAno button').forEach(b => b.classList.toggle('on', b.dataset.ano === fonte.ano));
+  } else {
+    // o selo segue o modo do servidor: "ao vivo" só com o 2º turno de verdade
+    const sel = E && {'ao-vivo': '<span class="vivo">AO VIVO</span>', 'teste-r1': '<span class="demo">TESTE · 1º turno lido como 2º</span>'}[E.modo]
+      || E && `<span class="demo">ENSAIO${E.cenario ? ' ' + E.cenario : ''} · não é a apuração real</span>`;
+    txt('selo', E ? sel : '<span class="demo">2º TURNO 2026 · aguardando o TSE</span>');
+    txt('atu', E && E.oficial_br && E.oficial_br.dt ? `TSE: ${E.oficial_br.dt}` : '');
+  }
+}
+// contador anônimo de leitores (só para nós): um número aleatório por aba, sem cookie; só com o servidor ao vivo e a aba visível
+const LEITOR = Math.random().toString(36).slice(2) + Date.now().toString(36);
+function sinal() {
+  if (document.visibilityState !== 'visible' || API() == null) return;
+  fetch(API() + 'api/leitor?id=' + LEITOR, {cache: 'no-store'}).catch(() => {});
+}
+setTimeout(sinal, 5000); setInterval(sinal, 120000);
+document.addEventListener('visibilitychange', sinal);
+let laco = null;
+async function lacoVivo() { clearTimeout(laco); if (!vivo()) return; await atualiza(); laco = setTimeout(lacoVivo, E && E.ok !== false ? 15000 : 5000); }
+if (DEMO) {
+  let tocando = null;
+  const para = () => { clearInterval(tocando); tocando = null; $('dPlay').textContent = '▶'; };
+  const vai = async i => { fonte.i = Math.max(0, Math.min(i, fonte.n - 1)); await atualiza(); };
+  $('dSlider').oninput = e => vai(+e.target.value);
+  $('dPlay').onclick = () => {
+    if (tocando) return para();
+    if (fonte.i >= fonte.n - 1) fonte.i = 0;
+    $('dPlay').textContent = '⏸';
+    tocando = setInterval(async () => { if (fonte.i >= fonte.n - 1) return para(); await vai(fonte.i + 1); }, 1400);
+  };
+  const escolhe = async ano => {
+    para(); clearTimeout(laco); fonte.ano = ano; E = null; MUN = null; nSnapMun = -1;
+    try { history.replaceState(null, '', location.pathname + '?uf=' + UF); } catch (e) {}
+    if (ano === '2026') { await config(); return lacoVivo(); }
+    await fonte.dados(); fonte.i = fonte.D[ano].quadros.findIndex(q => q.estado.oficial_br.st / q.estado.oficial_br.ts >= .05); await atualiza();
+  };
+  document.querySelectorAll('#segAno button').forEach(b => b.onclick = () => escolhe(b.dataset.ano));
+  document.querySelectorAll('#segUf button').forEach(b => b.onclick = () => { location.search = '?uf=' + b.dataset.uf; });
+  escolhe(fonte.ano);
+  setInterval(config, 60000);   // o endereço do túnel pode mudar durante a noite
+} else {
+  lacoVivo();
+}
+</script>
+</body>
+</html>
