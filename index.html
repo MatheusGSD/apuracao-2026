@@ -454,7 +454,7 @@ function grafico(canvas, chartAnt) {
     layout: {padding: {right: MODO_G === '3' ? (estreito ? 96 : 130) : 14, top: 6}},
     plugins: {legend: {display: false}, anot,
       tooltip: {filter: c => !['Faixa', 'Cone', '50%'].includes(c.dataset.label),
-        callbacks: {title: c => `${f1.format(c[0].parsed.x)}% das urnas apuradas`, label: c => `${c.dataset.label}: ${f2.format(c.parsed.y)}%`}}},
+        callbacks: {title: c => c.length ? `${f1.format(c[0].parsed.x)}% das urnas apuradas` : '', label: c => `${c.dataset.label}: ${f2.format(c.parsed.y)}%`}}},
     scales: {
       x: {type: 'linear', min: 0, max: 100, ticks: {stepSize: estreito ? 25 : 10, callback: v => v + '%'}, title: {display: !estreito, text: '% das urnas apuradas'}},
       y: {min: 50 - Math.ceil(amp), max: 50 + Math.ceil(amp), ticks: {callback: v => v + '%', stepSize: amp > 6 ? 2 : 1}, title: {display: !estreito, text: '% dos votos válidos'}},
@@ -793,9 +793,11 @@ async function atualiza() {
   // municípios só quando chega dado novo (não a cada atualização da página)
   const ns = E.snapshots.length + (DEMO ? fonte.ano + fonte.i : '');
   if (ns !== nSnapMun || !MUN) {
-    const j = await fonte.municipios();
-    MUN = Object.fromEntries(j.rows.map(r => { const o = Object.fromEntries(j.cols.map((c, i) => [c, r[i]])); return [`${o.uf}-${o.mun}`, o]; }));
-    nSnapMun = ns;
+    try {   // se falhar, fica o mapa anterior e tenta de novo no próximo ciclo
+      const j = await fonte.municipios();
+      MUN = Object.fromEntries(j.rows.map(r => { const o = Object.fromEntries(j.cols.map((c, i) => [c, r[i]])); return [`${o.uf}-${o.mun}`, o]; }));
+      nSnapMun = ns;
+    } catch (e) {}
   }
   P.desenhar();
   cabecalho();
