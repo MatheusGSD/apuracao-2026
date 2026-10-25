@@ -80,6 +80,12 @@ tbody tr:hover { background: var(--hl); }
 .espera .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
 .espera .acoes button { min-height: 40px; }
 @media (max-width: 600px) { .espera .cands { grid-template-columns: 1fr; } }
+.pausa { border: 2px solid #f0b429; display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: center; margin-bottom: 12px; }
+.pausa .rel { grid-row: span 3; font-size: clamp(40px, 7vw, 56px); font-weight: 800; font-variant-numeric: tabular-nums; color: #b45309; line-height: 1; }
+.pausa h2 { margin: 0; font-size: 20px; } .pausa p { margin: 0; font-size: 14px; color: var(--mute); }
+@media (max-width: 600px) { .pausa { grid-template-columns: 1fr; } .pausa .rel { grid-row: auto; } }
+.topo .compartilhar { font-size: 13px; padding: 2px 10px; border-radius: 99px; }
+button.compartilhar.cheio { background: #1d4ed8; border-color: #1d4ed8; color: #fff; font-size: 15px; padding: 9px 18px; border-radius: 99px; }
 
 /* ajuda recolhida */
 details.ajuda { margin-top: 8px; font-size: 12.5px; color: var(--mute); }
@@ -169,7 +175,7 @@ footer { margin-top: 22px; }
 <header class="topo"><div class="in">
   <span class="tit">2º turno · Presidente</span>
   <span id="selo"></span>
-  <span class="dir"><span class="nota" id="atu"></span><a href="https://apuracao.dalmolin.dev/governador.html">Governadores</a><a href="#como-funciona">Como funciona</a></span>
+  <span class="dir"><span class="nota" id="atu"></span><a href="https://apuracao.dalmolin.dev/governador.html">Governadores</a><a href="#como-funciona">Como funciona</a><button type="button" class="compartilhar">Compartilhar</button></span>
 </div></header>
 <div class="aviso"><b>Projeção é estimativa estatística, não resultado oficial.</b> O resultado oficial é o do TSE (<a href="https://resultados.tse.jus.br" style="color:inherit">resultados.tse.jus.br</a>).</div>
 <main id="root"></main>
@@ -587,6 +593,7 @@ const P = {
         <span class="nota" id="dVivo" style="flex:1 1 220px">2º turno de 2026: atualiza sozinho a cada 15 segundos. Para ver como o painel funciona numa noite real, escolha 2022 ou 2018. Governador: <a href="https://apuracao.dalmolin.dev/governador.html">AC, AM, DF, ES, RN e TO ▸</a></span>
       </div>
       <section class="espera hidden" id="espera"></section>
+      <section class="card pausa hidden" id="pausa"></section>
       <div id="painel">
       <section class="faixa" id="tFaixa"></section>
       <section class="tse">
@@ -771,8 +778,8 @@ function espera(mostrar) {
   txt('espera', `
     <div class="card msg">
       <span class="nota">2º turno · Presidente · domingo, 25 de outubro de 2026</span>
-      <h1>${f ? 'A apuração começa às 17h (horário de Brasília)' : 'As urnas fecharam. Aguardando as primeiras urnas totalizadas pelo TSE.'}</h1>
-      ${f ? `<div class="cont" id="cont">faltam ${f}</div>` : ''}
+      <h1>${f ? 'A apuração começa às 17h (horário de Brasília)' : faltaReabre() ? 'Votação prorrogada até as 19h por decisão do STF. A divulgação do TSE recomeça depois disso.' : 'As urnas fecharam. Aguardando as primeiras urnas totalizadas pelo TSE.'}</h1>
+      ${f ? `<div class="cont" id="cont">faltam ${f}</div>` : faltaReabre() ? `<div class="cont">recomeça em <span id="relEspera">${faltaReabre()}</span></div>` : ''}
       <p>Este painel só mostra números depois que o TSE publicar as primeiras urnas totalizadas no site oficial de resultados (<a href="https://resultados.tse.jus.br">resultados.tse.jus.br</a>). A partir daí, cada urna apurada é comparada com a mesma urna no 1º turno, e a projeção do resultado final aparece com a sua margem de erro e o nível de confiança.</p>
       <p class="mute">A projeção é uma estimativa estatística, não o resultado oficial. Esta página se atualiza sozinha: não precisa recarregar.</p>
       ${DEMO ? `<div class="acoes"><button data-ir="2022">Ver como foi a noite de 2022 ▸</button><button data-ir="2018">Ver 2018 ▸</button><a href="#como-funciona" style="align-self:center">Como funciona</a></div>` : ''}
@@ -781,6 +788,36 @@ function espera(mostrar) {
   document.querySelectorAll('#espera [data-ir]').forEach(b => b.onclick = () => document.querySelector(`#segAno [data-ano="${b.dataset.ir}"]`).click());
 }
 setInterval(() => { const e = $('cont'), f = falta(); if (e && f) e.textContent = 'faltam ' + f; }, 1000);
+
+// 25/10, 17h07: o STF prorrogou a votação até as 19h e o TSE parou a divulgação; até lá, aviso com contagem e consulta a cada minuto
+const REABRE = Date.parse('2026-10-25T19:00:00-03:00');
+function faltaReabre() {
+  const ms = REABRE - Date.now();
+  return ms > 0 ? `${String(Math.floor(ms / 60000)).padStart(2, '0')}:${String(Math.floor(ms % 60000 / 1000)).padStart(2, '0')}` : null;
+}
+const intervalo = () => { const ms = REABRE - Date.now(); return ms > 0 ? Math.min(60000, ms + 3000) : 15000; };
+function pausa() {
+  const mostrar = !!faltaReabre() && vivo() && !!E && !$('painel').classList.contains('hidden');
+  $('pausa').classList.toggle('hidden', !mostrar);
+  if (!mostrar || $('relPausa')) return;
+  const h = ((E.oficial_br && E.oficial_br.dt) || '').slice(-8, -3).replace(':', 'h');
+  txt('pausa', `<div class="rel" id="relPausa">${faltaReabre()}</div><h2>A divulgação do TSE recomeça às 19h</h2>
+    <p>O STF prorrogou a votação até as 19h em todo o país. Os números abaixo são parciais${h ? `, do último envio do TSE (${h})` : ''}.</p>
+    <div><button type="button" class="compartilhar cheio">Compartilhar o painel</button></div>`);
+}
+setInterval(() => {
+  const g = faltaReabre();
+  ['relPausa', 'relEspera'].forEach(id => { const e = $(id); if (e && g) e.textContent = g; });
+  if (!g && !$('pausa').classList.contains('hidden')) pausa();
+}, 1000);
+// compartilhar: no celular, a folha de compartilhamento do aparelho; no computador, copia o link
+document.addEventListener('click', async ev => {
+  const b = ev.target.closest('button.compartilhar');
+  if (!b) return;
+  const url = location.href.split('#')[0];
+  if (navigator.share) { try { await navigator.share({title: document.title, text: 'Apuração do 2º turno comparando cada urna com a mesma urna no 1º turno', url}); } catch (e) {} return; }
+  try { await navigator.clipboard.writeText(url); const o = b.textContent; b.textContent = 'Link copiado ✓'; setTimeout(() => b.textContent = o, 2000); } catch (e) {}
+});
 
 // ================================================================ ciclo
 P.montar();
@@ -828,6 +865,7 @@ function cabecalho() {
     txt('selo', E ? sel : '<span class="demo">2º TURNO 2026 · aguardando o TSE</span>');
     txt('atu', E && E.oficial_br && E.oficial_br.dt ? `TSE: ${E.oficial_br.dt}` : '');
   }
+  pausa();
 }
 // contador anônimo de leitores (só para nós): um número aleatório por aba, sem cookie; só com o servidor ao vivo e a aba visível
 const LEITOR = Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -838,7 +876,7 @@ function sinal() {
 setTimeout(sinal, 5000); setInterval(sinal, 120000);
 document.addEventListener('visibilitychange', sinal);
 let laco = null;
-async function lacoVivo() { clearTimeout(laco); if (!vivo()) return; await atualiza(); laco = setTimeout(lacoVivo, E && E.ok !== false ? 15000 : 5000); }
+async function lacoVivo() { clearTimeout(laco); if (!vivo()) return; await atualiza(); laco = setTimeout(lacoVivo, E && E.ok !== false ? intervalo() : 5000); }
 if (DEMO) {
   let tocando = null;
   const para = () => { clearInterval(tocando); tocando = null; $('dPlay').textContent = '▶'; };
