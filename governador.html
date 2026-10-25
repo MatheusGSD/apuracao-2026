@@ -179,7 +179,7 @@ footer { margin-top: 22px; }
 const FONTE_DEMO = true;
 // governador (gerado por python -m apuracao.gov html a partir de web/publico.html): uma UF por vez, em ?uf=
 const UFS_GOV = ["ac", "am", "df", "es", "rn", "to"], UF_NOME = {"ac": "Acre", "am": "Amazonas", "df": "Distrito Federal", "es": "Espírito Santo", "rn": "Rio Grande do Norte", "to": "Tocantins"}, IBGE_UF = {"ac": "12", "am": "13", "df": "53", "es": "32", "rn": "24", "to": "17"}, GOV_CANDS = {"ac": {"a": {"numero": "11", "nome": "Mailza Assis", "curto": "Mailza"}, "b": {"numero": "10", "nome": "Alan Rick", "curto": "Alan Rick"}}, "am": {"a": {"numero": "55", "nome": "Omar Aziz", "curto": "Omar"}, "b": {"numero": "22", "nome": "Professora Maria do Carmo", "curto": "Maria do Carmo"}}, "df": {"a": {"numero": "11", "nome": "Celina Leão", "curto": "Celina"}, "b": {"numero": "13", "nome": "Leandro Grass", "curto": "Grass"}}, "es": {"a": {"numero": "10", "nome": "Lorenzo Pazolini", "curto": "Pazolini"}, "b": {"numero": "15", "nome": "Ricardo Ferraço", "curto": "Ferraço"}}, "rn": {"a": {"numero": "44", "nome": "Allyson", "curto": "Allyson"}, "b": {"numero": "13", "nome": "Cadu de Lula", "curto": "Cadu"}}, "to": {"a": {"numero": "44", "nome": "Professora Dorinha", "curto": "Dorinha"}, "b": {"numero": "45", "nome": "Vicentinho Júnior", "curto": "Vicentinho"}}};
-const UF = (q => UFS_GOV.includes(q) ? q : 'rn')(new URLSearchParams(location.search).get('uf'));
+const UF = (q => UFS_GOV.includes(q) ? q : 'rn')((new URLSearchParams(location.search).get('uf') || '').toLowerCase());
 document.getElementById('tit').textContent = `2º turno · Governador · ${UF_NOME[UF]}`;
 document.title = `Governador ${UF.toUpperCase()} · 2º turno 2026 · Apuração comparada`;
 // ================================================================ utilidades
@@ -307,7 +307,7 @@ async function criaMapa(el) {
   const path = d3.geoPath(proj);
   const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('role', 'img').attr('aria-label', 'Mapa do estado por município');
   const sel = svg.append('g').selectAll('path').data(g.mun.features).join('path').attr('class', 'm').attr('d', path);
-  svg.append('g').selectAll('path').data(g.uf.features).join('path').attr('class', 'u').attr('d', path);
+  svg.append('g').selectAll('path').data((UF === 'df' ? g.mun : g.uf).features).join('path').attr('class', 'u').attr('d', path);
   const tip = $('tip');
   let fnTip = () => '';
   const mostra = (ev, d) => { const h = fnTip(d); if (!h) return; tip.innerHTML = h; tip.style.display = 'block';
@@ -471,7 +471,7 @@ function grafico(canvas, chartAnt) {
         callbacks: {title: c => c.length ? `${f1.format(c[0].parsed.x)}% das urnas apuradas` : '', label: c => `${c.dataset.label}: ${f2.format(c.parsed.y)}%`}}},
     scales: {
       x: {type: 'linear', min: 0, max: 100, ticks: {stepSize: estreito ? 25 : 10, callback: v => v + '%'}, title: {display: !estreito, text: '% das urnas apuradas'}},
-      y: {min: 50 - Math.ceil(amp), max: 50 + Math.ceil(amp), ticks: {callback: v => v + '%', stepSize: amp > 12 ? 5 : amp > 6 ? 2 : 1}, title: {display: !estreito, text: '% dos votos válidos'}},
+      y: {min: 50 - (amp > 12 ? 5 * Math.ceil(amp / 5) : Math.ceil(amp)), max: 50 + (amp > 12 ? 5 * Math.ceil(amp / 5) : Math.ceil(amp)), ticks: {callback: v => v + '%', stepSize: amp > 12 ? 5 : amp > 6 ? 2 : 1}, title: {display: !estreito, text: '% dos votos válidos'}},
     },
   };
   Chart.defaults.color = css('--mute'); Chart.defaults.borderColor = css('--line');
@@ -585,7 +585,7 @@ const P = {
     $('root').innerHTML = `
       <div class="card demobar ${DEMO ? '' : 'hidden'}" id="demobar">
         <div class="seg" id="segUf">${UFS_GOV.map(u => `<button data-uf="${u}" class="${u === UF ? 'on' : ''}">${u.toUpperCase()}</button>`).join('')}</div><span id="segAno" class="hidden"><button data-ano="2026"></button></span>
-        <span id="dControles" style="display:contents">
+        <span id="dControles" class="hidden" style="display:contents">
         <button class="play" id="dPlay" aria-label="Reproduzir">▶</button>
         <span class="hora" id="dHora">—</span>
         <input type="range" id="dSlider" min="0" max="10" step="1" aria-label="Momento da apuração">
@@ -628,7 +628,7 @@ const P = {
           <p class="nota" style="margin:6px 0 0">Toque ou passe o mouse num município para ver os números.</p>
         </div>
       </section>
-      <section class="linha3">
+      <section class="linha3" style="grid-template-columns:1fr">
         <div class="card mesmas">
           <h2>As mesmas urnas, 1º turno → 2º turno</h2>
           <p class="sub">Só as urnas já apuradas, comparadas com elas mesmas. Fatia de <span class="nA"></span> entre os dois.</p>
@@ -639,17 +639,17 @@ const P = {
           <div class="nota" id="deltas" style="margin-top:4px"></div>
           <div class="nota" id="r1ref" style="margin-top:10px"></div>
           <details class="ajuda"><summary>Por que comparar as mesmas urnas</summary>
-            <p>Comparar o placar de agora com o resultado do 1º turno inteiro engana, porque as urnas já apuradas não são uma amostra do país. Aqui somamos o 1º turno exatamente das urnas que já chegaram no 2º turno. A diferença entre as duas barras, o <b>swing</b>, mostra quanto o eleitorado dessas urnas mudou de um turno para o outro, sem depender de quais regiões chegaram primeiro.</p>
+            <p>Comparar o placar de agora com o resultado do 1º turno inteiro engana, porque as urnas já apuradas não são uma amostra do estado. Aqui somamos o 1º turno exatamente das urnas que já chegaram no 2º turno. A diferença entre as duas barras, o <b>swing</b>, mostra quanto o eleitorado dessas urnas mudou de um turno para o outro, sem depender de quais regiões chegaram primeiro.</p>
           </details>
         </div>
-        <div>
+        <div class="hidden">
           <section class="regioes" id="reg"></section>
           <details class="ajuda"><summary>Como ler as regiões</summary>
             <p>Para cada região: quanto já foi apurado, quanto o eleitorado mudou nas urnas apuradas (swing) e a projeção de <span class="nA"></span> na região. A cor do topo indica para quem a região se moveu.</p>
           </details>
         </div>
       </section>
-      <details class="bloco" id="blocoUf"><summary>Tabela por estado</summary>
+      <details class="bloco hidden" id="blocoUf"><summary>Tabela por estado</summary>
         <p class="sub">Swing = fatia de <span class="nA"></span> agora − fatia nas mesmas urnas no 1º turno (só os dois). Toque no título de uma coluna para ordenar.</p>
         <div class="scroll"><table id="tUf"></table></div>
       </details>
@@ -657,13 +657,13 @@ const P = {
 
       <section id="como-funciona">
         <h2>Como funciona</h2>
-        <p class="sub">Método, validação e limites. Abra o que quiser ler. No governador o método é o mesmo, aplicado dentro de cada estado (o "Brasil" das explicações é o estado); a folga extra e a exigência por região da alta confiança valem só para presidente. A validação inclui 26 apurações de governador de 2018 e 2022.</p>
+        <p class="sub">Método, validação e limites. Abra o que quiser ler. No governador o método é o mesmo, aplicado dentro de cada estado; a folga extra e a exigência por região da alta confiança valem só para presidente. A validação inclui 26 apurações de governador de 2018 e 2022.</p>
         <details class="bloco"><summary>O método: as mesmas urnas</summary><div class="metodo">
           <ol>
             <li><b>Mesmas urnas.</b> A cada atualização do TSE, somamos o 1º turno exatamente das seções já apuradas no 2º. Só os dois finalistas contam: a fatia de A é A ÷ (A + B).</li>
             <li><b>Swing.</b> Fatia de A agora menos a fatia de A nessas mesmas urnas no 1º turno. Já inclui para onde foram os eleitores dos outros candidatos, brancos e nulos e a mudança de comparecimento.<br><span class="formula">swing = A2/(A2+B2) − A1/(A1+B1)</span></li>
             <li><b>Urnas que faltam.</b> Em município que já tem urnas apuradas, aplicamos o swing do próprio município às urnas restantes. Em município ainda sem nenhuma urna, a estimativa é a média de dois modelos: <i>transferência</i> (que fração dos eleitores dos outros candidatos foi para A, estimada por estado) e <i>regressão</i> (a fatia de A no 2º turno explicada pelo 1º turno, pelos "outros", pelo tamanho do município, pela abstenção e por brancos e nulos).</li>
-            <li><b>Projeção.</b> Votos já apurados + estimativa das urnas que faltam, somados no Brasil.</li>
+            <li><b>Projeção.</b> Votos já apurados + estimativa das urnas que faltam, somados no estado.</li>
             <li><b>Margem de erro.</b> Quanto a projeção errou, no mesmo ponto da apuração, em 28 apurações reais de 2018 e 2022 (95% dos casos dentro dela). Ela se alarga se, na própria noite, a projeção errar ao prever municípios já apurados ou se os dois modelos discordarem.</li>
             <li><b>Virada estimada.</b> Quando o placar mostra um líder e a projeção outro, estimamos em que % das urnas (e, no ritmo atual, a que horas) o placar deve virar. Com % e horário só com "tendência" ou "alta"; antes disso, só "virada possível".</li>
           </ol>
