@@ -828,6 +828,14 @@ function cabecalho() {
     txt('atu', E && E.oficial_br && E.oficial_br.dt ? `TSE: ${E.oficial_br.dt}` : '');
   }
 }
+// contador anônimo de leitores (só para nós): um número aleatório por aba, sem cookie; só com o servidor ao vivo e a aba visível
+const LEITOR = Math.random().toString(36).slice(2) + Date.now().toString(36);
+function sinal() {
+  if (document.visibilityState !== 'visible' || API() == null) return;
+  fetch(API() + 'api/leitor?id=' + LEITOR, {cache: 'no-store'}).catch(() => {});
+}
+setTimeout(sinal, 5000); setInterval(sinal, 120000);
+document.addEventListener('visibilitychange', sinal);
 let laco = null;
 async function lacoVivo() { clearTimeout(laco); if (!vivo()) return; await atualiza(); laco = setTimeout(lacoVivo, E && E.ok !== false ? 15000 : 5000); }
 if (DEMO) {
