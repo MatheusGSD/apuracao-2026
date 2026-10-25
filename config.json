@@ -1,0 +1,13 @@
+{
+ "api": null,
+ "candidatos": {
+  "a": {
+   "numero": "13",
+   "nome": "Lula"
+  },
+  "b": {
+   "numero": "22",
+   "nome": "Flávio Bolsonaro"
+  }
+ }
+}
