@@ -260,7 +260,8 @@ async function config() {
   if (!DEMO) return;
   try { CFG = await (await fetch('config.json', {cache: 'no-cache'})).json(); } catch (e) {}
 }
-const vivo = () => !DEMO || fonte.ano === '2026';
+// depois da noite, config.json "replay": true troca o 2026 pelo replay em quadros (dados/2026.json, site/replay2026.py)
+const vivo = () => !DEMO || fonte.ano === '2026' && !CFG.replay;
 const API = () => DEMO ? (CFG.api || null) : '';
 const fonte = {
   ano: '2026', D: {}, i: 0, n: 0,
@@ -283,12 +284,13 @@ const fonte = {
       f = this.base; var_ = v.mun;
     } else {
       const D = await this.dados(); f = D.mun_fixo; var_ = D.quadros[this.i].mun;
+      if (!var_) return {cols: [], rows: []};   // replay gravado: municípios só no último quadro
     }
     const ks = Object.keys(var_);
     return {cols: [...f.cols, ...ks], rows: f.rows.map((r, j) => [...r, ...ks.map(k => var_[k][j])])};
   },
   async dados() {
-    if (!this.D[this.ano]) this.D[this.ano] = await (await fetch(`dados/${this.ano}.json`)).json();
+    if (!this.D[this.ano]) this.D[this.ano] = await (await fetch(`dados/gov_${UF}_${this.ano}.json`)).json();
     this.n = this.D[this.ano].quadros.length;
     return this.D[this.ano];
   },
@@ -496,7 +498,7 @@ function anel(pct, cor, sigla, foto) {
     ${foto ? `<img src="${foto}" alt="" onerror="this.remove()">` : ''}</div>`;
 }
 function fotoUrl(lado, num, nome) {
-  if (/^Candidat[oa] [A-Z]$/.test(nome) || (DEMO && !vivo())) return null;
+  if (/^Candidat[oa] [A-Z]$/.test(nome) || (DEMO && fonte.ano !== '2026')) return null;
   // na versão estática, as fotos oficiais de 2026 vão junto com a página; no servidor, vêm do TSE
   return DEMO ? `fotos/gov_${UF}_${lado}.jpeg` : `foto/${lado}?n=${encodeURIComponent(num + nome)}`;
 }
@@ -594,7 +596,7 @@ const P = {
         <button class="play" id="dPlay" aria-label="Reproduzir">▶</button>
         <span class="hora" id="dHora">—</span>
         <input type="range" id="dSlider" min="0" max="10" step="1" aria-label="Momento da apuração">
-        <span class="nota" style="flex-basis:100%">Demonstração com os votos reais do 2º turno, urna por urna, na ordem e no horário oficiais de totalização. Arraste para avançar ou voltar na noite.</span>
+        <span class="nota" id="dNota" style="flex-basis:100%">Demonstração com os votos reais do 2º turno, urna por urna, na ordem e no horário oficiais de totalização. Arraste para avançar ou voltar na noite.</span>
         </span>
         <span class="nota" id="dVivo" style="flex:1 1 220px">Governador, 2º turno em seis estados: apuração encerrada, com 100% das seções totalizadas pelo TSE. <a href="./">Presidente ▸</a></span>
       </div>
@@ -739,7 +741,7 @@ const P = {
     if (!MUN) return;
     this.m.colorir(d => CAMADAS[this.camada].cor(MUN[d.properties.k]), d => tipMun(MUN[d.properties.k]));
     txt('mapaEsc', escalaHtml(this.camada));
-    txt('mapaSub', CAMADAS[this.camada].sub);
+    txt('mapaSub', Object.keys(MUN).length ? CAMADAS[this.camada].sub : 'Os municípios não foram gravados a cada atualização da noite: o mapa aparece no fim do replay (100%).');
   },
   desenhar() {
     const t = E.total;
@@ -749,7 +751,7 @@ const P = {
     $('t1').style.width = (h ?? 50) + '%'; $('t2').style.width = (t.r2_a_pct ?? a ?? 50) + '%';
     txt('v1', p1(h)); txt('v2', p1(t.r2_a_pct ?? a));
     txt('sw', swingTxt(t.swing));
-    txt('deltas', t.st2 ? `Nessas urnas: <span class="pa">${curto(A)} ${sn(t.delta_a)}</span> · <span class="pb">${curto(B)} ${sn(t.delta_b)}</span> votos em relação ao 1º turno` : '');
+    txt('deltas', t.st2 && t.delta_a != null ? `Nessas urnas: <span class="pa">${curto(A)} ${sn(t.delta_a)}</span> · <span class="pb">${curto(B)} ${sn(t.delta_b)}</span> votos em relação ao 1º turno` : '');
     const r = E.referencia_r1;
     const ref = x => x ? `${x.hora}, ${p1(x.pct)} apurado: <span class="pa">${curto(A)} ${p1(x.a_2c)}</span>` : '—';
     txt('r1ref', `1º turno inteiro: <span class="pa">${curto(A)} ${p1(t.r1_a_val)}</span> × <span class="pb">${curto(B)} ${p1(t.r1_b_val)}</span> (todos os candidatos)` +
@@ -759,7 +761,8 @@ const P = {
     txt('reg', E.regioes.slice().sort((x, y) => ORD.indexOf(x.regiao) - ORD.indexOf(y.regiao)).map(r =>
       `<div class="card" style="border-top:4px solid ${r.st2 ? div(r.swing, 6) : 'var(--line)'}"><b>${r.regiao}</b>
         <div class="nota">${p1(r.pct_secoes)} apurado</div><div class="num">${swingTxt(r.swing)}</div>
-        <div class="nota">projeção ${curto(A)} <b>${p1(r.proj_a_pct)}</b></div></div>`).join(''));
+        <div class="nota">projeção ${curto(A)} <b>${p1(r.proj_a_pct)}</b></div></div>`).join('') ||
+      '<div class="card nota">Regiões e estados não foram gravados a cada atualização da noite: aparecem no fim do replay (100%).</div>');
     this.mapa(); tabelaUf();
   },
 };
@@ -852,15 +855,19 @@ async function atualiza() {
   P.desenhar();
   cabecalho();
 }
+let NOTA_DEMO = '';
 function cabecalho() {
   if (DEMO) {
     document.querySelectorAll('#segAno button').forEach(b => b.classList.toggle('on', b.dataset.ano === fonte.ano));
     $('dControles').classList.toggle('hidden', vivo()); $('dVivo').classList.toggle('hidden', !vivo());
   }
   if (DEMO && !vivo()) {
-    txt('selo', `<span class="demo">DEMONSTRAÇÃO · ${fonte.ano}, votos reais</span>`);
+    const rep = fonte.ano === '2026';   // replay da noite de 2026; no último quadro, o resultado final congelado
+    txt('selo', !rep ? `<span class="demo">DEMONSTRAÇÃO · ${fonte.ano}, votos reais</span>` : E.congelado ? '<span class="final">APURAÇÃO ENCERRADA</span>' : '<span class="demo">REPLAY · noite de 25/10</span>');
+    if (!NOTA_DEMO) NOTA_DEMO = $('dNota').innerHTML;
+    txt('dNota', fonte.D[fonte.ano].nota || NOTA_DEMO);
     const ult = E.snapshots.at(-1);
-    txt('atu', ''); txt('dHora', ult ? `${hm(ult.minuto)} · ${p1(pctApurado())}` : '—');
+    txt('atu', rep && E.oficial_br.dt ? `TSE: ${E.oficial_br.dt}` : ''); txt('dHora', ult ? `${hm(ult.minuto)} · ${p1(pctApurado())}` : '—');
     $('dSlider').max = fonte.n - 1; $('dSlider').value = fonte.i;
     document.querySelectorAll('#segAno button').forEach(b => b.classList.toggle('on', b.dataset.ano === fonte.ano));
   } else {
@@ -875,7 +882,7 @@ function cabecalho() {
 // contador anônimo de leitores (só para nós): um número aleatório por aba, sem cookie; só com o servidor ao vivo e a aba visível
 const LEITOR = Math.random().toString(36).slice(2) + Date.now().toString(36);
 function sinal() {
-  if (document.visibilityState !== 'visible' || API() == null || (E && E.congelado)) return;
+  if (document.visibilityState !== 'visible' || API() == null || CFG.replay || (E && E.congelado)) return;
   fetch(API() + 'api/leitor?id=' + LEITOR, {cache: 'no-store'}).catch(() => {});
 }
 setTimeout(sinal, 5000); setInterval(sinal, 120000);
@@ -891,13 +898,16 @@ if (DEMO) {
     if (tocando) return para();
     if (fonte.i >= fonte.n - 1) fonte.i = 0;
     $('dPlay').textContent = '⏸';
-    tocando = setInterval(async () => { if (fonte.i >= fonte.n - 1) return para(); await vai(fonte.i + 1); }, 1400);
+    // ~1 min para a noite toda quando há um quadro por ciclo do TSE (replay gravado); 1,4 s por quadro nas demonstrações
+    tocando = setInterval(async () => { if (fonte.i >= fonte.n - 1) return para(); await vai(fonte.i + 1); }, Math.max(250, Math.min(1400, 60000 / fonte.n)));
   };
   const escolhe = async ano => {
     para(); clearTimeout(laco); fonte.ano = ano; E = null; MUN = null; nSnapMun = -1;
     try { history.replaceState(null, '', location.pathname + '?uf=' + UF); } catch (e) {}
-    if (ano === '2026') { await config(); return lacoVivo(); }
-    await fonte.dados(); fonte.i = fonte.D[ano].quadros.findIndex(q => q.estado.oficial_br.st / q.estado.oficial_br.ts >= .05); await atualiza();
+    if (ano === '2026') { await config(); if (vivo()) return lacoVivo(); }
+    await fonte.dados();
+    // replay de 2026 abre no resultado final; as demonstrações, com 5% apurado
+    fonte.i = ano === '2026' ? fonte.n - 1 : fonte.D[ano].quadros.findIndex(q => q.estado.oficial_br.st / q.estado.oficial_br.ts >= .05); await atualiza();
   };
   document.querySelectorAll('#segAno button').forEach(b => b.onclick = () => escolhe(b.dataset.ano));
   document.querySelectorAll('#segUf button').forEach(b => b.onclick = () => { location.search = '?uf=' + b.dataset.uf; });
