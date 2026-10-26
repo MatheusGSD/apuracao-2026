@@ -863,7 +863,7 @@ function cabecalho() {
   }
   if (DEMO && !vivo()) {
     const rep = fonte.ano === '2026';   // replay da noite de 2026; no último quadro, o resultado final congelado
-    txt('selo', !rep ? `<span class="demo">DEMONSTRAÇÃO · ${fonte.ano}, votos reais</span>` : E.congelado ? '<span class="final">APURAÇÃO ENCERRADA</span>' : '<span class="demo">REPLAY · noite de 25/10</span>');
+    txt('selo', !rep ? `<span class="demo">DEMONSTRAÇÃO · ${fonte.ano}, votos reais</span>` : E.congelado || E.oficial_br.st === E.oficial_br.ts ? '<span class="final">APURAÇÃO ENCERRADA</span>' : '<span class="demo">REPLAY · noite de 25/10</span>');
     if (!NOTA_DEMO) NOTA_DEMO = $('dNota').innerHTML;
     txt('dNota', fonte.D[fonte.ano].nota || NOTA_DEMO);
     const ult = E.snapshots.at(-1);
