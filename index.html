@@ -278,11 +278,18 @@ const fonte = {
       if (!this.base || this.base.chave !== v.chave) this.base = await (await fetch(API() + 'api/publico/mun_base')).json();
       f = this.base; var_ = v.mun;
     } else {
-      const D = await this.dados(); f = D.mun_fixo; var_ = D.quadros[this.i].mun;
-      if (!var_) return {cols: [], rows: []};   // replay gravado: municípios só no último quadro
+      // replay gravado de 2026: mapa reconstruído só em alguns quadros (site/replay2026_mapa.py); vale o último até aqui
+      const D = await this.dados(), j = this.iMun(); f = D.mun_fixo; var_ = j < 0 ? null : D.quadros[j].mun;
+      if (!var_) return {cols: [], rows: []};
     }
     const ks = Object.keys(var_);
     return {cols: [...f.cols, ...ks], rows: f.rows.map((r, j) => [...r, ...ks.map(k => var_[k][j])])};
+  },
+  iMun() {
+    const q = this.D[this.ano].quadros;
+    let j = this.i;
+    while (j >= 0 && !q[j].mun) j--;
+    return j;
   },
   async dados() {
     if (!this.D[this.ano]) this.D[this.ano] = await (await fetch(`dados/${this.ano}.json`)).json();
@@ -740,7 +747,8 @@ const P = {
     if (!MUN) return;
     this.m.colorir(d => CAMADAS[this.camada].cor(MUN[d.properties.k]), d => tipMun(MUN[d.properties.k]));
     txt('mapaEsc', escalaHtml(this.camada));
-    txt('mapaSub', Object.keys(MUN).length ? CAMADAS[this.camada].sub : 'Os municípios não foram gravados a cada atualização da noite: o mapa aparece no fim do replay (100%).');
+    const D = DEMO && !vivo() && fonte.D[fonte.ano], rec = D && D.mun_nota && fonte.i < fonte.n - 1 ? `<br><b>Mapa estimado.</b> ${D.mun_nota}` : '';
+    txt('mapaSub', Object.keys(MUN).length ? CAMADAS[this.camada].sub + rec : 'Os municípios não foram gravados a cada atualização da noite: o mapa aparece no fim do replay (100%).');
   },
   desenhar() {
     const t = E.total;
