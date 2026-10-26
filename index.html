@@ -59,6 +59,7 @@ tbody tr:hover { background: var(--hl); }
 .topo .tit { font-weight: 750; font-size: 15px; }
 .topo .vivo { background: #c23434; color: #fff; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
 .topo .demo { background: #f3c64a; color: #3a2a00; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
+.topo .final { background: #2f6b4f; color: #fff; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
 .topo .dir { margin-left: auto; display: flex; gap: 12px; align-items: center; font-size: 13px; }
 .aviso { background: var(--aviso-bg); color: var(--aviso); font-size: 12.5px; padding: 6px 20px; text-align: center; }
 .aviso b { color: inherit; }
@@ -67,8 +68,6 @@ tbody tr:hover { background: var(--hl); }
 .demobar .hora { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; min-width: 9.5em; }
 .demobar .play { min-width: 44px; min-height: 34px; }
 #segAno button[data-ano="2026"] { font-weight: 700; }
-#segAno button[data-ano="2026"]::before { content: "● "; color: #c23434; }
-#segAno button.on[data-ano="2026"]::before { color: #ff7b7b; }
 .espera { display: grid; gap: 14px; }
 .espera .msg { padding: 22px 22px; display: grid; gap: 10px; }
 .espera h1 { font-size: clamp(22px, 4vw, 30px); margin: 0; line-height: 1.15; }
@@ -583,14 +582,14 @@ const P = {
   montar() {
     $('root').innerHTML = `
       <div class="card demobar ${DEMO ? '' : 'hidden'}" id="demobar">
-        <div class="seg" id="segAno"><button data-ano="2026">2026 ao vivo</button><button data-ano="2022">2022</button><button data-ano="2018">2018</button></div>
+        <div class="seg" id="segAno"><button data-ano="2026">2026</button><button data-ano="2022">2022</button><button data-ano="2018">2018</button></div>
         <span id="dControles" style="display:contents">
         <button class="play" id="dPlay" aria-label="Reproduzir">▶</button>
         <span class="hora" id="dHora">—</span>
         <input type="range" id="dSlider" min="0" max="10" step="1" aria-label="Momento da apuração">
         <span class="nota" style="flex-basis:100%">Demonstração com os votos reais do 2º turno, urna por urna, na ordem e no horário oficiais de totalização. Arraste para avançar ou voltar na noite.</span>
         </span>
-        <span class="nota" id="dVivo" style="flex:1 1 220px">2º turno de 2026: atualiza sozinho a cada 15 segundos. Para ver como o painel funciona numa noite real, escolha 2022 ou 2018. Governador: <a href="https://apuracao.dalmolin.dev/governador.html">AC, AM, DF, ES, RN e TO ▸</a></span>
+        <span class="nota" id="dVivo" style="flex:1 1 220px">2º turno de 2026: apuração encerrada, com 100% das seções totalizadas pelo TSE. O gráfico mostra a projeção ao longo da noite. Para ver o painel inteiro andando numa noite real, escolha 2022 ou 2018. Governador: <a href="https://apuracao.dalmolin.dev/governador.html">AC, AM, DF, ES, RN e TO ▸</a></span>
       </div>
       <section class="espera hidden" id="espera"></section>
       <section class="card pausa hidden" id="pausa"></section>
@@ -859,8 +858,8 @@ function cabecalho() {
     $('dSlider').max = fonte.n - 1; $('dSlider').value = fonte.i;
     document.querySelectorAll('#segAno button').forEach(b => b.classList.toggle('on', b.dataset.ano === fonte.ano));
   } else {
-    // o selo segue o modo do servidor: "ao vivo" só com o 2º turno de verdade
-    const sel = E && {'ao-vivo': '<span class="vivo">AO VIVO</span>', 'teste-r1': '<span class="demo">TESTE · 1º turno lido como 2º</span>'}[E.modo]
+    // o selo segue o modo do servidor: "ao vivo" só com o 2º turno de verdade; "congelado" = resultado final gravado no site (site/congelar.py)
+    const sel = E && E.congelado && '<span class="final">APURAÇÃO ENCERRADA</span>' || E && {'ao-vivo': '<span class="vivo">AO VIVO</span>', 'teste-r1': '<span class="demo">TESTE · 1º turno lido como 2º</span>'}[E.modo]
       || E && `<span class="demo">ENSAIO${E.cenario ? ' ' + E.cenario : ''} · não é a apuração real</span>`;
     txt('selo', E ? sel : '<span class="demo">2º TURNO 2026 · aguardando o TSE</span>');
     txt('atu', E && E.oficial_br && E.oficial_br.dt ? `TSE: ${E.oficial_br.dt}` : '');
@@ -870,13 +869,13 @@ function cabecalho() {
 // contador anônimo de leitores (só para nós): um número aleatório por aba, sem cookie; só com o servidor ao vivo e a aba visível
 const LEITOR = Math.random().toString(36).slice(2) + Date.now().toString(36);
 function sinal() {
-  if (document.visibilityState !== 'visible' || API() == null) return;
+  if (document.visibilityState !== 'visible' || API() == null || (E && E.congelado)) return;
   fetch(API() + 'api/leitor?id=' + LEITOR, {cache: 'no-store'}).catch(() => {});
 }
 setTimeout(sinal, 5000); setInterval(sinal, 120000);
 document.addEventListener('visibilitychange', sinal);
 let laco = null;
-async function lacoVivo() { clearTimeout(laco); if (!vivo()) return; await atualiza(); laco = setTimeout(lacoVivo, E && E.ok !== false ? intervalo() : 5000); }
+async function lacoVivo() { clearTimeout(laco); if (!vivo()) return; await atualiza(); if (E && E.congelado) return; laco = setTimeout(lacoVivo, E && E.ok !== false ? intervalo() : 5000); }
 if (DEMO) {
   let tocando = null;
   const para = () => { clearInterval(tocando); tocando = null; $('dPlay').textContent = '▶'; };
