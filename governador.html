@@ -168,6 +168,8 @@ footer { margin-top: 22px; }
   .card { padding: 14px; } .cand-tse .pct { font-size: 30px; } .swingbig { font-size: 20px; }
   .topo .dir { margin-left: 0; width: 100%; justify-content: space-between; }
 }
+:root.inv { --a: #2463c9; --b: #d1342f; }
+@media (prefers-color-scheme: dark) { :root.inv { --a: #5b93ee; --b: #f0605a; } }
 </style>
 </head>
 <body>
@@ -187,6 +189,8 @@ const UFS_GOV = ["ac", "am", "df", "es", "rn", "to"], UF_NOME = {"ac": "Acre", "
 const UF = (q => UFS_GOV.includes(q) ? q : 'rn')((new URLSearchParams(location.search).get('uf') || '').toLowerCase());
 document.getElementById('tit').textContent = `2º turno · Governador · ${UF_NOME[UF]}`;
 document.title = `Governador ${UF.toUpperCase()} · 2º turno 2026 · Apuração comparada`;
+// A (mais votado no 1º turno) em vermelho e B em azul; quando B é do PT (DF e RN), troca: o PT fica em vermelho, como de costume
+if (GOV_CANDS[UF].b.numero === '13') document.documentElement.classList.add('inv');
 // ================================================================ utilidades
 const fmt = new Intl.NumberFormat('pt-BR');
 const f1 = new Intl.NumberFormat('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
@@ -248,7 +252,7 @@ function mix(c1, c2, t) {
   return `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',')})`;
 }
 const escuro = matchMedia('(prefers-color-scheme: dark)').matches;
-const NEUTRO = escuro ? '#34343a' : '#e6e3dc', CA = escuro ? '#f0605a' : '#d1342f', CB = escuro ? '#5b93ee' : '#2463c9';
+const NEUTRO = escuro ? '#34343a' : '#e6e3dc', CA = css('--a'), CB = css('--b');
 const div = (v, max) => v == null ? NEUTRO : v >= 0 ? mix(NEUTRO, CA, Math.min(v / max, 1)) : mix(NEUTRO, CB, Math.min(-v / max, 1));
 
 // ================================================================ fonte de dados: ao vivo (servidor) ou demonstração (quadros estáticos)
