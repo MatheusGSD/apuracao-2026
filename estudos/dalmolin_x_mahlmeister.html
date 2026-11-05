@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Apêndice técnico: Dalmolin × Mahlmeister · Apuração comparada</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Mesmo visual de relatorio/relatorio.html. Gerado por relatorio/estudos/dalmolin_x_mahlmeister_html.py: editar este modelo, não o .html. */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --ink: #14171c; --ink-2: #4a505b; --ink-3: #6f7682;
+  --rule: #dfe2e8; --grid: #e9ebef; --axis: #c3c7cf; --accent: #1d5fa8;
+  --s-n: #0f8a7e; --s-e: #7a4fc4; --band-n: rgba(15, 138, 126, .18); --band-e: rgba(122, 79, 196, .26);
+  --s-n2: #a6ddd6; --s-e2: #d2c2ef; --s-e3: #b094e0; --cont: #d3d7de;
+  --shade: rgba(20, 23, 28, .045); --callout: #f0f5fc; --warn: #9a6400;
+  --f-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #191c21; --ink: #eceef2; --ink-2: #b9bec8; --ink-3: #8d94a0;
+    --rule: #2c3038; --grid: #252930; --axis: #3a3f48; --accent: #6aa6ec;
+    --s-n: #2fb8aa; --s-e: #a98ae6; --band-n: rgba(47, 184, 170, .22); --band-e: rgba(169, 138, 230, .32);
+    --s-n2: #145e56; --s-e2: #4a3480; --s-e3: #6f55a8; --cont: #3a3f48;
+    --shade: rgba(255, 255, 255, .045); --callout: #172231; --warn: #f0b23c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #191c21; --ink: #eceef2; --ink-2: #b9bec8; --ink-3: #8d94a0;
+  --rule: #2c3038; --grid: #252930; --axis: #3a3f48; --accent: #6aa6ec;
+  --s-n: #2fb8aa; --s-e: #a98ae6; --band-n: rgba(47, 184, 170, .22); --band-e: rgba(169, 138, 230, .32);
+  --s-n2: #145e56; --s-e2: #4a3480; --s-e3: #6f55a8; --cont: #3a3f48;
+  --shade: rgba(255, 255, 255, .045); --callout: #172231; --warn: #f0b23c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); margin: 0;
+  font: 400 1.0625rem/1.6 var(--f-body);
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.25rem; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; font-stretch: 80%; letter-spacing: -.01em; }
+h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; font-stretch: 85%; }
+h3 { font-size: 1.1rem; font-weight: 700; font-stretch: 90%; }
+p { margin: 0; }
+code { font-family: var(--f-mono); font-size: .86em; overflow-wrap: anywhere; }
+a { color: var(--accent); }
+small { font-size: .82em; color: var(--ink-3); }
+strong { font-weight: 600; }
+.eyebrow { font: 500 .78rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.prosa { display: grid; gap: .9rem; max-width: 46rem; min-width: 0; }
+.prosa ul, .prosa ol, .cartao ul, .cartao ol { margin: 0; padding-left: 1.3rem; display: grid; gap: .4rem; }
+header.topo { padding-top: 2.5rem; display: grid; gap: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 1.5rem; }
+header.topo .lede { font-size: 1.15rem; color: var(--ink-2); max-width: 46rem; }
+nav.indice { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; font: 500 .85rem/1.4 var(--f-mono); }
+nav.indice a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+nav.indice a:hover, nav.indice a:focus-visible { color: var(--accent); border-color: var(--accent); }
+section { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; scroll-margin-top: 4rem; min-width: 0; }
+.fig > details, section > details, details { min-width: 0; max-width: 100%; }
+body { padding: 0; }
+.barra { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--rule); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.barra .in { max-width: 72rem; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.barra .tit { font-weight: 750; font-size: 15px; } .barra .tit a { color: inherit; text-decoration: none; }
+.barra .selo { background: #2f6b4f; color: #fff; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
+.barra .dir { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; }
+.wrap { padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px)); }
+header.topo .byline { font-size: .95rem; color: var(--ink-2); } header.topo .byline b { color: var(--ink); font-weight: 600; }
+footer { display: grid; gap: .4rem; }
+section > header { display: grid; gap: .35rem; }
+.num-sec { font: 500 .8rem var(--f-mono); color: var(--accent); }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.tile { background: var(--surface); padding: 1rem 1.1rem; display: grid; gap: .5rem; align-content: start; }
+.t-rot { font-size: .95rem; color: var(--ink-2); line-height: 1.3; }
+.t-par { display: grid; gap: .25rem; }
+.t-par > div { display: flex; align-items: baseline; gap: .5rem; }
+.t-v { font: 700 1.8rem/1.05 var(--f-display); font-stretch: 80%; font-variant-numeric: tabular-nums; min-width: 5.2rem; }
+.t-q { font-size: .88rem; color: var(--ink-3); }
+.t-nota { font-size: .8rem; color: var(--ink-3); }
+.sw { display: inline-block; width: 1.2rem; height: 0; border-top: 3px solid; flex: none; transform: translateY(-.3rem); }
+.sw-n { border-color: var(--s-n); } .sw-e { border-color: var(--s-e); }
+.sw-f { border-top: 2px dashed var(--ink); }
+.sw-50 { border-top: 1px solid var(--ink-3); }
+.sw-q { height: .75rem; border: 0; transform: none; width: .9rem; }
+.sw-bn { background: var(--band-n); } .sw-be { background: var(--band-e); }
+.sw-sh { background: var(--shade); outline: 1px solid var(--rule); }
+.sw-cont { background: var(--cont); } .sw-n1 { background: var(--s-n); } .sw-n2 { background: var(--s-n2); }
+.sw-e1 { background: var(--s-e); } .sw-e2 { background: var(--s-e2); } .sw-e3 { background: var(--s-e3); }
+
+.callout { background: var(--callout); border-left: 3px solid var(--accent); padding: .9rem 1.1rem; display: grid; gap: .5rem; max-width: 46rem; }
+.nota { border-left: 3px solid var(--warn); padding: .2rem 0 .2rem 1rem; max-width: 46rem; display: grid; gap: .5rem; }
+.cartao { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--s-n); padding: 1rem 1.1rem; display: grid; gap: .6rem; align-content: start; }
+.cartao.m { border-top-color: var(--s-e); }
+.cartao h3 { font-size: 1.05rem; }
+
+.fig { margin: 0; background: var(--surface); border: 1px solid var(--rule); padding: 1rem; display: grid; gap: .75rem; min-width: 0; }
+.fig figcaption { font: 600 1rem/1.3 var(--f-display); font-stretch: 90%; }
+.fig figcaption small { font-family: var(--f-body); font-weight: 400; display: block; margin-top: .2rem; }
+.dupla { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr)); gap: 1.25rem; }
+.painel { display: grid; gap: .35rem; min-width: 0; align-content: start; }
+.painel h3 { font-size: .95rem; color: var(--ink-2); display: flex; align-items: center; gap: .45rem; }
+.painel h3 .sw { transform: none; }
+.chart { position: relative; width: 100%; min-width: 0; touch-action: pan-y; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+.legenda { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; font-size: .9rem; color: var(--ink-2); }
+.legenda span { display: inline-flex; align-items: center; gap: .45rem; }
+.legenda .sw { transform: none; }
+.tick { font: 400 11px var(--f-body); fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+.rowlab { font: 500 12px var(--f-body); fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.dl { font: 600 12px var(--f-body); fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.reflab { font: 400 11px var(--f-body); fill: var(--ink-3); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--rule);
+  box-shadow: 0 4px 14px rgba(0,0,0,.12); padding: .45rem .6rem; font-size: .82rem; line-height: 1.45; white-space: nowrap;
+  display: none; z-index: 2; font-variant-numeric: tabular-nums; }
+.tip b { font-weight: 600; }
+.tip .sw { width: .9rem; transform: translateY(-.25rem); margin-right: .35rem; }
+.tip .sw-q { transform: none; width: .7rem; height: .7rem; margin-right: .35rem; vertical-align: -.05rem; }
+
+.tabela-wrap { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; font-variant-numeric: tabular-nums; }
+th, td { padding: .5rem .65rem; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; vertical-align: top; }
+thead th { font: 600 .76rem/1.25 var(--f-body); color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; white-space: normal; vertical-align: bottom; }
+tbody th { text-align: left; font-weight: 400; color: var(--ink-2); white-space: normal; min-width: 11rem; }
+table.dados tbody th { min-width: 5rem; }
+thead th:first-child { text-align: left; }
+table.metodo td, table.metodo th { text-align: left; white-space: normal; }
+table.metodo td { min-width: 14rem; width: 42%; }
+table.metodo tbody th { font-weight: 600; color: var(--ink); min-width: 9rem; }
+table.dados td small { color: var(--ink-3); }
+tbody tr:hover { background: var(--bg); }
+.gov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem 1.25rem; }
+table.gov th.t, table.gov td.t { text-align: left; }
+.sw-alta { width: .75rem; height: .75rem; border-radius: 50%; background: var(--surface); outline: 2px solid var(--ink); outline-offset: -2px; }
+summary { cursor: pointer; color: var(--accent); font-size: .92rem; }
+details[open] summary { margin-bottom: .6rem; }
+ol.fontes { margin: 0; padding-left: 1.3rem; display: grid; gap: .3rem; font-size: .95rem; }
+footer { color: var(--ink-3); font-size: .88rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<header class="barra"><div class="in">
+  <span class="tit"><a href="../">Apuração comparada</a></span><span class="selo">APÊNDICE</span>
+  <span class="dir"><a href="../artigo.html">Artigo</a><a href="../">Painel</a><a href="../governador.html">Governadores</a></span>
+</div></header>
+<div class="wrap">
+
+<header class="topo">
+  <p class="eyebrow">Apêndice técnico · <a href="../artigo.html">O swing simples basta para projetar um 2º turno?</a> · 2º turno de 25/10/2026</p>
+  <h1>Dalmolin × Mahlmeister: dois métodos de projeção da apuração</h1>
+  <p class="lede">Na noite do 2º turno, dois métodos projetaram ao vivo o resultado presidencial a partir da apuração
+  do TSE: o de Rodrigo Mahlmeister (economista e mestre em ciência política pela USP, doutorando em Duke), publicado
+  pelo Estadão, e o meu, feito para qualquer 2º turno, de presidente ou de governador, que roda no painel
+  apuracao.dalmolin.dev. Os dois partem da mesma ideia e divergem na eleição de referência, na forma de medir a mudança
+  e no tratamento da incerteza. Neste apêndice do artigo <a href="../artigo.html">"O swing simples basta para projetar
+  um 2º turno?"</a> eu os ponho lado a lado e meço os dois contra o resultado final: Lula com 51,79% dos votos
+  válidos. Nas figuras e tabelas, "Dalmolin" é o meu método.</p>
+  <p class="byline"><b>Matheus Dalmolin</b> · autor do painel · <a href="https://x.com/MatheusDalmolin">@MatheusDalmolin</a></p>
+  <nav class="indice" aria-label="Seções">
+    <a href="#resumo">Resumo</a><a href="#metodos">1 · Os dois métodos</a><a href="#erro">2 · Erro</a>
+    <a href="#base">3 · Eleição de referência</a><a href="#faixa">4 · Incerteza</a>
+    <a href="#qualquer">5 · Qualquer 2º turno</a><a href="#fortes">6 · Pontos fortes</a>
+    <a href="#dados">7 · Dados e ressalvas</a>
+  </nav>
+</header>
+
+<section id="resumo">
+  <header><span class="num-sec">Resumo</span><h2>Mesma ideia, referências diferentes</h2></header>
+  <div class="tiles"><div class='tile'><p class='t-rot'>Sempre a ±0,5 pt do final desde</p><div class='t-par'><div><span class='sw sw-n'></span><span class='t-v'>3,3%</span><span class='t-q'>Dalmolin</span></div><div><span class='sw sw-e'></span><span class='t-v'>18,0%</span><span class='t-q'>Mahlmeister</span></div></div><p class='t-nota'>% das seções apuradas</p></div><div class='tile'><p class='t-rot'>Erro médio de 2% a 5%</p><div class='t-par'><div><span class='sw sw-n'></span><span class='t-v'>0,11 pt</span><span class='t-q'>Dalmolin</span></div><div><span class='sw sw-e'></span><span class='t-v'>0,09 pt</span><span class='t-q'>Mahlmeister</span></div></div><p class='t-nota'>|projeção − resultado final|, quando os dois partiam do 1º turno</p></div><div class='tile'><p class='t-rot'>Largura média da faixa de 95%</p><div class='t-par'><div><span class='sw sw-n'></span><span class='t-v'>8,1 pt</span><span class='t-q'>Dalmolin</span></div><div><span class='sw sw-e'></span><span class='t-v'>0,35 pt</span><span class='t-q'>Mahlmeister</span></div></div><p class='t-nota'>de 5% a 50% apurado</p></div><div class='tile'><p class='t-rot'>Resultado dentro da faixa</p><div class='t-par'><div><span class='sw sw-n'></span><span class='t-v'>99,7%</span><span class='t-q'>Dalmolin</span></div><div><span class='sw sw-e'></span><span class='t-v'>66,0%</span><span class='t-q'>Mahlmeister</span></div></div><p class='t-nota'>dos pontos a partir de 2%</p></div></div>
+  <div class="prosa">
+    <p>Os dois comparam o voto já contado com uma eleição anterior e aplicam a mudança medida ao que falta. A diferença
+    está no princípio: eu aplico uma regra sobre os dois turnos de 2026, nas mesmas seções; Mahlmeister, pelo cronograma
+    descrito no site, passa entre 5% e 15% apurado a um modelo estatístico sobre o 2º turno de 2022, nos mesmos locais
+    de votação, com razão log, regressão hierárquica e um ponto de partida nas pesquisas. Este apêndice traz o passo a
+    passo dos dois (seção 1), as tabelas completas de erro (2), o teste que separa a referência do resto do modelo, com
+    o script (3), as faixas (4), os seis governadores (5) e as ressalvas (7). As conclusões estão no artigo.</p>
+  </div>
+</section>
+
+<section id="metodos">
+  <header><span class="num-sec">1</span><h2>Os dois métodos</h2></header>
+  <div class="prosa">
+    <p>A diferença está no princípio: eu aplico uma regra sobre os dois turnos de 2026; Mahlmeister ajusta um modelo
+    estatístico sobre 2022 e as pesquisas. Os dois comparam o voto já contado com o voto dos mesmos lugares numa eleição
+    anterior, medem a mudança e a aplicam ao que falta apurar. Pelo que o site dele descreve, os coeficientes da regressão
+    são estimados com os dados da própria noite; a forma dos modelos e a faixa de incerteza de cada um foram escolhidas
+    antes, em reproduções de eleições passadas.</p>
+    <p>O de Mahlmeister tem mais peças: pareia locais de votação entre eleições por geografia, mede a mudança em escala
+    log, estima uma regressão em três níveis com encolhimento, tem um ponto de partida nacional (pesquisas finais ou
+    swing nulo) e tira a faixa de reamostragem. O meu usa só os dados do TSE: em cada município, comparo o resultado já
+    contado (o TSE publica o 2º turno por município) com o voto, no 1º turno, exatamente das seções já totalizadas,
+    pareadas pelo código (UF, município, zona, seção). A tabela abaixo mostra onde isso aparece etapa por etapa.</p>
+  </div>
+  <div class="prosa" id="passo-a-passo"><h3>Os dois métodos, etapa por etapa</h3></div>
+  <div class="tabela-wrap">
+    <table class="metodo">
+      <thead><tr><th></th><th>Dalmolin</th><th>Mahlmeister</th></tr></thead>
+      <tbody>
+        <tr><th>Escopo</th><td>Qualquer 2º turno: presidente e governadores, com o mesmo motor (no governador, a UF faz
+          o papel do país). Em 2026 projetei ao vivo o presidente e 6 governadores.</td>
+          <td>Presidente, inclusive a projeção do presidente em cada estado. O site não menciona governador.</td></tr>
+        <tr><th>Dados</th><td>Arquivos de divulgação do TSE: votos por município e seções já totalizadas, a cada ciclo de
+          leitura.</td>
+          <td>Arquivos de divulgação do TSE: andamento, votos por município e seções já totalizadas, a cada minuto.</td></tr>
+        <tr><th>Eleição de referência</th><td>O 1º turno de 2026, nas mesmas seções, pareadas pelo código (UF,
+          município, zona, seção): as 499.248 seções do 2º turno têm par exato no 1º. A comparação é por município:
+          resultado do município × 1º turno das seções já totalizadas.</td>
+          <td>O 2º turno de 2022, no mesmo local de votação, pareado por geografia (mesma chave com CEP ou a menos de
+          200 m; mesmo prédio a menos de 100 m; vizinhos ponderados por eleitorado e distância; zona; município); 93% do
+          eleitorado com par exato. No começo da noite, o 1º turno de 2026.</td></tr>
+        <tr><th>Medida da mudança (swing)</th><td>Diferença na fatia de A entre A e B, em pontos.</td>
+          <td>Em escala log: razões PT/Outros e PL/Outros.</td></tr>
+        <tr><th>Municípios com urna</th><td>O que falta recebe o swing medido nas urnas já contadas do próprio
+          município.</td>
+          <td>Regressão ponderada do swing no perfil de voto e no porte do município, com coeficientes Brasil → região
+          → UF e encolhimento empírico-bayesiano. Segundo os detalhes técnicos do site, nos municípios que já apuram o
+          que falta parte do 1º turno de 2026 das mesmas seções, com o swing previsto para o seu perfil.</td></tr>
+        <tr><th>Municípios sem urna</th><td>Média de dois modelos: transferência (fração dos votos dos outros
+          candidatos que vai para A, por UF → região → país) e regressão (mínimos quadrados por UF, ou por região e país
+          quando a UF tem poucos municípios apurados, sobre o 1º turno, o peso dos outros candidatos, porte, abstenção
+          e brancos/nulos).</td>
+          <td>Até 5% do eleitorado: transferência sobre o 1º turno de 2026 (por UF, capital e interior separados). De
+          5% a 15%: mistura gradual. Depois: base de 2022 com o swing previsto pela regressão.</td></tr>
+        <tr><th>Dados de fora do TSE</th><td>Nenhum.</td>
+          <td>Ponto de partida (prior) no intercepto nacional: pesquisas finais ou swing nulo. No 1º turno, Mahlmeister
+          partiu da Quaest com 2 pontos a mais para Flávio, ajuste que chamou de "totalmente um palpite" (NeoFeed).</td></tr>
+        <tr><th>Projeção</th><td>Contado + estimado, somado no país (e por UF e município).</td>
+          <td>Contado + estimado, somado no país (e por UF).</td></tr>
+        <tr><th>Faixa de 95%</th><td>A maior entre o erro histórico das reproduções no mesmo % apurado, a autovalidação
+          ao vivo (projeta municípios já apurados escondendo-os) e a discordância entre os modelos.</td>
+          <td>Reamostragem (bootstrap) dos municípios. O site cita faixa de 90% na seção "Método" e de 95% em "Como
+          funciona"; os dados publicados usam 95%.</td></tr>
+        <tr><th>Fixado antes da noite</th><td>A escolha dos dois modelos e a faixa histórica, em 28 reproduções
+          (presidente e governadores de 2018 e 2022).</td>
+          <td>Inferido da descrição do site, que não diz o que foi fixado antes: o pareamento de locais 2026–2022, o
+          ponto de partida das pesquisas, o cronograma 5%/15% e a calibração do bootstrap nas reproduções de 2022 e do
+          1º turno de 2026.</td></tr>
+        <tr><th>Validação publicada</th><td>Reproduções na ordem real das urnas, em % das seções. 2º turno de 2022:
+          ±0,5 pt desde 0,25% e ±0,2 desde 15%. 2018: ±0,5 pt desde 45%.</td>
+          <td>Reprodução de 2022 na ordem real, em % do eleitorado: erro abaixo de 0,5 pt desde ~1% no 1º turno e ~3%
+          no 2º (site de Mahlmeister). As duas medidas não são diretamente comparáveis.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure class="fig" id="fig-pesos">
+    <figcaption>Que parte de cada método decide a projeção ao longo da apuração
+      <small>Fração dos votos do país em cada situação, na ordem real de chegada das seções em 2026. Para Mahlmeister,
+      o cronograma 5% → 15% descrito no site de Mahlmeister, que é em % do eleitorado, aplicado aqui sobre % das seções
+      (diferença pequena); depois de 15%, os municípios que já apuram seguem com a base do 1º turno de 2026, como dizem os
+      detalhes técnicos do site, e os sem urna com a base de 2022. Eixo horizontal em escala logarítmica.</small></figcaption>
+    <div class="dupla">
+      <div class="painel"><h3><i class="sw sw-n"></i>Dalmolin</h3>
+        <div class="legenda"><span><i class="sw sw-q sw-cont"></i>Contado</span><span><i class="sw sw-q sw-n1"></i>Swing do próprio município</span><span><i class="sw sw-q sw-n2"></i>Modelos (municípios sem urna)</span></div>
+        <div class="chart" data-fig="area" data-s="n"></div></div>
+      <div class="painel"><h3><i class="sw sw-e"></i>Mahlmeister</h3>
+        <div class="legenda"><span><i class="sw sw-q sw-cont"></i>Contado</span><span><i class="sw sw-q sw-e1"></i>Regressão, base 2022 (sem urna)</span><span><i class="sw sw-q sw-e3"></i>Regressão, base 1º turno 2026 (com urna)</span><span><i class="sw sw-q sw-e2"></i>Transferência sobre o 1º turno</span></div>
+        <div class="chart" data-fig="area" data-s="m"></div></div>
+    </div>
+    <details>
+      <summary>Ver em tabela</summary>
+      <div class="tabela-wrap"><table class='dados'><thead><tr><th>Seções apuradas</th><th>Contado</th><th>Dalmolin: swing do município</th><th>Dalmolin: modelos</th><th>Mahlmeister: transferência</th><th>Mahlmeister: regressão, base 1º turno 2026 (com urna)</th><th>Mahlmeister: regressão, base 2022 (sem urna)</th></tr></thead><tbody><tr><th>2%</th><td>2,0%</td><td>23,9%</td><td>74,1%</td><td>98,0%</td><td>0,0%</td><td>0,0%</td></tr><tr><th>5%</th><td>5,0%</td><td>29,9%</td><td>65,1%</td><td>95,0%</td><td>0,0%</td><td>0,0%</td></tr><tr><th>10%</th><td>10,1%</td><td>41,5%</td><td>48,4%</td><td>45,0%</td><td>20,8%</td><td>24,2%</td></tr><tr><th>20%</th><td>20,0%</td><td>42,2%</td><td>37,9%</td><td>0,0%</td><td>42,2%</td><td>37,9%</td></tr><tr><th>30%</th><td>29,8%</td><td>41,6%</td><td>28,6%</td><td>0,0%</td><td>41,6%</td><td>28,6%</td></tr><tr><th>50%</th><td>49,7%</td><td>37,7%</td><td>12,6%</td><td>0,0%</td><td>37,7%</td><td>12,6%</td></tr><tr><th>75%</th><td>74,7%</td><td>21,0%</td><td>4,3%</td><td>0,0%</td><td>21,0%</td><td>4,3%</td></tr></tbody></table></div>
+    </details>
+  </figure>
+
+  <div class="prosa">
+    <p>No meu método, os modelos valem só onde ainda não chegou nenhuma urna: pela ordem de chegada reconstruída, esses
+    municípios somavam 74% dos votos com 2% apurado, 48% com 10%, 38% com 20% e 13% com 50% (ao
+    vivo, pelo que o painel gravou, 75%, 39% e 13%: a mesma conta por outra fonte). No de Mahlmeister, pelo cronograma do
+    site, a troca de modelo é de uma vez para o país inteiro, entre 5% e 15%; a base, não: depois de 15%, os municípios
+    sem urna partem de 2022 e os que já apuram seguem com o 1º turno de 2026.</p>
+  </div>
+
+  <div class="nota">
+    <p>O repositório de Mahlmeister (<code>rodrigomahlmeister/apuracao-2026</code>) está privado; a descrição vem das
+    seções "Método", "Dois modelos" e "Detalhes técnicos" do site da projeção, que copiei em 30/10/2026. O site não detalha
+    como a mistura de 5% a 15% se combina com a frase "nos municípios que já começaram a apurar, a parte que falta parte
+    do 1º turno de 2026 das mesmas seções"; sigo aqui a leitura mais direta dela, a mesma do artigo.</p>
+  </div>
+</section>
+
+<section id="erro">
+  <header><span class="num-sec">2</span><h2>Erro ao longo da apuração</h2></header>
+  <figure class="fig" id="fig-erro">
+    <figcaption>Projeção de Lula menos o resultado final, em pontos
+      <small>Eixo horizontal em escala logarítmica, de 2% a 100% das seções. Faixa cinza: de 5% a 15%, onde, pelo
+      cronograma do site, o método de Mahlmeister troca o 1º turno de 2026 pelo 2º turno de 2022 como referência.</small></figcaption>
+    <div class="legenda">
+      <span><i class="sw sw-n"></i>Dalmolin</span><span><i class="sw sw-e"></i>Mahlmeister</span>
+      <span><i class="sw sw-q sw-sh"></i>Mahlmeister trocando de referência</span>
+    </div>
+    <div class="chart" data-fig="erro" data-s="n,m"></div>
+  </figure>
+  <div class="tabela-wrap"><table><thead><tr><th></th><th>Dalmolin</th><th>Mahlmeister</th></tr></thead><tbody><tr><th>Erro médio, 2–5%</th><td>0,11 pt</td><td>0,09 pt</td></tr><tr><th>Erro médio, 5–8% (trecho do artigo)</th><td>0,25 pt</td><td>0,03 pt</td></tr><tr><th>Erro médio, 8–30% (trecho do artigo)</th><td>0,13 pt</td><td>0,37 pt</td></tr><tr><th>Erro médio, 5–10%</th><td>0,22 pt</td><td>0,22 pt</td></tr><tr><th>Erro médio, 10–20%</th><td>0,16 pt</td><td>0,33 pt</td></tr><tr><th>Erro médio, 20–40%</th><td>0,08 pt</td><td>0,33 pt</td></tr><tr><th>Erro médio, 40–70%</th><td>0,05 pt</td><td>0,07 pt</td></tr><tr><th>Erro médio, 50–100% (trecho do artigo)</th><td>0,01 pt</td><td>0,01 pt</td></tr><tr><th>Sempre a ±0,5 pt desde</th><td>3,3%</td><td>18,0%</td></tr><tr><th>Sempre a ±0,2 pt desde</th><td>13,3%</td><td>35,5%</td></tr><tr><th>Sempre a ±0,1 pt desde</th><td>70,6%</td><td>46,0%</td></tr></tbody></table></div>
+  <p><small>Erro = |projeção de Lula − resultado final|, média das leituras no trecho (início incluído, fim excluído);
+  os três trechos marcados são os que o artigo cita. "Sempre a ±X pt desde": primeiro % apurado a partir do qual a
+  projeção não saiu mais de ±X pt do resultado final. Entre 10% e 40%, o erro de Mahlmeister foi contra Lula em todos
+  os pontos, de 0,19 a 0,53 pt (0,33 em média); de 40% a 70%, os dois ficam em
+  0,07 × 0,05 pt em média.</small></p>
+  <figure class="fig" id="fig-marcos">
+    <figcaption>As duas projeções no mesmo momento
+      <small>Primeiro ponto de cada série ao chegar ao % indicado: projeção de Lula (ponto) e faixa de 95% (traço).
+      Setas: a faixa continua além do quadro. Eixo de 49,5% a 54,5%.</small></figcaption>
+    <div class="legenda">
+      <span><i class="sw sw-n"></i>Dalmolin</span><span><i class="sw sw-e"></i>Mahlmeister</span>
+      <span><i class="sw sw-f"></i>Resultado final (51,79%)</span><span><i class="sw sw-50"></i>50%</span>
+    </div>
+    <div class="chart" data-fig="marcos" data-s="n,m"></div>
+  </figure>
+  <div class="tabela-wrap"><table><thead><tr><th>Projeção − final (pt) ao chegar a</th><th>2%</th><th>3%</th><th>5%</th><th>10%</th><th>15%</th><th>20%</th><th>30%</th><th>50%</th></tr></thead><tbody><tr><th>Dalmolin</th><td>+0,00</td><td>+0,24</td><td>+0,16</td><td>−0,08</td><td>−0,18</td><td>+0,11</td><td>−0,11</td><td>+0,06</td></tr><tr><th>Mahlmeister</th><td>−0,04</td><td>+0,02</td><td>−0,03</td><td>−0,29</td><td>−0,33</td><td>−0,46</td><td>−0,24</td><td>−0,09</td></tr></tbody></table></div>
+</section>
+
+<section id="base">
+  <header><span class="num-sec">3</span><h2>A eleição de referência: 1º turno de 2026 × 2º turno de 2022</h2></header>
+  <div class="callout">
+    <p><strong>No método de Mahlmeister, a referência e o modelo mudam juntos entre 5% e 15%. Por isso a piora depois
+    de 8% não pode ser atribuída só à eleição de 2022, e um teste à parte indica que ela não vem daí.</strong> Enquanto
+    o método usava a transferência sobre o 1º turno, o erro foi de −0,04 pt a 2%, +0,02 a 3% e −0,03 a 5%.
+    Na mistura e depois dela: −0,29 a 10% (metade do caminho), −0,46 a 20% e −0,24 a 30%. O site de
+    Mahlmeister registra o mesmo: "entre 8% e 30% ficou de 0,3 a 0,6 ponto abaixo do resultado".</p>
+  </div>
+  <div class="dupla">
+    <div class="cartao"><h3>1º turno de 2026</h3>
+      <ul>
+        <li>Três semanas antes da votação.</li>
+        <li>Mesmas seções, pareadas pelo código (100% com par exato), e eleitorado praticamente igual: o mesmo total
+        de aptos no país, com o mesmo número de aptos em 89% das seções.</li>
+        <li>Mesmos dois candidatos.</li>
+        <li>Custo: os votos dos outros candidatos precisam ser redistribuídos. No meu método isso só pesa nos
+        municípios ainda sem urna; nos demais, o swing medido já absorve para onde foram esses votos.</li>
+      </ul></div>
+    <div class="cartao m"><h3>2º turno de 2022</h3>
+      <ul>
+        <li>Quatro anos antes.</li>
+        <li>Seções que mudaram de lugar: locais pareados por geografia, 7% do eleitorado sem par exato (pareado
+        por vizinhos, zona ou município).</li>
+        <li>Outro adversário (Jair, não Flávio).</li>
+        <li>Vantagem: disputa de dois candidatos, sem votos de terceiros para redistribuir.</li>
+      </ul></div>
+  </div>
+  <div class="prosa">
+    <h3>Teste: o mesmo swing simples com as duas referências</h3>
+    <p>Para separar a referência do resto do modelo, apliquei a mesma regra de swing simples duas vezes, na ordem
+    real de chegada das seções de 2026. Município com seção apurada recebe o swing medido nas próprias seções; sem
+    seção, o swing da UF. O pareamento com 2022 é exato por UF, município, zona e seção (92% das seções de 2026).
+    Não é o modelo de Mahlmeister: deixei de fora o pareamento por local, a razão log, a regressão hierárquica, o uso do
+    1º turno nos municípios já em apuração e as pesquisas.</p>
+  </div>
+  <div class="tabela-wrap"><table>
+    <caption>Erro médio da projeção de Lula, em pontos, do mesmo swing simples com cada referência</caption>
+    <thead><tr><th>Seções apuradas</th><th>Pesos iguais: 1º turno de 2026</th><th>Pesos iguais: 2º turno de 2022</th>
+      <th>Pesos como no motor: 1º turno de 2026</th><th>Pesos como no motor: 2º turno de 2022</th></tr></thead>
+    <tbody>
+      <tr><th>2% a 5%</th><td>0,10</td><td>0,16 (abaixo)</td><td>0,18 (acima)</td><td>0,34 (abaixo)</td></tr>
+      <tr><th>8% a 30%</th><td>0,01</td><td>0,24 (acima)</td><td>0,09 (acima)</td><td>0,08 (acima)</td></tr>
+      <tr><th>50% a 90%</th><td>0,02</td><td>0,08 (acima)</td><td>0,01</td><td>0,02</td></tr>
+    </tbody>
+  </table></div>
+  <div class="prosa">
+    <p><small>"Pesos iguais": cada município pesa os votos finais de 2026 nas duas referências, para que só a referência
+    mude. "Como no motor": o voto contado entra como contado e o que falta pesa pela referência. "Acima"/"abaixo" do
+    resultado quando o viés médio passa de 0,05. O script e a saída estão em <a href="swing_referencia.py">swing_referencia.py</a>
+    e <a href="swing_referencia.txt">swing_referencia.txt</a> (Python com pandas; lê os arquivos por seção do TSE dos dois
+    turnos de 2026 e do 2º turno de 2022).</small></p>
+    <p>Leio duas coisas. A primeira: até 5%, o 1º turno é a referência melhor nos dois pesos; depois, depende do peso. Como
+    no motor, as duas empatam. Com pesos iguais, o 1º turno continua errando menos, e a maior parte do erro com 2022 vem
+    dos municípios ainda sem urna, que recebem a mudança medida no resto do estado. A segunda: nos dois pesos, com 2022 o
+    swing simples erra para cima entre 8% e 30%, e o modelo de Mahlmeister errou para baixo. O teste mostra só o que não
+    explica o desvio; sem o código, não consigo dizer o motivo.</p>
+    <p>É uma eleição só. Na reprodução de 2022 que Mahlmeister publicou, o erro ficou abaixo de 0,5 pt desde ~3% do 2º
+    turno; o site não diz qual eleição serviu de referência nessa reprodução (a NeoFeed cita dados de 2018 e 2022 usados
+    para reproduzir a ordem de chegada dos boletins).</p>
+  </div>
+</section>
+
+<section id="faixa">
+  <header><span class="num-sec">4</span><h2>Incerteza: estreita demais × larga demais</h2></header>
+  <figure class="fig" id="fig-faixa">
+    <figcaption>Projeção de Lula e faixa de 95%
+      <small>Mesma escala nos dois painéis. Eixo horizontal em escala logarítmica.</small></figcaption>
+    <div class="legenda">
+      <span><i class="sw sw-q sw-bn"></i><i class="sw sw-q sw-be"></i>Faixa de 95%</span>
+      <span><i class="sw sw-f"></i>Resultado final (51,79%)</span><span><i class="sw sw-50"></i>50%</span>
+    </div>
+    <div class="dupla">
+      <div class="painel"><h3><i class="sw sw-n"></i>Dalmolin</h3><div class="chart" data-fig="faixa" data-s="n"></div></div>
+      <div class="painel"><h3><i class="sw sw-e"></i>Mahlmeister</h3><div class="chart" data-fig="faixa" data-s="m"></div></div>
+    </div>
+  </figure>
+  <div class="tabela-wrap"><table><thead><tr><th></th><th>Dalmolin</th><th>Mahlmeister</th></tr></thead><tbody><tr><th>Largura média, 5–50%</th><td>8,1 pt</td><td>0,35 pt</td></tr><tr><th>Pontos com o final dentro da faixa</th><td>99,7%</td><td>66,0%</td></tr><tr><th>Faixa sem o 50%, sem voltar atrás, desde</th><td>41,6%</td><td>1,9% <small>(1ª projeção exibida, 19h21; 1º ponto a partir de 2%: 2,4%)</small></td></tr></tbody></table></div>
+  <div class="dupla">
+    <div class="cartao"><h3>Dalmolin: larga (8,1 pt)</h3>
+      <p>Como calibrei o método para qualquer 2º turno (seção 5), a faixa histórica vem de 28 reproduções, 26
+      delas de governador, cujos erros no começo da apuração (até ~20%) são bem maiores que os de presidente.
+      Conteve o resultado em 99,7% dos pontos, mas só deixou o 50% de fora com 41,6% apurado.</p></div>
+    <div class="cartao m"><h3>Mahlmeister: estreita (0,35 pt)</h3>
+      <p>O site descreve reamostragem de municípios calibrada em reproduções. Nesta noite ela não cobriu um desvio
+      que atingiu o país todo (cerca de −0,4 pt entre 8% e 30%): reamostrar municípios capta a variação entre eles, e um
+      desvio comum só entra se a calibração o cobrir. O resultado ficou dentro da faixa em 66% dos pontos. A
+      faixa ficou toda acima de 50% desde a primeira projeção exibida (19h21): indicou o vencedor cedo porque o desvio
+      não chegou a cruzar os 50%.</p></div>
+  </div>
+  <div class="prosa">
+    <p>Para presidente, acho que a faixa bem calibrada fica entre as duas: mais larga que a reamostragem pura, porque
+    precisa cobrir um desvio comum da referência, e mais estreita que uma faixa calibrada em governadores.</p>
+  </div>
+</section>
+
+<section id="qualquer">
+  <header><span class="num-sec">5</span><h2>Feito para qualquer 2º turno: presidente e governadores</h2></header>
+  <div class="prosa">
+    <p>Desenhei e calibrei o método para qualquer 2º turno, não só o presidencial. O mesmo motor, sem alteração,
+    projeta o presidente e o governador de cada UF; no governador, a UF faz o papel do país. O método de Mahlmeister,
+    pelo que o site publica, cobre o presidente (inclusive a projeção do presidente em cada estado), sem menção a
+    governador.</p>
+  </div>
+  <div class="dupla">
+    <div class="cartao"><h3>O que isso mudou no meu método</h3>
+      <ul>
+        <li><strong>Calibração com maioria de governadores.</strong> Escolhi os modelos (média de transferência e
+        regressão) e a faixa de 95% em 28 reproduções de 2018 e 2022, 26 delas de governador. Por isso a faixa fica
+        larga no presidente (seção 4).</li>
+        <li><strong>Regras próprias do presidente.</strong> A exigência de 10% apurado em cada região e a folga extra
+        para urnas tardias só valem no presidente; no governador há uma região só.</li>
+        <li><strong>UFs pequenas.</strong> A regressão só roda com 30 municípios apurados; abaixo disso entra o swing.
+        No AC (22 municípios) ela nunca roda; no DF (1 município) a projeção usa o swing do próprio DF desde a 1ª
+        urna.</li>
+        <li><strong>O mesmo insumo em qualquer cargo e UF.</strong> 1º turno por seção e 2º turno apurado, sem
+        pesquisas.</li>
+      </ul></div>
+    <div class="cartao"><h3>O que eu tinha testado antes</h3>
+      <ul>
+        <li><strong>28 reproduções de 2018 e 2022</strong> (2 presidentes e 26 governadores), na ordem real das urnas:
+        vencedor certo desde 1% apurado em 26 das 28; erro médio de 1% a 30% com mediana de 0,75 pt.</li>
+        <li><strong>Presidentes de 2002 a 2014</strong>, com a ordem de chegada de 2022 emprestada: vencedor certo
+        desde 1% nos 4; erro máximo de 0,45 pt a partir de 1% apurado.</li>
+        <li><strong>Prefeitos de 2020 e 2024</strong>, com a zona eleitoral como unidade: projeção melhor que o placar
+        parcial em 88 de 109 cidades com 5% apurado.</li>
+      </ul></div>
+  </div>
+  <div class="prosa">
+    <h3>Governadores ao vivo em 25/10/2026</h3>
+    <p>Na noite do 2º turno, o meu painel projetou ao vivo os governadores de AC, AM, DF, ES, RN e TO, numa página
+    pública própria, com as faixas que eu tinha calibrado antes da eleição: para os governadores de 2026, tudo foi fora
+    da amostra.
+    A 1ª "alta" confiança veio entre 5,0% (AC) e 56,5% (RN) das seções, e nenhum quadro marcou "alta" para
+    quem perdeu.</p>
+  </div>
+  <figure class="fig" id="fig-gov">
+    <figcaption>Projeção do vencedor menos o resultado final, em pontos
+      <small>Um painel por UF, mesma escala. Eixo horizontal em escala logarítmica, de 2% a 100% das seções da UF.
+      Círculo: primeira vez em "alta" confiança.</small></figcaption>
+    <div class="legenda">
+      <span><i class="sw sw-n"></i>Erro da projeção do vencedor (Dalmolin)</span>
+      <span><i class="sw sw-q sw-alta"></i>1ª alta confiança</span>
+    </div>
+    <div class="gov-grid" id="gov-grid"></div>
+  </figure>
+  <div class="tabela-wrap"><table class='gov'><thead><tr><th>UF</th><th class='t'>Vencedor × 2º</th><th>Resultado (%)</th><th>1ª alta</th><th>Alta até o fim desde</th><th>Sempre a ±1 pt desde</th><th>Sempre a ±0,5 pt desde</th><th>Altas para quem perdeu</th></tr></thead><tbody><tr><th>AC</th><td class='t'>Mailza × Alan Rick</td><td>66,2 × 33,8</td><td>5,0% <small>19h09</small></td><td>98,1% <small>20h44</small></td><td>10,4%</td><td>66,1%</td><td>0</td></tr><tr><th>AM</th><td class='t'>Omar × Maria do Carmo</td><td>61,4 × 38,6</td><td>8,7% <small>19h10</small></td><td>85,7% <small>20h30</small></td><td>78,2%</td><td>78,2%</td><td>0</td></tr><tr><th>DF</th><td class='t'>Celina × Grass</td><td>57,2 × 42,8</td><td>11,5% <small>19h11</small></td><td>11,5% <small>19h11</small></td><td>1,6%</td><td>23,1%</td><td>0</td></tr><tr><th>ES</th><td class='t'>Pazolini × Ferraço</td><td>52,2 × 47,8</td><td>33,2% <small>19h56</small></td><td>99,8% <small>21h09</small></td><td>3,4%</td><td>19,1%</td><td>0</td></tr><tr><th>RN</th><td class='t'>Cadu × Allyson</td><td>50,8 × 49,2</td><td>56,5% <small>20h17</small></td><td>73,0% <small>20h30</small></td><td>36,3%</td><td>41,8%</td><td>0</td></tr><tr><th>TO</th><td class='t'>Vicentinho × Dorinha</td><td>64,5 × 35,5</td><td>7,8% <small>19h17</small></td><td>87,2% <small>20h08</small></td><td>8,6%</td><td>62,4%</td><td>0</td></tr></tbody></table></div>
+  <p><small>Horários de Brasília, do relógio do painel. "Alta até o fim desde": a partir daí a confiança não saiu mais
+  de "alta"; antes, pode ter passado por "tendência" ou "instável". Alta contínua desde a 1ª vez: DF.
+  Quadros: os do replay de cada governador no painel (um por leitura gravada na noite).</small></p>
+</section>
+
+<section id="fortes">
+  <header><span class="num-sec">6</span><h2>Pontos fortes e o que cada método pode levar do outro</h2></header>
+  <div class="dupla">
+    <div class="cartao">
+      <h3>Dalmolin: pontos fortes</h3>
+      <ul>
+        <li><strong>Referência mais próxima.</strong> O 1º turno do mesmo ano, nas mesmas seções, com par
+        exato pelo código para todas.</li>
+        <li><strong>Qualquer 2º turno.</strong> O mesmo motor projetou ao vivo o presidente e 6 governadores, sem
+        nenhuma "alta" para quem perdeu (seção 5).</li>
+        <li><strong>Só dados do TSE.</strong> Nenhuma hipótese externa, como pesquisas, para calibrar.</li>
+        <li><strong>Meio da noite.</strong> ±0,5 pt desde 3,3% e ±0,2 pt desde 13,3% (Mahlmeister: 18,0% e
+        35,5%).</li>
+        <li><strong>Faixa larga e segura.</strong> Conteve o resultado em 99,7% dos pontos.</li>
+      </ul>
+    </div>
+    <div class="cartao m">
+      <h3>Mahlmeister: pontos fortes</h3>
+      <ul>
+        <li><strong>Regressão com encolhimento.</strong> O que falta recebe o swing previsto pelo perfil de voto e pelo
+        porte, com coeficientes da UF puxados para os da região e do Brasil quando há pouco dado; assim, poucas urnas
+        atípicas pesam menos na estimativa da cidade.</li>
+        <li><strong>Escala log.</strong> A mudança proporcional respeita os limites em municípios com 80–90% para um
+        lado.</li>
+        <li><strong>Começo e fim da noite.</strong> Erro médio de 0,09 pt de 2% a 5% e ±0,1 pt desde 46,0%.</li>
+        <li><strong>Decisão cedo.</strong> A faixa deixou o 50% de fora desde 2,4%.</li>
+      </ul>
+    </div>
+    <div class="cartao">
+      <h3>O que eu posso levar de Mahlmeister</h3>
+      <ol>
+        <li><strong>Encolher o swing do município.</strong> Um estudo que fiz depois da eleição (transição entre os
+        modelos e o swing) aponta que, no presidente, a 1ª urna de um município deveria pesar entre 0,02 e 0,14 na
+        mistura com os modelos (0,2 a 0,3 nos governadores), e não 1.</li>
+        <li><strong>Swing em escala log.</strong> Barato de testar nas minhas 28 reproduções.</li>
+        <li><strong>Faixa de presidente.</strong> Calibrar a faixa nos casos de presidente, ou reamostragem com um termo
+        para desvio comum.</li>
+      </ol>
+    </div>
+    <div class="cartao m">
+      <h3>O que Mahlmeister poderia levar do meu</h3>
+      <ol>
+        <li><strong>Manter o 1º turno como referência por mais tempo.</strong> Se, como descreve o cronograma, o 1º
+        turno sai de cena aos 15% para os municípios sem urna, os números desta noite sugerem ir além disso num 2º
+        turno.</li>
+        <li><strong>Trocar de modelo por município.</strong> Usar a mudança medida no próprio município assim que ele
+        tem urnas, em vez de uma troca pelo % apurado do país.</li>
+        <li><strong>Faixa que cubra desvio comum.</strong> Somar ao bootstrap o erro histórico das reproduções no mesmo %
+        apurado.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="dados">
+  <header><span class="num-sec">7</span><h2>Dados e ressalvas</h2></header>
+  <div class="prosa">
+    <ul>
+      <li><strong>Série Dalmolin (meu painel):</strong> as projeções que gravei na noite, na versão do replay publicado
+      no painel (sem 9 leituras, de 20h02 a 20h24, afetadas por um defeito do meu painel no alinhamento dos arquivos do TSE,
+      que corrigi depois, já conhecendo o resultado). Na versão que foi ao ar, a projeção só ficou sempre a ±0,5 e a ±0,2
+      ponto do resultado a partir de 46,5% das seções.</li>
+      <li><strong>Série Mahlmeister:</strong> a que o site de Mahlmeister mostra hoje, recalculada com o método planejado
+      antes da eleição. Na noite, até 15% do eleitorado, foi exibida uma variante mais conservadora (o menor valor de
+      Lula entre os dois modelos dele). O recálculo é dele; sem o código, não consigo conferir.</li>
+      <li>Eixo horizontal: % das seções totalizadas pelo TSE (o site de Mahlmeister usa % do eleitorado; a diferença é
+      pequena depois de 2%). Abaixo de 2%, os pontos ficam fora dos gráficos e das médias, porque o site de Mahlmeister
+      só mostra a projeção a partir daí.</li>
+      <li>As séries têm ritmos diferentes: Mahlmeister, por minuto; Dalmolin, por ciclo de leitura do TSE.</li>
+      <li>Uma eleição e uma ordem de chegada. O que vale para um 1º turno três semanas antes não diz como seria com
+      uma referência mais distante.</li>
+    </ul>
+  </div>
+  <details>
+    <summary>Ver os dados dos gráficos em tabela</summary>
+    <div class="tabela-wrap"><table class='dados'><thead><tr><th>Perto de</th><th>Dalmolin</th><th>Mahlmeister</th></tr></thead><tbody><tr><th>2%</th><td>51,79 <small>(44,3–59,3) · 2,0% · 19h17</small></td><td>51,75 <small>(51,0–52,4) · 2,4% · 19h23</small></td></tr><tr><th>3%</th><td>52,02 <small>(45,4–58,6) · 3,1% · 19h24</small></td><td>51,81 <small>(51,1–52,3) · 3,3% · 19h26</small></td></tr><tr><th>5%</th><td>51,94 <small>(45,3–58,6) · 5,0% · 19h29</small></td><td>51,92 <small>(51,5–52,9) · 4,7% · 19h30</small></td></tr><tr><th>7,5%</th><td>51,30 <small>(45,1–57,5) · 7,7% · 19h35</small></td><td>51,78 <small>(51,4–52,5) · 7,0% · 19h35</small></td></tr><tr><th>10%</th><td>51,52 <small>(45,8–57,2) · 10,0% · 19h39</small></td><td>51,23 <small>(51,0–51,6) · 10,0% · 19h40</small></td></tr><tr><th>15%</th><td>51,63 <small>(47,0–56,2) · 14,8% · 19h48</small></td><td>51,46 <small>(51,3–51,6) · 15,1% · 19h49</small></td></tr><tr><th>20%</th><td>51,90 <small>(47,7–56,1) · 20,1% · 19h58</small></td><td>51,41 <small>(51,3–51,5) · 19,6% · 19h59</small></td></tr><tr><th>25%</th><td>51,78 <small>(48,7–54,9) · 26,3% · 20h06</small></td><td>51,33 <small>(51,2–51,5) · 24,4% · 20h05</small></td></tr><tr><th>30%</th><td>51,70 <small>(49,6–53,8) · 29,6% · 20h09</small></td><td>51,38 <small>(51,2–51,6) · 29,6% · 20h10</small></td></tr><tr><th>40%</th><td>51,73 <small>(49,9–53,5) · 39,8% · 20h19</small></td><td>51,61 <small>(51,5–51,7) · 40,2% · 20h20</small></td></tr><tr><th>50%</th><td>51,83 <small>(50,8–52,8) · 49,6% · 20h27</small></td><td>51,70 <small>(51,6–51,8) · 50,8% · 20h29</small></td></tr><tr><th>60%</th><td>51,77 <small>(51,0–52,5) · 59,8% · 20h36</small></td><td>51,75 <small>(51,7–51,8) · 59,8% · 20h38</small></td></tr><tr><th>70%</th><td>51,89 <small>(51,3–52,4) · 69,9% · 20h45</small></td><td>51,78 <small>(51,7–51,8) · 70,5% · 20h46</small></td></tr><tr><th>80%</th><td>51,79 <small>(51,5–52,1) · 80,0% · 20h54</small></td><td>51,80 <small>(51,8–51,8) · 80,0% · 20h55</small></td></tr><tr><th>90%</th><td>51,79 <small>(51,5–52,0) · 89,7% · 21h02</small></td><td>51,79 <small>(51,8–51,8) · 90,3% · 21h03</small></td></tr><tr><th>100%</th><td>51,79 <small>(51,8–51,8) · 100,0% · 23h23</small></td><td>51,79 <small>(51,8–51,8) · 100,0% · 23h59</small></td></tr></tbody></table></div>
+    <p><small>Ponto mais próximo de cada % apurado: projeção de Lula (faixa de 95%) · % das seções · hora.</small></p>
+  </details>
+  <p><small>Gerei esta página a partir das séries públicas dos dois sites e da ordem de chegada das seções nos arquivos
+  por seção do TSE. O que este apêndice contém: o passo a passo dos dois métodos (seção 1), as tabelas completas de erro
+  e faixa (2, 4 e 7), o script do teste com 2022 (3) e os seis governadores (5).</small></p>
+  <h3>Fontes</h3>
+  <ol class="fontes">
+    <li><a href="https://projecao.2026elections.workers.dev/">Projeção de Rodrigo Mahlmeister</a> (seções "Método", "Dois modelos" e "Detalhes técnicos"; série do método planejado, publicada no site)</li>
+    <li><a href="https://neofeed.com.br/finde/como-um-pesquisador-brasileiro-criou-um-algoritmo-que-simulou-e-acertou-o-resultado-do-1o-turno/">NeoFeed: como um pesquisador brasileiro criou um algoritmo que simulou o 1º turno</a></li>
+    <li><a href="https://www.terra.com.br/noticias/brasil/politica/em-tempo-real-projecao-da-apuracao-mostra-possivel-resultado-do-2-turno-para-presidente,affdb9f51df0d8f325ed33e1ec896c97qukx72px.html">Estadão (via Terra): projeção da apuração do 2º turno</a></li>
+    <li><a href="https://mais.opovo.com.br/reportagens-especiais/resultado-presidente-eleicoes-2026/2026/10/28/quem-previu-a-vitoria-de-lula-matematica-antecipou-virada.html">O POVO+: quem previu a vitória de Lula</a></li>
+    <li><a href="https://x.com/ro_mahl/status/2106391799195468161">Thread de Mahlmeister no X (1º turno)</a></li>
+    <li>Meu método: <a href="https://apuracao.dalmolin.dev">apuracao.dalmolin.dev</a> ("Como funciona") e o <a href="../artigo.html">artigo</a></li>
+  </ol>
+</section>
+
+<footer><p>Apêndice técnico de <a href="../artigo.html">"O swing simples basta para projetar um 2º turno?"</a> · Matheus
+Dalmolin · resultado final do TSE: Lula 64.256.232 × Flávio 59.826.041.</p>
+<p>Projeção é estimativa estatística, não resultado oficial. O resultado oficial é o do TSE
+(<a href="https://resultados.tse.jus.br">resultados.tse.jus.br</a>). <a href="../artigo.html">Voltar ao artigo</a> ·
+<a href="../">Painel</a> · <a href="../governador.html">Governadores</a></p></footer>
+</div>
+
+<script>
+const D = {"n":[[2.045,51.788,44.259,59.317,"19h17"],[2.106,51.864,44.335,59.393,"19h18"],[2.144,51.863,44.334,59.392,"19h18"],[2.175,51.991,44.462,59.52,"19h19"],[2.243,51.861,44.332,59.39,"19h19"],[2.328,51.76,44.231,59.289,"19h20"],[2.422,51.759,44.23,59.288,"19h20"],[2.593,51.777,44.248,59.306,"19h21"],[2.665,51.778,44.249,59.307,"19h22"],[2.777,51.784,44.255,59.313,"19h22"],[2.914,52.007,44.478,59.536,"19h23"],[3.082,52.024,45.407,58.641,"19h24"],[3.187,52.345,45.728,58.962,"19h24"],[3.293,51.983,45.366,58.6,"19h24"],[3.352,51.859,45.242,58.476,"19h25"],[3.615,51.895,45.278,58.512,"19h26"],[3.77,51.932,45.315,58.549,"19h26"],[3.976,51.903,45.286,58.52,"19h26"],[4.102,51.743,45.126,58.36,"19h27"],[4.243,51.687,45.07,58.304,"19h27"],[4.512,51.687,45.07,58.304,"19h28"],[4.683,51.767,45.15,58.384,"19h28"],[4.796,51.8,45.183,58.417,"19h29"],[5.019,51.941,45.324,58.558,"19h29"],[5.232,51.904,45.287,58.521,"19h30"],[5.404,51.647,45.03,58.264,"19h30"],[5.559,51.64,45.023,58.257,"19h31"],[5.73,51.659,45.042,58.276,"19h31"],[6.179,51.336,44.719,57.953,"19h32"],[6.629,51.437,44.82,58.054,"19h32"],[6.969,51.57,44.953,58.187,"19h33"],[7.144,51.457,45.244,57.67,"19h34"],[7.668,51.295,45.082,57.508,"19h35"],[8.119,51.722,45.985,57.459,"19h35"],[8.312,51.682,45.945,57.419,"19h36"],[8.636,51.604,45.867,57.341,"19h36"],[8.883,51.593,45.856,57.33,"19h37"],[9.101,51.593,45.864,57.322,"19h38"],[9.655,51.544,45.815,57.273,"19h38"],[9.99,51.518,45.789,57.247,"19h39"],[10.4,51.708,45.979,57.437,"19h40"],[10.869,51.704,45.975,57.433,"19h40"],[11.663,51.545,45.816,57.274,"19h41"],[11.895,51.534,45.805,57.263,"19h42"],[12.233,51.507,45.778,57.236,"19h43"],[12.669,51.466,45.737,57.195,"19h44"],[12.908,51.466,45.737,57.195,"19h44"],[13.349,51.709,46.971,56.447,"19h45"],[13.651,51.697,46.959,56.435,"19h46"],[13.982,51.683,46.945,56.421,"19h46"],[14.289,51.666,47.055,56.277,"19h47"],[14.571,51.649,47.038,56.26,"19h47"],[14.827,51.627,47.016,56.238,"19h48"],[15.384,51.609,46.998,56.22,"19h48"],[16.388,51.678,47.176,56.18,"19h52"],[16.659,51.623,47.121,56.125,"19h53"],[17.2,51.622,47.12,56.124,"19h54"],[17.491,51.627,47.125,56.129,"19h55"],[18.032,51.885,47.65,56.12,"19h55"],[18.373,51.889,47.654,56.124,"19h56"],[19.199,51.866,47.631,56.101,"19h57"],[19.623,51.921,47.686,56.156,"19h57"],[20.052,51.896,47.661,56.131,"19h58"],[20.767,51.847,47.612,56.082,"19h59"],[21.112,51.857,48.166,55.548,"19h59"],[21.841,51.709,48.018,55.4,"20h00"],[22.303,51.737,48.374,55.1,"20h01"],[26.305,51.777,48.7,54.854,"20h06"],[27.732,51.797,49.249,54.345,"20h07"],[28.222,51.772,49.475,54.069,"20h08"],[29.163,51.767,49.632,53.902,"20h08"],[29.622,51.697,49.562,53.832,"20h09"],[30.817,51.677,49.622,53.732,"20h10"],[31.241,51.665,49.648,53.682,"20h10"],[32.304,51.63,49.688,53.572,"20h11"],[32.849,51.631,49.689,53.573,"20h12"],[34.072,51.661,49.734,53.588,"20h13"],[36.772,51.73,49.869,53.591,"20h15"],[37.396,51.725,49.901,53.549,"20h16"],[38.522,51.714,49.901,53.527,"20h17"],[38.906,51.686,49.873,53.499,"20h18"],[39.845,51.729,49.945,53.513,"20h19"],[40.918,51.689,49.925,53.453,"20h19"],[41.58,51.789,50.117,53.461,"20h20"],[42.835,51.791,50.146,53.436,"20h21"],[43.24,51.845,50.227,53.463,"20h22"],[44.366,51.862,50.333,53.391,"20h23"],[46.485,51.822,50.768,52.876,"20h25"],[47.622,51.828,50.774,52.882,"20h26"],[48.967,51.838,50.784,52.892,"20h27"],[49.599,51.83,50.841,52.819,"20h27"],[50.762,51.847,50.962,52.732,"20h28"],[51.347,51.872,50.987,52.757,"20h29"],[52.458,51.802,50.989,52.615,"20h30"],[53.126,51.761,50.948,52.574,"20h31"],[54.398,51.755,50.995,52.515,"20h31"],[55.557,51.791,51.031,52.551,"20h32"],[56.206,51.789,51.029,52.549,"20h33"],[56.761,51.796,51.036,52.556,"20h34"],[57.647,51.83,51.07,52.59,"20h34"],[59.072,51.835,51.112,52.558,"20h35"],[59.768,51.768,51.045,52.491,"20h36"],[60.851,51.771,51.074,52.468,"20h37"],[62.035,51.764,51.079,52.449,"20h37"],[62.698,51.789,51.104,52.474,"20h39"],[63.376,51.811,51.126,52.496,"20h39"],[64.17,51.85,51.165,52.535,"20h40"],[65.372,51.863,51.178,52.548,"20h41"],[65.939,51.876,51.191,52.561,"20h41"],[67.063,51.894,51.256,52.532,"20h42"],[67.389,51.891,51.253,52.529,"20h43"],[68.218,51.901,51.327,52.475,"20h43"],[69.507,51.89,51.348,52.432,"20h44"],[69.92,51.887,51.345,52.429,"20h45"],[70.551,51.799,51.367,52.231,"20h45"],[71.237,51.782,51.378,52.186,"20h46"],[72.361,51.795,51.428,52.162,"20h47"],[72.773,51.798,51.431,52.165,"20h47"],[73.31,51.778,51.411,52.145,"20h48"],[74.816,51.768,51.418,52.118,"20h48"],[75.236,51.77,51.42,52.12,"20h49"],[75.865,51.786,51.436,52.136,"20h49"],[76.978,51.781,51.431,52.131,"20h51"],[78.082,51.791,51.445,52.137,"20h52"],[79.062,51.793,51.475,52.111,"20h53"],[79.602,51.787,51.469,52.105,"20h53"],[80.017,51.786,51.473,52.099,"20h54"],[80.748,51.815,51.502,52.128,"20h54"],[81.84,51.81,51.497,52.123,"20h55"],[82.325,51.813,51.507,52.119,"20h55"],[83.041,51.799,51.508,52.09,"20h56"],[83.688,51.799,51.508,52.09,"20h56"],[84.207,51.797,51.544,52.05,"20h57"],[84.732,51.769,51.516,52.022,"20h57"],[85.243,51.768,51.515,52.021,"20h58"],[85.837,51.75,51.497,52.003,"20h59"],[86.409,51.75,51.497,52.003,"20h59"],[86.98,51.795,51.542,52.048,"21h00"],[87.657,51.793,51.54,52.046,"21h00"],[88.326,51.794,51.541,52.047,"21h01"],[88.711,51.79,51.537,52.043,"21h01"],[89.314,51.797,51.544,52.05,"21h01"],[89.743,51.794,51.541,52.047,"21h02"],[90.352,51.793,51.54,52.046,"21h02"],[90.863,51.791,51.538,52.044,"21h03"],[91.503,51.781,51.528,52.034,"21h03"],[91.945,51.776,51.523,52.029,"21h04"],[92.734,51.77,51.589,51.951,"21h05"],[93.154,51.775,51.666,51.884,"21h05"],[93.824,51.777,51.668,51.886,"21h06"],[94.291,51.773,51.683,51.863,"21h06"],[94.926,51.766,51.676,51.856,"21h07"],[95.327,51.77,51.694,51.846,"21h07"],[95.887,51.753,51.677,51.829,"21h08"],[96.139,51.753,51.683,51.823,"21h09"],[96.831,51.756,51.686,51.826,"21h09"],[97.685,51.771,51.711,51.831,"21h09"],[98.266,51.768,51.72,51.816,"21h10"],[98.76,51.791,51.743,51.839,"21h10"],[99.316,51.784,51.751,51.817,"21h11"],[99.666,51.779,51.746,51.812,"21h11"],[99.752,51.775,51.742,51.808,"21h12"],[99.753,51.777,51.744,51.81,"21h12"],[99.759,51.775,51.742,51.808,"21h13"],[99.761,51.775,51.742,51.808,"21h13"],[99.765,51.776,51.743,51.809,"21h14"],[99.77,51.772,51.739,51.805,"21h14"],[99.771,51.786,51.753,51.819,"21h15"],[99.772,51.786,51.753,51.819,"21h15"],[99.781,51.786,51.753,51.819,"21h16"],[99.786,51.787,51.754,51.82,"21h16"],[99.788,51.787,51.754,51.82,"21h16"],[99.79,51.787,51.754,51.82,"21h17"],[99.796,51.787,51.754,51.82,"21h18"],[99.803,51.787,51.754,51.82,"21h19"],[99.813,51.786,51.753,51.819,"21h19"],[99.819,51.785,51.752,51.818,"21h19"],[99.823,51.786,51.753,51.819,"21h21"],[99.827,51.786,51.753,51.819,"21h21"],[99.829,51.785,51.752,51.818,"21h22"],[99.835,51.785,51.752,51.818,"21h22"],[99.84,51.786,51.753,51.819,"21h23"],[99.842,51.785,51.752,51.818,"21h23"],[99.854,51.785,51.752,51.818,"21h24"],[99.855,51.785,51.752,51.818,"21h24"],[99.858,51.785,51.752,51.818,"21h24"],[99.861,51.785,51.752,51.818,"21h25"],[99.866,51.786,51.753,51.819,"21h25"],[99.868,51.786,51.753,51.819,"21h26"],[99.87,51.786,51.753,51.819,"21h27"],[99.873,51.786,51.753,51.819,"21h27"],[99.876,51.786,51.753,51.819,"21h28"],[99.876,51.786,51.753,51.819,"21h28"],[99.877,51.785,51.752,51.818,"21h29"],[99.883,51.785,51.752,51.818,"21h30"],[99.883,51.786,51.753,51.819,"21h30"],[99.887,51.785,51.752,51.818,"21h30"],[99.889,51.786,51.753,51.819,"21h31"],[99.891,51.785,51.752,51.818,"21h32"],[99.891,51.785,51.752,51.818,"21h33"],[99.896,51.785,51.752,51.818,"21h33"],[99.897,51.785,51.752,51.818,"21h33"],[99.897,51.785,51.752,51.818,"21h34"],[99.898,51.785,51.752,51.818,"21h34"],[99.899,51.785,51.752,51.818,"21h36"],[99.9,51.785,51.752,51.818,"21h36"],[99.9,51.785,51.752,51.818,"21h36"],[99.901,51.785,51.752,51.818,"21h38"],[99.901,51.785,51.752,51.818,"21h38"],[99.901,51.785,51.752,51.818,"21h39"],[99.902,51.785,51.752,51.818,"21h39"],[99.903,51.785,51.752,51.818,"21h40"],[99.911,51.785,51.752,51.818,"21h40"],[99.914,51.785,51.752,51.818,"21h40"],[99.915,51.785,51.752,51.818,"21h41"],[99.918,51.785,51.752,51.818,"21h42"],[99.919,51.785,51.752,51.818,"21h42"],[99.922,51.785,51.752,51.818,"21h42"],[99.923,51.785,51.752,51.818,"21h43"],[99.93,51.785,51.752,51.818,"21h43"],[99.933,51.785,51.752,51.818,"21h45"],[99.935,51.785,51.752,51.818,"21h45"],[99.937,51.785,51.752,51.818,"21h46"],[99.938,51.785,51.752,51.818,"21h46"],[99.943,51.785,51.752,51.818,"21h47"],[99.945,51.785,51.752,51.818,"21h48"],[99.946,51.785,51.752,51.818,"21h48"],[99.947,51.785,51.752,51.818,"21h49"],[99.948,51.785,51.752,51.818,"21h49"],[99.949,51.785,51.752,51.818,"21h49"],[99.95,51.785,51.752,51.818,"21h50"],[99.952,51.785,51.752,51.818,"21h51"],[99.956,51.785,51.752,51.818,"21h51"],[99.957,51.785,51.752,51.818,"21h52"],[99.957,51.785,51.752,51.818,"21h52"],[99.958,51.785,51.752,51.818,"21h53"],[99.958,51.785,51.752,51.818,"21h53"],[99.962,51.785,51.752,51.818,"21h55"],[99.962,51.785,51.752,51.818,"21h55"],[99.971,51.785,51.752,51.818,"21h57"],[99.971,51.785,51.752,51.818,"21h58"],[99.972,51.785,51.752,51.818,"21h59"],[99.972,51.785,51.752,51.818,"21h59"],[99.974,51.785,51.752,51.818,"22h00"],[99.976,51.785,51.752,51.818,"22h00"],[99.977,51.785,51.752,51.818,"22h01"],[99.977,51.785,51.752,51.818,"22h01"],[99.978,51.785,51.752,51.818,"22h02"],[99.978,51.785,51.752,51.818,"22h02"],[99.979,51.785,51.752,51.818,"22h03"],[99.979,51.785,51.752,51.818,"22h03"],[99.979,51.785,51.752,51.818,"22h05"],[99.98,51.785,51.752,51.818,"22h06"],[99.981,51.785,51.752,51.818,"22h10"],[99.981,51.785,51.752,51.818,"22h11"],[99.982,51.785,51.752,51.818,"22h11"],[99.982,51.785,51.752,51.818,"22h12"],[99.983,51.785,51.752,51.818,"22h13"],[99.985,51.785,51.752,51.818,"22h13"],[99.985,51.785,51.752,51.818,"22h14"],[99.986,51.785,51.752,51.818,"22h14"],[99.988,51.785,51.752,51.818,"22h15"],[99.989,51.785,51.752,51.818,"22h15"],[99.99,51.785,51.752,51.818,"22h16"],[99.99,51.785,51.752,51.818,"22h16"],[99.991,51.785,51.752,51.818,"22h21"],[99.991,51.785,51.752,51.818,"22h21"],[99.992,51.785,51.752,51.818,"22h22"],[99.992,51.785,51.752,51.818,"22h22"],[99.992,51.785,51.752,51.818,"22h23"],[99.993,51.785,51.752,51.818,"22h24"],[99.993,51.785,51.752,51.818,"22h25"],[99.995,51.785,51.752,51.818,"22h25"],[99.995,51.785,51.752,51.818,"22h26"],[99.995,51.785,51.752,51.818,"22h26"],[99.995,51.785,51.752,51.818,"22h31"],[99.996,51.785,51.752,51.818,"22h31"],[99.996,51.785,51.752,51.818,"22h32"],[99.996,51.785,51.752,51.818,"22h32"],[99.996,51.785,51.752,51.818,"22h33"],[99.997,51.785,51.752,51.818,"22h34"],[99.997,51.785,51.752,51.818,"22h35"],[99.998,51.785,51.752,51.818,"22h37"],[99.998,51.785,51.752,51.818,"22h38"],[99.999,51.785,51.752,51.818,"22h39"],[99.999,51.785,51.752,51.818,"22h43"],[99.999,51.785,51.752,51.818,"22h44"],[99.999,51.785,51.752,51.818,"22h45"],[100.0,51.785,51.752,51.818,"22h46"],[100.0,51.785,51.752,51.818,"23h11"],[100.0,51.785,51.785,51.785,"23h23"]],"m":[[2.42,51.75,51.03,52.37,"19h23"],[2.66,51.99,51.11,52.46,"19h24"],[3.29,51.81,51.08,52.32,"19h26"],[3.97,51.86,51.19,52.56,"19h27"],[4.24,51.88,51.57,52.96,"19h28"],[4.68,51.92,51.54,52.86,"19h30"],[5.4,51.76,51.44,52.26,"19h32"],[5.73,51.72,51.36,52.17,"19h33"],[6.97,51.78,51.42,52.45,"19h35"],[8.12,51.6,51.38,51.89,"19h36"],[8.63,51.3,50.99,51.72,"19h38"],[9.99,51.23,51.0,51.62,"19h40"],[10.86,51.5,51.37,51.74,"19h42"],[11.89,51.44,51.37,51.76,"19h44"],[12.91,51.5,51.43,51.7,"19h46"],[14.28,51.46,51.38,51.58,"19h48"],[15.06,51.46,51.3,51.6,"19h49"],[15.38,51.47,51.35,51.63,"19h51"],[15.38,51.53,51.48,51.76,"19h52"],[15.38,51.52,51.44,51.72,"19h54"],[16.93,51.26,51.08,51.68,"19h55"],[18.03,51.45,51.38,51.66,"19h57"],[19.61,51.41,51.32,51.54,"19h59"],[21.11,51.33,51.21,51.54,"20h00"],[21.84,51.43,51.35,51.62,"20h02"],[23.26,51.34,51.26,51.46,"20h03"],[24.4,51.33,51.18,51.48,"20h05"],[25.79,51.43,51.33,51.61,"20h07"],[28.22,51.41,51.34,51.55,"20h08"],[29.61,51.38,51.18,51.61,"20h10"],[32.29,51.55,51.45,51.75,"20h12"],[34.06,51.53,51.4,51.71,"20h14"],[35.52,51.6,51.5,51.69,"20h15"],[37.39,51.59,51.42,51.68,"20h18"],[38.9,51.59,51.44,51.68,"20h19"],[40.23,51.61,51.49,51.7,"20h20"],[42.27,51.65,51.58,51.76,"20h21"],[43.23,51.66,51.57,51.74,"20h23"],[44.92,51.67,51.57,51.75,"20h25"],[46.03,51.69,51.61,51.79,"20h26"],[48.95,51.72,51.64,51.81,"20h28"],[50.76,51.7,51.6,51.8,"20h29"],[52.45,51.69,51.62,51.76,"20h31"],[54.39,51.72,51.6,51.77,"20h32"],[56.2,51.71,51.6,51.77,"20h33"],[56.75,51.72,51.6,51.77,"20h35"],[59.07,51.76,51.7,51.83,"20h36"],[59.76,51.75,51.67,51.84,"20h38"],[62.03,51.73,51.67,51.82,"20h39"],[64.17,51.77,51.71,51.89,"20h41"],[66.5,51.79,51.73,51.97,"20h43"],[68.21,51.8,51.71,51.95,"20h45"],[70.55,51.78,51.72,51.83,"20h46"],[72.35,51.78,51.73,51.84,"20h47"],[73.31,51.78,51.72,51.83,"20h49"],[74.79,51.78,51.73,51.83,"20h50"],[76.97,51.79,51.75,51.84,"20h52"],[78.07,51.78,51.74,51.84,"20h53"],[80.02,51.8,51.76,51.84,"20h55"],[82.31,51.8,51.76,51.84,"20h57"],[83.68,51.79,51.75,51.84,"20h58"],[85.24,51.79,51.75,51.85,"20h59"],[86.41,51.79,51.75,51.84,"21h01"],[88.7,51.8,51.76,51.85,"21h02"],[90.35,51.79,51.76,51.84,"21h03"],[91.49,51.79,51.75,51.84,"21h05"],[92.73,51.79,51.75,51.83,"21h06"],[94.29,51.8,51.76,51.84,"21h08"],[95.88,51.79,51.75,51.83,"21h09"],[96.82,51.79,51.76,51.83,"21h10"],[99.32,51.79,51.75,51.82,"21h12"],[99.66,51.78,51.75,51.82,"21h13"],[99.76,51.79,51.75,51.82,"21h14"],[99.76,51.78,51.75,51.82,"21h15"],[99.77,51.79,51.75,51.82,"21h16"],[99.79,51.79,51.75,51.82,"21h17"],[99.79,51.79,51.75,51.82,"21h18"],[99.79,51.79,51.75,51.82,"21h19"],[99.8,51.79,51.75,51.82,"21h21"],[99.82,51.79,51.75,51.82,"21h22"],[99.83,51.79,51.75,51.82,"21h23"],[99.84,51.79,51.75,51.82,"21h26"],[99.87,51.79,51.75,51.82,"21h28"],[99.87,51.79,51.75,51.82,"21h29"],[99.88,51.79,51.75,51.82,"21h30"],[99.89,51.79,51.75,51.82,"21h32"],[99.89,51.79,51.75,51.82,"21h33"],[99.89,51.79,51.75,51.82,"21h34"],[99.9,51.79,51.75,51.82,"21h35"],[99.9,51.79,51.75,51.82,"21h36"],[99.9,51.79,51.75,51.82,"21h37"],[99.9,51.79,51.75,51.82,"21h39"],[99.9,51.79,51.75,51.82,"21h43"],[99.92,51.79,51.75,51.82,"21h44"],[99.93,51.79,51.75,51.82,"21h46"],[99.94,51.79,51.75,51.82,"21h48"],[100,51.79,51.75,51.82,"23h59"]],"final":51.7852,"pesos":{"x":[2.0,2.102,2.208,2.32,2.438,2.562,2.692,2.829,2.972,3,3.123,3.282,3.448,3.623,3.807,4.0,4.204,4.417,4.641,4.877,5,5.124,5.385,5.658,5.945,6.247,6.564,6.897,7.247,7.615,8.002,8.408,8.835,9.284,9.755,10,10.25,10.77,11.317,11.892,12.495,13.13,13.796,14.497,15,15.233,16.006,16.818,17.672,18.569,19.512,20,20.503,21.543,22.637,23.786,24.994,26.263,27.596,28.997,30,30.469,32.016,33.641,35.349,37.143,39.029,41.01,43.092,45.28,47.579,49.994,50,52.532,55.199,58.001,60.945,64.039,67.29,70.706,74.296,75,78.067,82.031,86.195,90.571,95.169,100.0],"cont":[2.0,2.11,2.22,2.33,2.45,2.58,2.71,2.85,2.99,3.02,3.14,3.3,3.48,3.66,3.85,4.04,4.25,4.46,4.69,4.92,5.05,5.17,5.44,5.71,6.0,6.31,6.62,6.96,7.31,7.68,8.07,8.49,8.92,9.37,9.84,10.09,10.34,10.86,11.41,11.98,12.59,13.22,13.89,14.58,15.07,15.3,16.07,16.88,17.71,18.59,19.51,19.98,20.47,21.49,22.56,23.68,24.88,26.13,27.45,28.83,29.82,30.28,31.81,33.42,35.11,36.89,38.77,40.74,42.8,44.98,47.27,49.69,49.69,52.23,54.85,57.65,60.62,63.73,66.96,70.37,73.96,74.67,77.75,81.71,85.87,90.26,94.95,100.0],"n_sw":[23.9,24.39,24.94,25.14,25.29,25.46,25.61,25.76,25.93,26.78,26.96,27.1,27.13,27.82,27.89,28.99,28.96,29.12,29.32,29.89,29.87,30.8,30.79,31.05,31.38,31.45,31.75,31.73,31.82,37.67,37.81,37.8,37.98,38.24,41.28,41.52,41.55,41.48,41.41,41.66,42.04,41.65,42.21,42.12,42.43,42.24,42.19,42.43,42.31,42.46,42.26,42.16,42.0,41.77,41.46,41.04,41.24,41.65,41.79,41.94,41.6,41.99,41.89,42.35,42.89,42.65,42.1,41.4,40.4,39.44,38.56,37.73,37.72,36.24,34.67,33.08,31.32,29.33,26.9,24.44,21.63,21.02,18.61,15.46,12.23,8.82,4.59,0.0],"n_mod":[74.1,73.5,72.84,72.53,72.25,71.97,71.68,71.39,71.08,70.2,69.9,69.59,69.4,68.52,68.26,66.97,66.79,66.42,66.0,65.19,65.08,64.03,63.78,63.24,62.62,62.24,61.62,61.31,60.87,54.66,54.12,53.72,53.1,52.4,48.87,48.39,48.11,47.66,47.18,46.36,45.37,45.13,43.9,43.3,42.5,42.46,41.74,40.69,39.98,38.95,38.23,37.85,37.53,36.74,35.98,35.27,33.88,32.22,30.76,29.23,28.58,27.73,26.3,24.23,22.0,20.46,19.13,17.85,16.8,15.58,14.17,12.58,12.58,11.54,10.48,9.27,8.05,6.94,6.13,5.19,4.41,4.31,3.64,2.83,1.9,0.93,0.46,0.0],"m_reg":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.79,2.46,4.16,5.92,7.76,9.64,11.63,13.68,14.29,16.25,18.31,20.36,22.45,23.24,24.19,25.26,27.5,29.8,31.95,34.0,36.69,38.61,41.12,42.5,42.46,41.74,40.69,39.98,38.95,38.23,37.85,37.53,36.74,35.98,35.27,33.88,32.22,30.76,29.23,28.58,27.73,26.3,24.23,22.0,20.46,19.13,17.85,16.8,15.58,14.17,12.58,12.58,11.54,10.48,9.27,8.05,6.94,6.13,5.19,4.41,4.31,3.64,2.83,1.9,0.93,0.46,0.0],"m_r26":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.38,1.19,2.04,2.97,3.92,4.97,6.02,7.15,9.85,11.35,12.88,14.57,16.38,19.63,20.76,21.81,23.93,26.16,28.71,31.51,33.86,37.13,40.0,42.43,42.24,42.19,42.43,42.31,42.46,42.26,42.16,42.0,41.77,41.46,41.04,41.24,41.65,41.79,41.94,41.6,41.99,41.89,42.35,42.89,42.65,42.1,41.4,40.4,39.44,38.56,37.73,37.72,36.24,34.67,33.08,31.32,29.33,26.9,24.44,21.63,21.02,18.61,15.46,12.23,8.82,4.59,0.0],"m_tr":[98.0,97.89,97.78,97.67,97.55,97.42,97.29,97.15,97.01,96.98,96.86,96.7,96.52,96.34,96.15,95.96,95.75,95.54,95.31,95.08,94.95,93.65,90.92,88.08,85.11,82.01,78.77,75.39,71.87,68.18,64.33,60.33,56.15,51.8,47.29,44.95,42.59,37.7,32.63,27.36,21.9,16.23,10.37,4.3,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"marcos":{"n":[[2,2.04,51.788,44.259,59.317,"19h17"],[3,3.08,52.024,45.407,58.641,"19h24"],[5,5.02,51.941,45.324,58.558,"19h29"],[10,10.4,51.708,45.979,57.437,"19h40"],[15,15.38,51.609,46.998,56.22,"19h48"],[20,20.05,51.896,47.661,56.131,"19h58"],[30,30.82,51.677,49.622,53.732,"20h10"],[50,50.76,51.847,50.962,52.732,"20h28"],[75,75.24,51.77,51.42,52.12,"20h49"]],"m":[[2,2.42,51.75,51.03,52.37,"19h23"],[3,3.29,51.81,51.08,52.32,"19h26"],[5,5.4,51.76,51.44,52.26,"19h32"],[10,10.86,51.5,51.37,51.74,"19h42"],[15,15.06,51.46,51.3,51.6,"19h49"],[20,21.11,51.33,51.21,51.54,"20h00"],[30,32.29,51.55,51.45,51.75,"20h12"],[50,50.76,51.7,51.6,51.8,"20h29"],[75,76.97,51.79,51.75,51.84,"20h52"]]},"gov":{"ac":{"venc":"Mailza","perd":"Alan Rick","pts":[[5.022,2.804,"19h09","alta"],[5.11,2.729,"19h11","alta"],[5.242,2.729,"19h12","alta"],[5.33,2.185,"19h14","alta"],[5.551,1.003,"19h15","alta"],[5.595,1.246,"19h15","alta"],[5.639,1.213,"19h16","alta"],[6.3,1.214,"19h17","alta"],[6.388,1.425,"19h18","alta"],[7.048,1.425,"19h18","alta"],[7.357,0.968,"19h19","alta"],[7.841,1.248,"19h20","alta"],[8.678,1.251,"19h21","alta"],[8.987,0.941,"19h22","alta"],[9.515,1.59,"19h23","alta"],[10.441,0.675,"19h25","alta"],[11.189,0.642,"19h25","alta"],[11.806,0.578,"19h26","alta"],[12.863,0.351,"19h27","alta"],[13.48,0.176,"19h28","alta"],[14.229,0.241,"19h29","alta"],[15.066,0.24,"19h29","alta"],[15.815,0.336,"19h31","alta"],[17.313,0.322,"19h32","alta"],[19.692,0.55,"19h32","alta"],[20.881,0.658,"19h33","alta"],[21.982,0.276,"19h34","alta"],[22.996,0.462,"19h35","alta"],[24.317,0.216,"19h36","alta"],[24.758,0.216,"19h36","alta"],[26.52,0.1,"19h38","alta"],[27.885,0.1,"19h38","alta"],[30.0,0.109,"19h40","alta"],[31.762,0.038,"19h41","alta"],[33.789,-0.001,"19h41","alta"],[34.273,-0.009,"19h42","alta"],[34.934,-0.009,"19h43","alta"],[35.727,-0.018,"19h43","alta"],[36.432,0.023,"19h44","alta"],[36.784,0.151,"19h45","alta"],[37.004,0.171,"19h46","alta"],[39.868,0.186,"19h47","alta"],[41.63,0.185,"19h48","alta"],[41.982,0.282,"19h52","alta"],[43.965,0.271,"19h53","alta"],[45.286,0.263,"19h53","alta"],[47.048,0.3,"19h54","alta"],[48.855,0.544,"19h55","alta"],[50.617,0.54,"19h56","alta"],[51.41,0.501,"19h57","alta"],[52.291,0.428,"19h58","alta"],[53.877,0.417,"19h58","alta"],[55.198,0.472,"19h59","alta"],[58.634,0.712,"20h00","alta"],[59.604,0.739,"20h01","alta"],[59.868,0.566,"20h01","alta"],[62.423,0.58,"20h02","alta"],[63.568,0.594,"20h02","alta"],[65.419,0.596,"20h04","alta"],[66.079,0.419,"20h05","alta"],[67.004,0.419,"20h05","alta"],[68.634,0.412,"20h07","alta"],[68.767,0.426,"20h07","alta"],[69.692,0.431,"20h08","alta"],[70.264,0.399,"20h09","alta"],[71.366,0.3,"20h10","alta"],[72.203,0.298,"20h11","alta"],[72.996,0.3,"20h12","alta"],[74.405,0.433,"20h14","alta"],[74.978,0.402,"20h15","alta"],[75.066,0.402,"20h17","alta"],[75.419,0.408,"20h19","alta"],[75.463,0.422,"20h19","alta"],[76.476,0.422,"20h20","alta"],[76.696,0.418,"20h21","alta"],[77.401,0.421,"20h22","alta"],[79.427,0.449,"20h23","alta"],[81.454,0.406,"20h24","alta"],[82.555,-0.08,"20h24","instavel"],[82.599,0.059,"20h25","instavel"],[83.877,-0.179,"20h26","instavel"],[84.802,-0.194,"20h27","instavel"],[85.198,-0.232,"20h27","instavel"],[86.652,-0.219,"20h28","instavel"],[86.828,-0.248,"20h29","instavel"],[87.357,-0.034,"20h31","instavel"],[87.841,-0.051,"20h32","alta"],[88.59,-0.043,"20h33","alta"],[90.308,-0.041,"20h34","alta"],[91.101,-0.046,"20h35","alta"],[91.894,-0.053,"20h36","alta"],[91.982,-0.06,"20h37","alta"],[93.568,-0.063,"20h37","alta"],[93.744,-0.076,"20h38","alta"],[94.537,-0.06,"20h39","alta"],[95.639,-0.055,"20h40","alta"],[96.123,-0.338,"20h40","instavel"],[96.388,-0.347,"20h41","instavel"],[96.476,-0.347,"20h42","instavel"],[97.225,-0.343,"20h43","instavel"],[98.062,0.044,"20h44","alta"],[98.37,0.009,"20h45","alta"],[98.414,0.009,"20h46","alta"],[98.502,0.009,"20h47","alta"],[98.634,-0.006,"20h50","alta"],[99.031,-0.006,"20h50","alta"],[99.075,-0.003,"20h52","alta"],[99.339,-0.014,"21h07","alta"],[99.427,-0.014,"21h10","alta"],[99.692,-0.021,"21h12","alta"],[100.0,0.002,"00h52","alta"]],"m1":[5.022,2.804,"19h09","alta"]},"am":{"venc":"Omar","perd":"Maria do Carmo","pts":[[8.667,-0.469,"19h10","alta"],[8.704,1.035,"19h10","alta"],[8.827,0.4,"19h13","alta"],[9.158,0.416,"19h14","alta"],[9.231,-0.816,"19h15","alta"],[9.317,-0.813,"19h15","alta"],[10.077,-0.805,"19h16","alta"],[10.592,-0.537,"19h17","alta"],[10.727,-0.548,"19h19","alta"],[11.132,-0.578,"19h19","alta"],[11.781,-0.672,"19h20","alta"],[12.088,-0.636,"19h21","alta"],[12.86,-0.713,"19h22","alta"],[13.35,-0.811,"19h22","alta"],[13.755,-1.059,"19h23","alta"],[14.564,-0.546,"19h24","alta"],[15.643,-0.456,"19h25","alta"],[16.55,-0.546,"19h26","alta"],[17.102,-0.391,"19h27","alta"],[17.396,-0.427,"19h27","alta"],[18.34,-0.407,"19h28","alta"],[19.774,-0.786,"19h29","alta"],[20.976,-0.524,"19h30","alta"],[22.619,-0.174,"19h32","alta"],[24.433,-0.181,"19h32","alta"],[26.223,-0.13,"19h33","alta"],[27.473,-0.094,"19h34","alta"],[28.331,-0.414,"19h35","alta"],[30.023,-0.719,"19h35","alta"],[30.881,-0.633,"19h36","alta"],[31.985,-0.745,"19h36","alta"],[34.216,-0.606,"19h38","alta"],[35.687,-0.786,"19h38","alta"],[37.624,-0.299,"19h39","alta"],[39.365,-0.401,"19h40","alta"],[41.51,-0.448,"19h41","alta"],[43.447,-0.495,"19h42","alta"],[44.06,-0.503,"19h43","alta"],[45.335,-0.741,"19h43","alta"],[46.108,-0.753,"19h44","alta"],[46.782,-0.327,"19h44","alta"],[47.26,-0.511,"19h45","alta"],[48.854,-0.508,"19h46","alta"],[50.533,-0.474,"19h47","alta"],[51.465,-0.575,"19h47","alta"],[52.25,-0.605,"19h48","alta"],[52.764,-0.24,"19h52","alta"],[55.02,-0.284,"19h52","alta"],[56.32,-0.228,"19h54","alta"],[57.791,-0.224,"19h55","alta"],[59.311,-0.22,"19h56","alta"],[60.623,-0.22,"19h56","alta"],[61.836,-0.258,"19h57","alta"],[63.075,-0.311,"19h58","alta"],[63.639,-0.34,"19h59","alta"],[64.497,-0.225,"19h59","alta"],[65.612,-0.219,"20h00","alta"],[66.017,-0.23,"20h01","alta"],[66.752,-0.242,"20h01","alta"],[67.66,-0.261,"20h02","alta"],[68.101,-0.271,"20h02","alta"],[68.273,-0.492,"20h03","alta"],[69.082,-0.495,"20h04","alta"],[69.891,-0.23,"20h04","alta"],[70.112,-0.222,"20h05","alta"],[70.406,-0.403,"20h05","alta"],[70.884,-0.397,"20h06","alta"],[71.411,-0.404,"20h06","alta"],[71.669,-0.623,"20h07","instavel"],[72.331,-0.619,"20h07","instavel"],[72.588,-0.69,"20h08","instavel"],[73.14,-0.721,"20h08","instavel"],[73.446,-1.767,"20h09","instavel"],[74.402,-1.246,"20h10","instavel"],[75.297,-1.246,"20h11","instavel"],[76.07,-1.426,"20h12","instavel"],[77.148,-1.569,"20h13","instavel"],[77.418,-1.698,"20h14","instavel"],[78.24,-0.136,"20h14","instavel"],[78.681,-0.165,"20h15","instavel"],[79.159,-0.266,"20h16","instavel"],[79.76,-0.364,"20h17","instavel"],[80.201,-0.393,"20h18","instavel"],[80.618,-0.084,"20h20","instavel"],[80.937,-0.107,"20h20","instavel"],[81.145,-0.107,"20h21","instavel"],[81.77,-0.115,"20h22","instavel"],[82.261,-0.172,"20h23","instavel"],[82.469,-0.21,"20h23","instavel"],[82.665,-0.261,"20h24","instavel"],[83.045,-0.041,"20h25","instavel"],[83.352,-0.053,"20h25","alta"],[83.903,-0.053,"20h26","alta"],[84.21,-0.051,"20h26","alta"],[84.455,-0.051,"20h27","alta"],[84.982,-0.062,"20h28","instavel"],[85.166,-0.036,"20h28","instavel"],[85.571,-0.089,"20h29","instavel"],[85.693,-0.05,"20h30","alta"],[85.84,-0.032,"20h31","alta"],[86.245,-0.041,"20h31","alta"],[86.895,-0.061,"20h33","alta"],[87.14,-0.033,"20h34","alta"],[87.213,-0.064,"20h35","alta"],[87.655,-0.072,"20h36","alta"],[88.035,-0.068,"20h37","alta"],[88.255,-0.092,"20h37","alta"],[88.341,-0.092,"20h38","alta"],[88.758,-0.041,"20h39","alta"],[88.917,-0.032,"20h40","alta"],[89.065,-0.038,"20h40","alta"],[89.248,-0.037,"20h41","alta"],[89.347,-0.014,"20h41","alta"],[89.432,-0.012,"20h42","alta"],[89.678,-0.017,"20h42","alta"],[89.837,-0.018,"20h43","alta"],[90.205,-0.041,"20h43","alta"],[90.854,-0.044,"20h44","alta"],[91.21,-0.031,"20h45","alta"],[91.443,0.046,"20h46","alta"],[91.664,0.047,"20h46","alta"],[91.946,0.051,"20h47","alta"],[92.473,0.04,"20h47","alta"],[92.791,0.038,"20h48","alta"],[93.343,-0.029,"20h50","alta"],[93.417,-0.013,"20h50","alta"],[93.662,-0.013,"20h51","alta"],[93.907,0.012,"20h51","alta"],[93.993,0.029,"20h52","alta"],[94.385,0.027,"20h52","alta"],[94.655,0.006,"20h53","alta"],[94.961,0.004,"20h53","alta"],[95.403,-0.007,"20h54","alta"],[95.758,-0.033,"20h54","alta"],[95.844,-0.009,"20h55","alta"],[95.93,-0.02,"20h55","alta"],[95.967,-0.035,"20h56","alta"],[96.016,-0.035,"20h56","alta"],[96.972,-0.047,"20h59","alta"],[97.131,-0.087,"21h00","alta"],[97.205,-0.091,"21h00","alta"],[97.499,-0.091,"21h01","alta"],[97.585,-0.083,"21h02","alta"],[97.744,-0.086,"21h03","alta"],[97.806,-0.087,"21h04","alta"],[97.916,-0.051,"21h04","alta"],[97.965,-0.054,"21h05","alta"],[98.112,-0.054,"21h05","alta"],[98.235,-0.038,"21h06","alta"],[98.345,-0.038,"21h06","alta"],[98.517,-0.037,"21h08","alta"],[98.651,-0.035,"21h08","alta"],[98.688,-0.035,"21h09","alta"],[98.97,-0.031,"21h09","alta"],[99.534,-0.031,"21h10","alta"],[99.657,-0.031,"21h10","alta"],[99.73,-0.042,"21h11","alta"],[99.767,-0.043,"21h13","alta"],[99.804,0.003,"21h18","alta"],[99.816,0.0,"21h20","alta"],[99.828,0.001,"21h24","alta"],[99.841,0.001,"21h26","alta"],[99.865,0.004,"21h28","alta"],[99.939,0.002,"21h31","alta"],[99.975,0.0,"21h45","alta"],[99.988,-0.0,"21h51","alta"],[100.0,0.0,"00h52","alta"]],"m1":[8.667,-0.469,"19h10","alta"]},"df":{"venc":"Celina","perd":"Grass","pts":[[9.485,0.352,"19h05","tendencia"],[10.145,0.162,"19h06","tendencia"],[10.762,0.152,"19h07","tendencia"],[11.35,-0.8,"19h09","tendencia"],[11.422,-0.8,"19h10","tendencia"],[11.508,-0.8,"19h11","alta"],[11.566,-0.849,"19h13","alta"],[11.709,-0.849,"19h13","alta"],[12.369,-0.296,"19h14","alta"],[12.426,-0.569,"19h15","alta"],[13.13,-0.569,"19h15","alta"],[13.46,-0.556,"19h16","alta"],[13.904,-0.556,"19h17","alta"],[14.306,-0.49,"19h17","alta"],[15.21,-0.538,"19h18","alta"],[15.569,-0.563,"19h19","alta"],[15.885,-0.497,"19h19","alta"],[16.358,-0.376,"19h20","alta"],[17.506,-0.376,"19h20","alta"],[18.869,-0.517,"19h21","alta"],[19.96,-0.616,"19h22","alta"],[21.309,-0.602,"19h23","alta"],[21.854,-0.602,"19h23","alta"],[23.059,-0.201,"19h24","alta"],[24.953,-0.276,"19h25","alta"],[25.326,-0.276,"19h26","alta"],[27.393,-0.264,"19h26","alta"],[28.684,-0.333,"19h27","alta"],[29.603,-0.333,"19h28","alta"],[31.167,-0.395,"19h28","alta"],[32.688,-0.412,"19h29","alta"],[34.983,-0.226,"19h30","alta"],[35.543,-0.226,"19h31","alta"],[38.542,-0.223,"19h32","alta"],[41.756,-0.283,"19h32","alta"],[44.081,-0.203,"19h33","alta"],[44.77,-0.226,"19h34","alta"],[48.041,-0.155,"19h35","alta"],[50.466,-0.104,"19h35","alta"],[51.7,-0.104,"19h36","alta"],[53.867,-0.094,"19h36","alta"],[54.513,-0.068,"19h37","alta"],[57.297,-0.068,"19h38","alta"],[58.889,-0.079,"19h38","alta"],[61.659,-0.072,"19h39","alta"],[62.52,-0.072,"19h40","alta"],[64.199,-0.075,"19h40","alta"],[64.471,-0.112,"19h41","alta"],[66.236,-0.149,"19h42","alta"],[68.374,-0.149,"19h42","alta"],[69.278,-0.209,"19h43","alta"],[70.168,-0.209,"19h43","alta"],[71.33,-0.228,"19h44","alta"],[72.005,0.014,"19h45","alta"],[72.765,-0.015,"19h45","alta"],[74.085,0.005,"19h46","alta"],[74.573,-0.016,"19h47","alta"],[76.611,-0.016,"19h48","alta"],[77.515,-0.016,"19h48","alta"],[81.906,0.056,"19h53","alta"],[83.125,0.026,"19h54","alta"],[85.062,-0.031,"19h55","alta"],[84.201,-0.047,"19h56","alta"],[86.038,-0.047,"19h56","alta"],[86.655,-0.047,"19h57","alta"],[87.014,-0.083,"19h58","alta"],[87.215,-0.078,"19h59","alta"],[88.133,0.032,"20h00","alta"],[88.635,0.035,"20h00","alta"],[88.908,0.035,"20h01","alta"],[88.994,0.035,"20h01","alta"],[89.554,0.029,"20h02","alta"],[90.013,-0.039,"20h02","alta"],[90.113,-0.039,"20h03","alta"],[90.501,-0.039,"20h03","alta"],[91.161,-0.042,"20h04","alta"],[91.778,-0.005,"20h04","alta"],[91.964,0.028,"20h05","alta"],[92.352,0.028,"20h07","alta"],[92.596,0.028,"20h07","alta"],[92.84,0.028,"20h08","alta"],[93.127,0.023,"20h09","alta"],[93.485,0.032,"20h09","alta"],[93.772,0.011,"20h10","alta"],[94.031,0.011,"20h10","alta"],[94.045,0.026,"20h11","alta"],[94.059,0.028,"20h12","alta"],[94.102,0.028,"20h12","alta"],[94.389,0.036,"20h13","alta"],[94.92,0.036,"20h13","alta"],[94.963,0.012,"20h15","alta"],[95.021,0.013,"20h17","alta"],[95.064,0.005,"20h19","alta"],[95.078,0.006,"20h21","alta"],[95.164,0.006,"20h21","alta"],[95.494,0.014,"20h23","alta"],[95.523,0.014,"20h24","alta"],[95.552,0.003,"20h25","alta"],[95.91,0.005,"20h26","alta"],[96.054,-0.011,"20h26","alta"],[96.341,-0.011,"20h27","alta"],[96.513,-0.022,"20h28","alta"],[96.556,0.004,"20h29","alta"],[96.786,0.004,"20h30","alta"],[96.829,0.012,"20h34","alta"],[96.929,0.006,"20h36","alta"],[97.001,0.005,"20h37","alta"],[97.288,0.001,"20h37","alta"],[97.446,-0.002,"20h43","alta"],[97.46,-0.002,"20h44","alta"],[97.489,0.002,"20h49","alta"],[97.518,0.005,"20h50","alta"],[97.589,0.008,"20h52","alta"],[97.69,0.008,"20h52","alta"],[97.704,0.015,"20h53","alta"],[97.848,0.015,"20h54","alta"],[97.862,0.011,"20h55","alta"],[97.891,0.011,"20h57","alta"],[97.919,0.01,"20h59","alta"],[98.02,0.002,"20h59","alta"],[98.034,0.003,"21h01","alta"],[98.106,0.003,"21h02","alta"],[98.12,0.003,"21h02","alta"],[98.551,-0.019,"21h07","alta"],[98.838,-0.019,"21h07","alta"],[98.996,-0.02,"21h09","alta"],[99.268,0.013,"21h10","alta"],[99.512,0.003,"21h10","alta"],[99.641,0.003,"21h13","alta"],[99.756,-0.001,"21h21","alta"],[99.857,-0.001,"21h22","alta"],[100.0,0.016,"00h52","alta"]],"m1":[11.508,-0.8,"19h11","alta"]},"es":{"venc":"Pazolini","perd":"Ferraço","pts":[[2.235,2.474,"19h33","indefinido"],[2.58,1.698,"19h34","indefinido"],[3.352,0.688,"19h35","indefinido"],[4.267,0.066,"19h36","indefinido"],[4.378,0.312,"19h37","indefinido"],[5.201,0.515,"19h37","indefinido"],[6.501,0.571,"19h39","indefinido"],[7.619,-0.649,"19h39","indefinido"],[7.995,-0.299,"19h40","indefinido"],[9.417,-0.255,"19h40","indefinido"],[9.59,-0.107,"19h41","indefinido"],[10.585,0.051,"19h41","indefinido"],[11.124,-0.143,"19h42","indefinido"],[11.997,-0.174,"19h42","indefinido"],[12.881,-0.273,"19h43","indefinido"],[14.537,-0.378,"19h44","indefinido"],[15.695,-0.551,"19h44","indefinido"],[16.294,-0.485,"19h45","indefinido"],[17.015,-0.515,"19h45","indefinido"],[17.503,-0.537,"19h46","indefinido"],[18.448,-0.518,"19h46","indefinido"],[19.128,-0.487,"19h47","indefinido"],[20.033,-0.463,"19h47","indefinido"],[20.784,-0.495,"19h48","indefinido"],[25.62,-0.435,"19h53","indefinido"],[27.509,-0.472,"19h54","tendencia"],[30.404,-0.051,"19h55","tendencia"],[31.044,0.075,"19h56","tendencia"],[33.188,0.134,"19h56","alta"],[34.518,0.31,"19h57","alta"],[36.581,0.336,"19h57","alta"],[37.292,0.357,"19h58","alta"],[38.826,0.267,"19h58","alta"],[42.117,0.289,"19h59","alta"],[45.002,-0.135,"20h00","alta"],[46.404,-0.015,"20h01","alta"],[47.897,-0.018,"20h02","alta"],[50.498,-0.004,"20h02","alta"],[53.18,-0.052,"20h03","alta"],[54.338,-0.055,"20h03","alta"],[55.628,-0.047,"20h03","alta"],[57.649,-0.149,"20h04","alta"],[59.955,-0.179,"20h05","alta"],[60.677,-0.207,"20h05","alta"],[63.196,-0.353,"20h06","alta"],[63.694,-0.353,"20h06","alta"],[65.725,-0.321,"20h06","alta"],[67.198,-0.308,"20h07","alta"],[68.925,-0.206,"20h08","alta"],[69.382,-0.196,"20h08","alta"],[71.698,-0.204,"20h08","alta"],[73.111,-0.14,"20h09","alta"],[74.33,-0.176,"20h10","alta"],[75.447,-0.154,"20h10","alta"],[76.189,-0.144,"20h11","alta"],[76.544,-0.053,"20h11","alta"],[78.291,-0.062,"20h12","alta"],[79.49,-0.095,"20h12","alta"],[80.018,-0.151,"20h13","alta"],[80.933,-0.203,"20h13","alta"],[81.877,-0.209,"20h14","alta"],[83.178,-0.18,"20h15","alta"],[83.868,-0.199,"20h15","alta"],[84.407,-0.21,"20h16","alta"],[85.727,-0.226,"20h16","alta"],[86.52,-0.21,"20h17","alta"],[87.139,-0.227,"20h18","alta"],[87.85,-0.198,"20h18","alta"],[88.369,-0.178,"20h19","alta"],[88.633,-0.183,"20h19","alta"],[89.222,-0.188,"20h20","alta"],[89.699,-0.227,"20h20","alta"],[90.065,-0.247,"20h21","alta"],[90.603,-0.248,"20h21","alta"],[90.807,-0.257,"20h22","alta"],[91.142,-0.265,"20h23","alta"],[91.426,-0.265,"20h23","alta"],[91.518,-0.27,"20h24","alta"],[91.69,-0.173,"20h24","alta"],[91.944,-0.173,"20h25","alta"],[92.249,-0.161,"20h25","alta"],[92.666,-0.194,"20h27","alta"],[93.021,-0.199,"20h27","alta"],[93.417,-0.214,"20h28","alta"],[93.458,-0.214,"20h28","alta"],[93.549,-0.189,"20h28","alta"],[93.793,-0.188,"20h29","alta"],[93.976,-0.15,"20h29","alta"],[94.321,-0.149,"20h30","alta"],[94.657,-0.139,"20h31","alta"],[94.728,-0.124,"20h31","alta"],[94.941,-0.122,"20h32","alta"],[95.022,-0.125,"20h33","alta"],[95.256,-0.141,"20h34","alta"],[95.419,-0.135,"20h34","alta"],[95.469,-0.145,"20h35","alta"],[95.612,-0.157,"20h36","alta"],[95.693,-0.155,"20h36","alta"],[95.713,-0.157,"20h37","alta"],[95.845,-0.157,"20h37","alta"],[95.926,-0.157,"20h38","alta"],[96.069,-0.155,"20h38","alta"],[96.15,-0.155,"20h39","alta"],[96.17,-0.132,"20h39","alta"],[96.272,-0.132,"20h40","alta"],[96.404,-0.136,"20h41","alta"],[96.505,-0.138,"20h41","alta"],[96.556,-0.133,"20h42","alta"],[96.566,-0.141,"20h42","alta"],[96.577,-0.149,"20h44","alta"],[96.587,-0.13,"20h48","alta"],[96.597,-0.128,"20h49","alta"],[96.892,-0.128,"20h54","alta"],[97.003,-0.127,"20h54","alta"],[97.227,-0.116,"20h55","alta"],[97.338,-0.116,"20h56","alta"],[97.359,-0.116,"20h56","alta"],[97.379,-0.104,"20h59","alta"],[97.399,-0.105,"21h01","alta"],[97.471,-0.105,"21h03","alta"],[97.735,-0.105,"21h04","alta"],[97.765,-0.129,"21h05","alta"],[98.446,-0.021,"21h07","alta"],[98.71,-0.021,"21h08","alta"],[99.065,-0.023,"21h08","alta"],[99.553,0.186,"21h09","instavel"],[99.766,-0.034,"21h09","alta"],[99.868,-0.024,"21h10","alta"],[99.909,-0.011,"21h10","alta"],[99.98,-0.009,"21h11","alta"],[99.99,-0.006,"21h12","alta"],[100.0,0.0,"00h52","alta"]],"m1":[33.188,0.134,"19h56","alta"]},"rn":{"venc":"Cadu","perd":"Allyson","pts":[[2.009,-0.038,"19h23","indefinido"],[2.477,-0.038,"19h23","indefinido"],[2.637,1.346,"19h25","indefinido"],[2.81,1.131,"19h25","indefinido"],[3.179,1.206,"19h26","indefinido"],[3.315,0.787,"19h27","indefinido"],[3.537,0.803,"19h27","indefinido"],[3.832,0.887,"19h28","indefinido"],[4.325,0.27,"19h29","indefinido"],[4.744,0.247,"19h31","indefinido"],[5.274,0.171,"19h31","indefinido"],[6.322,0.139,"19h33","indefinido"],[7.024,0.121,"19h33","indefinido"],[7.505,-0.18,"19h34","indefinido"],[8.17,0.229,"19h35","indefinido"],[9.156,0.193,"19h36","indefinido"],[10.117,0.285,"19h36","indefinido"],[10.696,0.298,"19h38","indefinido"],[12.015,0.178,"19h39","indefinido"],[12.754,-0.066,"19h40","indefinido"],[13.259,0.008,"19h41","indefinido"],[13.432,0.056,"19h41","indefinido"],[14.11,0.056,"19h41","indefinido"],[14.985,-0.053,"19h43","indefinido"],[15.638,-0.041,"19h43","indefinido"],[16.365,-0.946,"19h44","indefinido"],[16.525,-0.93,"19h45","indefinido"],[17.449,-0.925,"19h45","indefinido"],[18.731,-0.847,"19h46","indefinido"],[19.359,-0.952,"19h47","indefinido"],[20.148,-0.947,"19h48","indefinido"],[20.468,-1.012,"19h52","instavel"],[21.947,-0.986,"19h53","indefinido"],[22.625,-1.131,"19h54","indefinido"],[24.72,-1.266,"19h55","indefinido"],[26.346,-1.278,"19h56","indefinido"],[26.519,-1.135,"19h57","indefinido"],[26.962,-1.16,"19h58","indefinido"],[27.197,-1.168,"19h58","indefinido"],[28.059,-1.138,"19h59","indefinido"],[29.02,-0.947,"20h00","indefinido"],[29.76,-0.998,"20h01","indefinido"],[31.633,-0.963,"20h01","indefinido"],[32.434,-1.174,"20h02","indefinido"],[33.42,-1.125,"20h03","indefinido"],[33.654,-1.126,"20h03","indefinido"],[34.159,-1.118,"20h04","indefinido"],[35.194,-1.083,"20h04","indefinido"],[36.254,-0.703,"20h05","indefinido"],[36.525,-0.753,"20h05","indefinido"],[37.388,-0.759,"20h06","indefinido"],[37.733,-0.731,"20h06","indefinido"],[38.004,-0.722,"20h07","indefinido"],[39.051,-0.719,"20h07","indefinido"],[39.63,-0.587,"20h08","indefinido"],[40.37,-0.595,"20h08","indefinido"],[41.799,-0.269,"20h09","indefinido"],[43.746,-0.284,"20h10","indefinido"],[45.718,-0.172,"20h11","indefinido"],[48.01,-0.033,"20h12","indefinido"],[49.254,-0.012,"20h13","indefinido"],[50.179,0.073,"20h13","tendencia"],[51.744,0.059,"20h15","tendencia"],[53.518,0.059,"20h15","tendencia"],[54.75,0.04,"20h17","tendencia"],[56.476,0.114,"20h17","alta"],[57.449,0.094,"20h18","alta"],[58.09,-0.178,"20h19","tendencia"],[58.706,-0.174,"20h20","tendencia"],[59.581,-0.176,"20h20","tendencia"],[60.025,-0.156,"20h21","tendencia"],[62.317,-0.142,"20h22","tendencia"],[63.253,-0.112,"20h23","tendencia"],[64.424,-0.116,"20h23","tendencia"],[65.853,-0.209,"20h24","tendencia"],[66.445,-0.283,"20h25","tendencia"],[67.357,-0.282,"20h25","tendencia"],[67.899,-0.291,"20h26","tendencia"],[68.823,-0.296,"20h26","tendencia"],[69.279,-0.321,"20h27","tendencia"],[70.709,-0.287,"20h28","tendencia"],[71.51,-0.282,"20h29","tendencia"],[72.434,-0.143,"20h29","tendencia"],[73.05,-0.085,"20h30","alta"],[74.196,-0.095,"20h31","alta"],[74.615,-0.156,"20h31","alta"],[76.205,-0.129,"20h32","alta"],[77.696,-0.149,"20h34","alta"],[79.026,-0.118,"20h35","alta"],[79.384,-0.105,"20h36","alta"],[80.431,-0.1,"20h37","alta"],[81.01,-0.098,"20h37","alta"],[81.565,-0.097,"20h38","alta"],[82.711,-0.057,"20h39","alta"],[83.376,-0.078,"20h39","alta"],[83.635,-0.073,"20h40","alta"],[84.424,-0.065,"20h40","alta"],[84.88,-0.055,"20h41","alta"],[85.36,-0.058,"20h41","alta"],[86.26,-0.037,"20h42","alta"],[87.049,-0.007,"20h43","alta"],[87.492,0.0,"20h43","alta"],[88.626,-0.081,"20h44","alta"],[89.982,0.007,"20h46","alta"],[90.783,0.006,"20h47","alta"],[91.004,0.003,"20h48","alta"],[91.596,0.004,"20h48","alta"],[91.892,0.01,"20h49","alta"],[92.323,-0.043,"20h50","alta"],[93.259,-0.042,"20h50","alta"],[93.814,-0.072,"20h51","alta"],[94.393,-0.072,"20h52","alta"],[94.985,-0.06,"20h52","alta"],[95.009,-0.059,"20h53","alta"],[95.342,-0.126,"20h54","alta"],[96.057,-0.123,"20h54","alta"],[96.094,-0.123,"20h55","alta"],[96.291,-0.123,"20h55","alta"],[96.365,-0.116,"20h56","alta"],[97.055,-0.116,"20h56","alta"],[97.153,-0.119,"20h57","alta"],[97.215,-0.119,"20h57","alta"],[97.461,-0.115,"20h58","alta"],[97.474,-0.117,"20h59","alta"],[97.535,-0.095,"21h01","alta"],[97.548,-0.092,"21h01","alta"],[97.745,-0.092,"21h03","alta"],[97.856,-0.104,"21h03","alta"],[98.004,-0.093,"21h04","alta"],[98.213,-0.074,"21h05","alta"],[98.226,-0.074,"21h05","alta"],[98.497,-0.045,"21h06","alta"],[98.644,-0.045,"21h07","alta"],[98.706,-0.045,"21h07","alta"],[98.743,-0.045,"21h08","alta"],[98.755,-0.064,"21h08","alta"],[98.768,-0.036,"21h09","alta"],[99.063,-0.036,"21h10","alta"],[99.482,-0.036,"21h10","alta"],[99.926,-0.017,"21h11","alta"],[99.938,-0.007,"21h15","alta"],[100.0,-0.007,"00h52","alta"]],"m1":[56.476,0.114,"20h17","alta"]},"to":{"venc":"Vicentinho","perd":"Dorinha","pts":[[5.429,0.637,"19h10","tendencia"],[5.611,-0.478,"19h12","tendencia"],[5.931,0.463,"19h14","tendencia"],[6.022,0.323,"19h15","tendencia"],[6.318,0.295,"19h15","tendencia"],[6.866,0.148,"19h16","tendencia"],[7.847,0.13,"19h17","alta"],[8.257,1.372,"19h18","alta"],[8.645,0.405,"19h19","alta"],[9.124,0.468,"19h20","alta"],[9.808,0.476,"19h21","alta"],[10.607,0.477,"19h21","alta"],[11.542,0.275,"19h22","alta"],[11.93,0.143,"19h23","alta"],[13.458,0.1,"19h24","alta"],[15.169,0.893,"19h25","alta"],[15.944,0.712,"19h26","alta"],[17.518,0.844,"19h27","alta"],[18.955,0.87,"19h27","alta"],[22.514,0.861,"19h28","alta"],[25.912,0.349,"19h30","alta"],[26.825,0.201,"19h31","alta"],[29.448,0.254,"19h32","alta"],[33.508,0.477,"19h32","alta"],[36.565,0.441,"19h33","alta"],[39.097,0.373,"19h34","alta"],[40.306,0.383,"19h35","alta"],[43.271,0.499,"19h36","alta"],[45.324,0.561,"19h37","alta"],[48.54,0.591,"19h38","alta"],[51.734,0.347,"19h40","alta"],[53.741,0.421,"19h41","alta"],[56.296,0.46,"19h42","alta"],[59.215,0.667,"19h43","alta"],[61.131,0.636,"19h44","alta"],[62.409,0.416,"19h44","alta"],[63.116,0.496,"19h45","alta"],[64.234,0.497,"19h46","alta"],[65.351,0.313,"19h47","instavel"],[66.286,0.281,"19h48","instavel"],[67.267,0.261,"19h49","instavel"],[70.21,0.252,"19h52","alta"],[70.826,0.197,"19h53","alta"],[72.24,0.256,"19h54","alta"],[73.791,0.209,"19h55","alta"],[75.912,0.215,"19h56","alta"],[77.053,0.497,"19h56","alta"],[78.536,0.46,"19h57","alta"],[79.836,0.414,"19h58","alta"],[82.003,0.168,"19h59","alta"],[82.664,0.111,"20h00","instavel"],[82.824,0.066,"20h01","instavel"],[82.984,0.07,"20h02","instavel"],[83.964,0.07,"20h02","instavel"],[84.284,0.053,"20h03","instavel"],[84.831,0.052,"20h03","instavel"],[85.059,0.034,"20h04","instavel"],[85.538,0.047,"20h05","instavel"],[86.382,0.045,"20h05","instavel"],[86.793,0.049,"20h06","instavel"],[86.93,0.024,"20h07","instavel"],[86.953,0.024,"20h07","instavel"],[87.181,0.03,"20h08","alta"],[87.272,0.03,"20h08","alta"],[87.705,0.019,"20h09","alta"],[87.956,0.011,"20h09","alta"],[88.937,-0.004,"20h10","alta"],[89.348,-0.025,"20h11","alta"],[89.53,-0.014,"20h12","alta"],[90.237,-0.021,"20h13","alta"],[90.648,-0.064,"20h14","alta"],[91.286,-0.072,"20h16","alta"],[91.515,-0.072,"20h18","alta"],[91.697,-0.06,"20h19","alta"],[92.45,-0.054,"20h21","alta"],[92.473,-0.054,"20h21","alta"],[92.678,-0.031,"20h22","alta"],[92.746,-0.03,"20h23","alta"],[93.317,-0.081,"20h25","alta"],[93.864,-0.081,"20h25","alta"],[94.047,-0.068,"20h26","alta"],[94.161,-0.068,"20h26","alta"],[94.297,-0.046,"20h27","alta"],[94.731,-0.046,"20h27","alta"],[94.959,-0.048,"20h28","alta"],[95.073,-0.037,"20h29","alta"],[95.461,-0.062,"20h30","alta"],[95.803,-0.062,"20h31","alta"],[96.328,-0.068,"20h33","alta"],[96.601,-0.055,"20h36","alta"],[96.761,-0.045,"20h39","alta"],[96.784,-0.043,"20h42","alta"],[96.829,-0.031,"20h45","alta"],[96.852,-0.034,"20h48","alta"],[96.875,-0.031,"20h50","alta"],[96.943,-0.032,"20h52","alta"],[97.035,-0.032,"20h53","alta"],[97.4,-0.027,"20h54","alta"],[97.696,-0.027,"20h55","alta"],[97.879,-0.027,"20h55","alta"],[98.107,-0.005,"20h56","alta"],[98.175,0.001,"20h59","alta"],[98.221,0.021,"21h04","alta"],[98.517,0.028,"21h08","alta"],[99.065,0.017,"21h11","alta"],[99.361,-0.002,"21h18","alta"],[99.703,0.017,"21h22","alta"],[99.726,0.004,"21h25","alta"],[99.977,-0.001,"21h29","alta"],[100.0,-0.001,"00h52","alta"]],"m1":[7.847,0.13,"19h17","alta"]}}};
+const NOME = { n: "Dalmolin", m: "Mahlmeister" };
+const COR = { n: "--s-n", m: "--s-e" };
+const BANDA = { n: "--band-n", m: "--band-e" };
+const CAMADAS = {  // de baixo para cima; rótulo direto em x = rx
+  n: [["cont", "Contado", "--cont", 60], ["n_sw", "Swing do município", "--s-n", 20], ["n_mod", "Modelos", "--s-n2", 3.2]],
+  m: [["cont", "Contado", "--cont", 60], ["m_reg", "Regressão, base 2022", "--s-e", 40], ["m_r26", "Regressão, base 1º turno", "--s-e3", 20], ["m_tr", "Transferência", "--s-e2", 3]],
+};
+const FIG = {
+  erro: { y: p => p[1] - D.final, dom: [-0.8, 0.8], ticks: [-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8], h: 300,
+          fmt: v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1).replace(".", ","),
+          shade: [5, 15], refs: [{ y: 0, cls: "zero" }], label: 20 },
+  faixa: { y: p => p[1], dom: [44, 60], ticks: [44, 46, 48, 50, 52, 54, 56, 58, 60], h: 280, banda: true,
+           fmt: v => v.toFixed(0), refs: [{ y: 50, cls: "c50", txt: "50%" }, { y: D.final, cls: "final" }] },
+  area: { dom: [0, 100], ticks: [0, 25, 50, 75, 100], h: 260, fmt: v => v + "%" },
+};
+const XT = [2, 3, 5, 10, 20, 30, 50, 100];
+const br = (v, n = 2) => v.toFixed(n).replace(".", ",").replace("-", "−");
+const sg = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2).replace(".", ",");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, at, pai) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in at) e.setAttribute(k, at[k]);
+  if (pai) pai.appendChild(e);
+  return e;
+}
+function perto(xs, x) {  // índice com x mais próximo (xs crescente, escala log)
+  let lo = 0, hi = xs.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (xs[m] < x) lo = m; else hi = m; }
+  return Math.abs(Math.log(xs[lo] / x)) < Math.abs(Math.log(xs[hi] / x)) ? lo : hi;
+}
+const pertoP = (pts, x) => pts[perto(pts.map(p => p[0]), x)];
+let nClip = 0;
+function moldura(box, cfg) {  // svg, escalas e eixos comuns (x log 2–100%)
+  const W = Math.max(280, box.clientWidth), H = cfg.h, m = { l: 40, r: 14, t: 10, b: 26 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const L0 = Math.log(2), L1 = Math.log(100);
+  const X = v => m.l + (Math.log(Math.max(2, v)) - L0) / (L1 - L0) * iw;
+  const Xi = px => Math.min(100, Math.max(2, Math.exp(L0 + (px - m.l) / iw * (L1 - L0))));
+  const Y = v => m.t + (cfg.dom[1] - v) / (cfg.dom[1] - cfg.dom[0]) * ih;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img",
+    "aria-label": cfg.aria || "Gráfico por % das seções apuradas: " + box.dataset.s.split(",").map(k => NOME[k]).join(" e ") }, box);
+  const id = "c" + (++nClip);
+  el("rect", { x: m.l, y: m.t, width: iw, height: ih }, el("clipPath", { id }, el("defs", {}, svg)));
+  if (cfg.shade) el("rect", { x: X(cfg.shade[0]), y: m.t, width: X(cfg.shade[1]) - X(cfg.shade[0]), height: ih,
+    style: "fill:var(--shade)" }, svg);
+  const grade = el("g", {}, svg);
+  for (const t of cfg.ticks) {
+    el("line", { x1: m.l, x2: m.l + iw, y1: Y(t), y2: Y(t), style: "stroke:var(--grid);stroke-width:1" }, grade);
+    el("text", { x: m.l - 6, y: Y(t) + 4, "text-anchor": "end", class: "tick" }, svg).textContent = cfg.fmt(t);
+  }
+  for (const t of cfg.xt || XT) {
+    el("line", { x1: X(t), x2: X(t), y1: m.t + ih, y2: m.t + ih + 4, style: "stroke:var(--axis)" }, svg);
+    el("text", { x: X(t), y: H - 8, "text-anchor": t === 100 ? "end" : "middle", class: "tick" }, svg).textContent = t + "%";
+  }
+  const g = el("g", { "clip-path": `url(#${id})` }, svg);
+  return { W, H, m, iw, ih, X, Xi, Y, svg, g };
+}
+function camadaHover(box, f, ao) {  // cruz + tooltip; ao(x) devolve {xr, html, pts:[[x,y,cor]]}
+  const { svg, m, ih, W, H, iw, X, Xi } = f;
+  const cruz = el("line", { y1: m.t, y2: m.t + ih, style: "stroke:var(--ink-3);stroke-width:1;display:none" }, svg);
+  const pontos = [0, 1, 2].map(() => el("circle", { r: 4.5, style: "stroke:var(--surface);stroke-width:2;display:none" }, svg));
+  const tip = document.createElement("div"); tip.className = "tip"; box.appendChild(tip);
+  const alvo = el("rect", { x: m.l, y: 0, width: iw, height: H, style: "fill:transparent" }, svg);
+  const mostra = ev => {
+    const r = svg.getBoundingClientRect(), x = Xi((ev.clientX - r.left) * W / r.width);
+    const o = ao(x);
+    cruz.setAttribute("x1", X(o.xr)); cruz.setAttribute("x2", X(o.xr)); cruz.style.display = "";
+    pontos.forEach((c, i) => {
+      const p = o.pts[i];
+      if (!p) { c.style.display = "none"; return; }
+      c.setAttribute("cx", X(p[0])); c.setAttribute("cy", p[1]); c.style.fill = `var(${p[2]})`; c.style.display = "";
+    });
+    tip.innerHTML = o.html; tip.style.display = "block";
+    const bx = box.getBoundingClientRect(), tw = tip.offsetWidth;
+    let left = ev.clientX - bx.left + 14; if (left + tw > bx.width) left = ev.clientX - bx.left - tw - 14;
+    tip.style.left = Math.max(0, left) + "px"; tip.style.top = (m.t + 4) + "px";
+  };
+  const some = () => { tip.style.display = "none"; cruz.style.display = "none"; pontos.forEach(p => p.style.display = "none"); };
+  alvo.addEventListener("pointermove", mostra); alvo.addEventListener("pointerdown", mostra);
+  alvo.addEventListener("pointerleave", some);
+}
+function linhas(box, cfg, ks) {
+  const f = moldura(box, cfg), { X, Y, svg, g, m, iw } = f;
+  for (const k of ks) if (cfg.banda) {
+    const p = D[k];
+    const d = "M" + p.map(q => `${X(q[0]).toFixed(1)},${Y(q[2]).toFixed(1)}`).join("L")
+      + "L" + p.slice().reverse().map(q => `${X(q[0]).toFixed(1)},${Y(q[3]).toFixed(1)}`).join("L") + "Z";
+    el("path", { d, style: `fill:var(${BANDA[k]});stroke:none` }, g);
+  }
+  for (const r of cfg.refs) {
+    const st = r.cls === "final" ? "stroke:var(--ink);stroke-width:1.5;stroke-dasharray:5 4" : "stroke:var(--ink-3);stroke-width:1";
+    el("line", { x1: m.l, x2: m.l + iw, y1: Y(r.y), y2: Y(r.y), style: st }, svg);
+    if (r.txt) el("text", { x: m.l + 6, y: Y(r.y) - 5, class: "reflab" }, svg).textContent = r.txt;
+  }
+  for (const k of ks) {
+    const d = "M" + D[k].map(q => `${X(q[0]).toFixed(1)},${Y(cfg.y(q)).toFixed(1)}`).join("L");
+    el("path", { d, style: `fill:none;stroke:var(${COR[k]});stroke-width:2;stroke-linejoin:round;stroke-linecap:round` }, g);
+  }
+  if (cfg.label && ks.length === 2) {
+    const v = ks.map(k => cfg.y(pertoP(D[k], cfg.label)));
+    ks.forEach((k, i) => {
+      const acima = v[i] >= v[1 - i];
+      el("text", { x: X(cfg.label), y: Y(v[i]) + (acima ? -9 : 18), "text-anchor": "middle", class: "dl" }, svg).textContent = NOME[k];
+    });
+  }
+  el("line", { x1: m.l, x2: m.l + iw, y1: f.m.t + f.ih, y2: f.m.t + f.ih, style: "stroke:var(--axis)" }, svg);
+  camadaHover(box, f, x => {
+    let xr = null; const pts = [], ls = [];
+    for (const k of ks) {
+      const q = pertoP(D[k], x); if (xr === null) xr = q[0];
+      const y = cfg.y(q);
+      pts.push([q[0], Y(Math.min(cfg.dom[1], Math.max(cfg.dom[0], y))), COR[k]]);
+      const val = box.dataset.fig === "erro" ? `${sg(y)} pt <small>(proj. ${br(q[1])})</small>`
+        : `${br(q[1])} <small>(faixa ${br(q[2], 1)}–${br(q[3], 1)})</small>`;
+      ls.push(`<i class="sw" style="border-color:var(${COR[k]})"></i>${NOME[k]}: <b>${val}</b> <small>${br(q[0], 1)}% · ${q[4]}</small>`);
+    }
+    return { xr, pts, html: ls.join("<br>") };
+  });
+}
+function area(box, cfg, k) {
+  const f = moldura(box, cfg), { X, Y, svg, g } = f, P = D.pesos, cam = CAMADAS[k];
+  let base = P.x.map(() => 0);
+  const topos = [];
+  for (const [campo, , cor] of cam) {
+    const topo = base.map((b, i) => b + P[campo][i]);
+    const d = "M" + P.x.map((x, i) => `${X(x).toFixed(1)},${Y(topo[i]).toFixed(1)}`).join("L")
+      + "L" + P.x.slice().reverse().map((x, j) => `${X(x).toFixed(1)},${Y(base[P.x.length - 1 - j]).toFixed(1)}`).join("L") + "Z";
+    el("path", { d, style: `fill:var(${cor});stroke:var(--surface);stroke-width:1.5;stroke-linejoin:round` }, g);
+    topos.push([base, topo]); base = topo;
+  }
+  cam.forEach(([campo, rot, , rx], j) => {
+    const i = perto(P.x, rx), [b, t] = topos[j];
+    if (t[i] - b[i] < 8) return;
+    el("text", { x: X(P.x[i]), y: Y((b[i] + t[i]) / 2) + 4, "text-anchor": rx < 4 ? "start" : "middle", class: "dl" }, svg).textContent = rot;
+  });
+  camadaHover(box, f, x => {
+    const i = perto(P.x, x);
+    const ls = cam.slice().reverse().map(([campo, rot, cor]) =>
+      `<i class="sw sw-q" style="background:var(${cor})"></i>${rot}: <b>${br(P[campo][i], 0)}%</b>`);
+    return { xr: P.x[i], pts: [], html: `<small>${br(P.x[i], 1)}% das seções apuradas</small><br>` + ls.join("<br>") };
+  });
+}
+function marcos(box) {  // projeção e faixa nos marcos, as duas séries lado a lado
+  const R = D.marcos.n.length, linhaH = 34, m = { l: 48, r: 14, t: 8, b: 28 };
+  const W = Math.max(280, box.clientWidth), H = m.t + m.b + R * linhaH, iw = W - m.l - m.r;
+  const dom = [49.5, 54.5], X = v => m.l + (v - dom[0]) / (dom[1] - dom[0]) * iw;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img",
+    "aria-label": "Projeção e faixa de 95% de Dalmolin e Mahlmeister em cada marco de % apurado" }, box);
+  for (let t = 50; t <= 54; t += 0.5) {
+    el("line", { x1: X(t), x2: X(t), y1: m.t, y2: H - m.b, style: "stroke:var(--grid);stroke-width:1" }, svg);
+    if (t % 1 === 0) el("text", { x: X(t), y: H - 8, "text-anchor": "middle", class: "tick" }, svg).textContent = t + "%";
+  }
+  el("line", { x1: X(50), x2: X(50), y1: m.t, y2: H - m.b, style: "stroke:var(--ink-3);stroke-width:1" }, svg);
+  el("line", { x1: X(D.final), x2: X(D.final), y1: m.t, y2: H - m.b, style: "stroke:var(--ink);stroke-width:1.5;stroke-dasharray:5 4" }, svg);
+  const seta = (x, y, dir, cor) => el("path", { d: `M${x},${y - 4}L${x + 6 * dir},${y}L${x},${y + 4}Z`, style: `fill:var(${cor})` }, svg);
+  const tip = document.createElement("div"); tip.className = "tip"; box.appendChild(tip);
+  D.marcos.n.forEach((_, r) => {
+    const yc = m.t + r * linhaH + linhaH / 2;
+    el("text", { x: m.l - 10, y: yc + 4, "text-anchor": "end", class: "rowlab" }, svg).textContent = D.marcos.n[r][0] + "%";
+    const ls = [];
+    ["n", "m"].forEach((k, j) => {
+      const [, pct, v, lo, hi, t] = D.marcos[k][r], y = yc + (j ? 6 : -6), cor = COR[k];
+      const a = Math.max(dom[0], lo), b = Math.min(dom[1], hi);
+      el("line", { x1: X(a), x2: X(b), y1: y, y2: y, style: `stroke:var(${cor});stroke-width:3;stroke-linecap:round;opacity:.55` }, svg);
+      if (lo < dom[0]) seta(X(dom[0]), y, -1, cor);
+      if (hi > dom[1]) seta(X(dom[1]), y, 1, cor);
+      el("circle", { cx: X(v), cy: y, r: 4.5, style: `fill:var(${cor});stroke:var(--surface);stroke-width:2` }, svg);
+      ls.push(`<i class="sw" style="border-color:var(${cor})"></i>${NOME[k]}: <b>${br(v)}</b> <small>(faixa ${br(lo, 1)}–${br(hi, 1)}) · ${br(pct, 1)}% · ${t}</small>`);
+    });
+    const alvo = el("rect", { x: 0, y: yc - linhaH / 2, width: W, height: linhaH, style: "fill:transparent" }, svg);
+    const mostra = ev => {
+      tip.innerHTML = `<small>Ao chegar a ${D.marcos.n[r][0]}% · final ${br(D.final)}</small><br>` + ls.join("<br>");
+      tip.style.display = "block";
+      const bx = box.getBoundingClientRect(), tw = tip.offsetWidth;
+      let left = ev.clientX - bx.left + 14; if (left + tw > bx.width) left = ev.clientX - bx.left - tw - 14;
+      tip.style.left = Math.max(0, left) + "px"; tip.style.top = (yc + linhaH / 2 + 4) + "px";
+    };
+    alvo.addEventListener("pointermove", mostra); alvo.addEventListener("pointerdown", mostra);
+    alvo.addEventListener("pointerleave", () => { tip.style.display = "none"; });
+  });
+}
+const GMAX = Math.max(3, Math.ceil(Math.max(...Object.values(D.gov).flatMap(g => g.pts.map(p => Math.abs(p[1]))))));
+function gov(box, uf) {  // erro da projeção do vencedor numa UF; círculo na 1ª alta
+  const g = D.gov[uf], tk = [];
+  for (let v = -GMAX; v <= GMAX; v++) tk.push(v);
+  const cfg = { dom: [-GMAX, GMAX], ticks: tk, h: 190, xt: [2, 5, 10, 20, 50, 100],
+    fmt: v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v), aria: `Erro da projeção do vencedor, ${uf.toUpperCase()}` };
+  const f = moldura(box, cfg), { X, Y, svg, g: gc, m, iw } = f;
+  el("line", { x1: m.l, x2: m.l + iw, y1: Y(0), y2: Y(0), style: "stroke:var(--ink-3);stroke-width:1" }, svg);
+  el("path", { d: "M" + g.pts.map(p => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("L"),
+    style: "fill:none;stroke:var(--s-n);stroke-width:2;stroke-linejoin:round;stroke-linecap:round" }, gc);
+  const [ax, ay] = g.m1;
+  el("circle", { cx: X(ax), cy: Y(ay), r: 5, style: "fill:var(--surface);stroke:var(--ink);stroke-width:2" }, svg);
+  el("text", { x: X(ax) + 8, y: Y(ay) + (ay >= 0 ? -8 : 16), class: "dl" }, svg).textContent = "1ª alta";
+  const NIV = { alta: "alta", tendencia: "tendência", indefinido: "indefinido", instavel: "instável" };
+  camadaHover(box, f, x => {
+    const p = pertoP(g.pts, x);
+    return { xr: p[0], pts: [[p[0], Y(Math.min(GMAX, Math.max(-GMAX, p[1]))), "--s-n"]],
+      html: `<small>${br(p[0], 1)}% · ${p[2]} · confiança ${NIV[p[3]] || p[3]}</small><br>${g.venc}: <b>${sg(p[1])} pt</b>` };
+  });
+}
+const grade = document.getElementById("gov-grid");
+for (const uf of Object.keys(D.gov)) {
+  const g = D.gov[uf], pn = document.createElement("div");
+  pn.className = "painel";
+  pn.innerHTML = `<h3>${uf.toUpperCase()} · ${g.venc} × ${g.perd}</h3><div class="chart" data-fig="gov" data-s="${uf}"></div>`;
+  grade.appendChild(pn);
+}
+function desenha(box) {
+  box.innerHTML = "";
+  const tipo = box.dataset.fig, ks = box.dataset.s.split(",");
+  if (tipo === "gov") gov(box, ks[0]);
+  else if (tipo === "marcos") marcos(box);
+  else if (tipo === "area") area(box, FIG.area, ks[0]);
+  else linhas(box, FIG[tipo], ks);
+}
+const caixas = [...document.querySelectorAll(".chart")];
+const tudo = () => caixas.forEach(desenha);
+tudo();
+let tm; new ResizeObserver(() => { clearTimeout(tm); tm = setTimeout(tudo, 120); }).observe(document.body);
+</script>
+</body>
+</html>

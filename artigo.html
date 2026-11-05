@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O swing simples basta para projetar um 2º turno? · Apuração comparada</title>
+<meta name="description" content="Dois métodos, uma noite: o que a apuração de 25 de outubro de 2026 me mostrou sobre comparar o 2º turno com o 1º.">
+<meta property="og:title" content="O swing simples basta para projetar um 2º turno?">
+<meta property="og:description" content="Dois métodos, uma noite: o que a apuração de 25 de outubro de 2026 me mostrou sobre comparar o 2º turno com o 1º.">
+<meta property="og:url" content="https://apuracao.dalmolin.dev/artigo.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Apuração comparada">
+<meta property="og:image" content="https://apuracao.dalmolin.dev/artigo_og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Gráfico da noite de 25/10/2026: o placar do TSE virou duas vezes; as projeções de Lula ficaram perto de 51,8%.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="O swing simples basta para projetar um 2º turno?">
+<meta name="twitter:description" content="Dois métodos, uma noite: o que a apuração de 25 de outubro de 2026 me mostrou sobre comparar o 2º turno com o 1º.">
+<meta name="twitter:image" content="https://apuracao.dalmolin.dev/artigo_og.png">
+<link rel="canonical" href="https://apuracao.dalmolin.dev/artigo.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Gerado por site/gerar_artigo.py a partir de relatorio/estudos/artigo/artigo.md. Não editar à mão. -->
+<style>
+
+/* Mesmo visual de relatorio/relatorio.html. Gerado por relatorio/estudos/dalmolin_x_mahlmeister_html.py: editar este modelo, não o .html. */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --ink: #14171c; --ink-2: #4a505b; --ink-3: #6f7682;
+  --rule: #dfe2e8; --grid: #e9ebef; --axis: #c3c7cf; --accent: #1d5fa8;
+  --s-n: #0f8a7e; --s-e: #7a4fc4; --band-n: rgba(15, 138, 126, .18); --band-e: rgba(122, 79, 196, .26);
+  --s-n2: #a6ddd6; --s-e2: #d2c2ef; --s-e3: #b094e0; --cont: #d3d7de;
+  --shade: rgba(20, 23, 28, .045); --callout: #f0f5fc; --warn: #9a6400;
+  --f-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #191c21; --ink: #eceef2; --ink-2: #b9bec8; --ink-3: #8d94a0;
+    --rule: #2c3038; --grid: #252930; --axis: #3a3f48; --accent: #6aa6ec;
+    --s-n: #2fb8aa; --s-e: #a98ae6; --band-n: rgba(47, 184, 170, .22); --band-e: rgba(169, 138, 230, .32);
+    --s-n2: #145e56; --s-e2: #4a3480; --s-e3: #6f55a8; --cont: #3a3f48;
+    --shade: rgba(255, 255, 255, .045); --callout: #172231; --warn: #f0b23c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #191c21; --ink: #eceef2; --ink-2: #b9bec8; --ink-3: #8d94a0;
+  --rule: #2c3038; --grid: #252930; --axis: #3a3f48; --accent: #6aa6ec;
+  --s-n: #2fb8aa; --s-e: #a98ae6; --band-n: rgba(47, 184, 170, .22); --band-e: rgba(169, 138, 230, .32);
+  --s-n2: #145e56; --s-e2: #4a3480; --s-e3: #6f55a8; --cont: #3a3f48;
+  --shade: rgba(255, 255, 255, .045); --callout: #172231; --warn: #f0b23c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); margin: 0;
+  font: 400 1.0625rem/1.6 var(--f-body);
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.25rem; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; font-stretch: 80%; letter-spacing: -.01em; }
+h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; font-stretch: 85%; }
+h3 { font-size: 1.1rem; font-weight: 700; font-stretch: 90%; }
+p { margin: 0; }
+code { font-family: var(--f-mono); font-size: .86em; overflow-wrap: anywhere; }
+a { color: var(--accent); }
+small { font-size: .82em; color: var(--ink-3); }
+strong { font-weight: 600; }
+.eyebrow { font: 500 .78rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.prosa { display: grid; gap: .9rem; max-width: 46rem; min-width: 0; }
+.prosa ul, .prosa ol, .cartao ul, .cartao ol { margin: 0; padding-left: 1.3rem; display: grid; gap: .4rem; }
+header.topo { padding-top: 2.5rem; display: grid; gap: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 1.5rem; }
+header.topo .lede { font-size: 1.15rem; color: var(--ink-2); max-width: 46rem; }
+nav.indice { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; font: 500 .85rem/1.4 var(--f-mono); }
+nav.indice a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+nav.indice a:hover, nav.indice a:focus-visible { color: var(--accent); border-color: var(--accent); }
+section { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; scroll-margin-top: 4rem; min-width: 0; }
+.fig > details, section > details, details { min-width: 0; max-width: 100%; }
+body { padding: 0; }
+.barra { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--rule); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.barra .in { max-width: 72rem; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.barra .tit { font-weight: 750; font-size: 15px; } .barra .tit a { color: inherit; text-decoration: none; }
+.barra .selo { background: #2f6b4f; color: #fff; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
+.barra .dir { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; }
+.wrap { padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px)); }
+header.topo .byline { font-size: .95rem; color: var(--ink-2); } header.topo .byline b { color: var(--ink); font-weight: 600; }
+footer { display: grid; gap: .4rem; }
+section > header { display: grid; gap: .35rem; }
+.num-sec { font: 500 .8rem var(--f-mono); color: var(--accent); }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.tile { background: var(--surface); padding: 1rem 1.1rem; display: grid; gap: .5rem; align-content: start; }
+.t-rot { font-size: .95rem; color: var(--ink-2); line-height: 1.3; }
+.t-par { display: grid; gap: .25rem; }
+.t-par > div { display: flex; align-items: baseline; gap: .5rem; }
+.t-v { font: 700 1.8rem/1.05 var(--f-display); font-stretch: 80%; font-variant-numeric: tabular-nums; min-width: 5.2rem; }
+.t-q { font-size: .88rem; color: var(--ink-3); }
+.t-nota { font-size: .8rem; color: var(--ink-3); }
+.sw { display: inline-block; width: 1.2rem; height: 0; border-top: 3px solid; flex: none; transform: translateY(-.3rem); }
+.sw-n { border-color: var(--s-n); } .sw-e { border-color: var(--s-e); }
+.sw-f { border-top: 2px dashed var(--ink); }
+.sw-50 { border-top: 1px solid var(--ink-3); }
+.sw-q { height: .75rem; border: 0; transform: none; width: .9rem; }
+.sw-bn { background: var(--band-n); } .sw-be { background: var(--band-e); }
+.sw-sh { background: var(--shade); outline: 1px solid var(--rule); }
+.sw-cont { background: var(--cont); } .sw-n1 { background: var(--s-n); } .sw-n2 { background: var(--s-n2); }
+.sw-e1 { background: var(--s-e); } .sw-e2 { background: var(--s-e2); } .sw-e3 { background: var(--s-e3); }
+
+.callout { background: var(--callout); border-left: 3px solid var(--accent); padding: .9rem 1.1rem; display: grid; gap: .5rem; max-width: 46rem; }
+.nota { border-left: 3px solid var(--warn); padding: .2rem 0 .2rem 1rem; max-width: 46rem; display: grid; gap: .5rem; }
+.cartao { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--s-n); padding: 1rem 1.1rem; display: grid; gap: .6rem; align-content: start; }
+.cartao.m { border-top-color: var(--s-e); }
+.cartao h3 { font-size: 1.05rem; }
+
+.fig { margin: 0; background: var(--surface); border: 1px solid var(--rule); padding: 1rem; display: grid; gap: .75rem; min-width: 0; }
+.fig figcaption { font: 600 1rem/1.3 var(--f-display); font-stretch: 90%; }
+.fig figcaption small { font-family: var(--f-body); font-weight: 400; display: block; margin-top: .2rem; }
+.dupla { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr)); gap: 1.25rem; }
+.painel { display: grid; gap: .35rem; min-width: 0; align-content: start; }
+.painel h3 { font-size: .95rem; color: var(--ink-2); display: flex; align-items: center; gap: .45rem; }
+.painel h3 .sw { transform: none; }
+.chart { position: relative; width: 100%; min-width: 0; touch-action: pan-y; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+.legenda { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; font-size: .9rem; color: var(--ink-2); }
+.legenda span { display: inline-flex; align-items: center; gap: .45rem; }
+.legenda .sw { transform: none; }
+.tick { font: 400 11px var(--f-body); fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+.rowlab { font: 500 12px var(--f-body); fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.dl { font: 600 12px var(--f-body); fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.reflab { font: 400 11px var(--f-body); fill: var(--ink-3); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--rule);
+  box-shadow: 0 4px 14px rgba(0,0,0,.12); padding: .45rem .6rem; font-size: .82rem; line-height: 1.45; white-space: nowrap;
+  display: none; z-index: 2; font-variant-numeric: tabular-nums; }
+.tip b { font-weight: 600; }
+.tip .sw { width: .9rem; transform: translateY(-.25rem); margin-right: .35rem; }
+.tip .sw-q { transform: none; width: .7rem; height: .7rem; margin-right: .35rem; vertical-align: -.05rem; }
+
+.tabela-wrap { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; font-variant-numeric: tabular-nums; }
+th, td { padding: .5rem .65rem; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; vertical-align: top; }
+thead th { font: 600 .76rem/1.25 var(--f-body); color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; white-space: normal; vertical-align: bottom; }
+tbody th { text-align: left; font-weight: 400; color: var(--ink-2); white-space: normal; min-width: 11rem; }
+table.dados tbody th { min-width: 5rem; }
+thead th:first-child { text-align: left; }
+table.metodo td, table.metodo th { text-align: left; white-space: normal; }
+table.metodo td { min-width: 14rem; width: 42%; }
+table.metodo tbody th { font-weight: 600; color: var(--ink); min-width: 9rem; }
+table.dados td small { color: var(--ink-3); }
+tbody tr:hover { background: var(--bg); }
+.gov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem 1.25rem; }
+table.gov th.t, table.gov td.t { text-align: left; }
+.sw-alta { width: .75rem; height: .75rem; border-radius: 50%; background: var(--surface); outline: 2px solid var(--ink); outline-offset: -2px; }
+summary { cursor: pointer; color: var(--accent); font-size: .92rem; }
+details[open] summary { margin-bottom: .6rem; }
+ol.fontes { margin: 0; padding-left: 1.3rem; display: grid; gap: .3rem; font-size: .95rem; }
+footer { color: var(--ink-3); font-size: .88rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+
+
+/* ---- artigo: barra do topo do painel e ajustes ---- */
+body { padding: 0; }
+.topo { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--rule); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.topo .in { max-width: 72rem; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.topo .tit { font-weight: 750; font-size: 15px; } .topo .tit a { color: inherit; text-decoration: none; }
+.topo .selo { background: #2f6b4f; color: #fff; border-radius: 99px; padding: 1px 9px; font-weight: 700; font-size: 12px; }
+.topo .dir { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; }
+.topo .dir a { color: var(--accent); }
+.topo button { font: inherit; font-size: 13px; padding: 2px 10px; border-radius: 99px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; }
+.wrap { padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px)); gap: 2.75rem; }
+header.topo-art { padding-top: 2.25rem; display: grid; gap: .9rem; border-bottom: 2px solid var(--ink); padding-bottom: 1.4rem; }
+header.topo-art .lede { font-size: 1.15rem; color: var(--ink-2); max-width: 46rem; }
+header.topo-art .byline { font-size: .95rem; color: var(--ink-2); }
+header.topo-art .byline b { color: var(--ink); font-weight: 600; }
+article { display: contents; }
+.prosa p em:only-child, .prosa > p > em:only-child { color: var(--ink-3); font-size: .92em; }
+.prosa .tabela-wrap + p { margin-top: -.5rem; }
+blockquote { margin: 0; background: var(--callout); border-left: 3px solid var(--accent); padding: .9rem 1.1rem; display: grid; gap: .5rem; max-width: 46rem; font-size: .97rem; }
+.fig .sub { font-size: .97rem; color: var(--ink-2); max-width: 46rem; }
+.fig .subt { font: 600 .95rem/1.3 var(--f-display); margin-top: .4rem; } .fig .subt small { display: block; font-family: var(--f-body); font-weight: 400; margin-top: .15rem; }
+.painel h3 small { font-weight: 400; color: var(--ink-3); margin-left: .25rem; }
+:root { --ca: #d1342f; --cb: #2463c9; --bad: #c23434; --placar: var(--ink); --r26: #9aa1ad; --r22: #3d434d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ca: #f0605a; --cb: #5b93ee; --bad: #f0605a; --r26: #6b717c; --r22: #c9ced6; } }
+footer.fim { display: grid; gap: .5rem; }
+.entra { max-width: 46rem; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); padding: .8rem 0 .9rem; display: grid; gap: .6rem; }
+.entra .rot { font: 500 .72rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.entra dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: .5rem 1rem; align-items: baseline; }
+.entra dt { font-family: var(--f-display); font-weight: 700; display: flex; align-items: center; gap: .45rem; white-space: nowrap; }
+.entra dt .sw { transform: none; width: 1rem; }
+.entra dd { margin: 0; color: var(--ink-2); line-height: 1.5; } .entra dd b { color: var(--ink); font-weight: 600; }
+.entra .nota-entra { font-size: .9rem; color: var(--ink-3); }
+@media (max-width: 480px) { .entra dl { grid-template-columns: 1fr; gap: .15rem .5rem; } .entra dd { margin-bottom: .35rem; } }
+
+/* paleta dos métodos: sem vermelho nem azul (cores de candidato) */
+:root { --s-n: #0f8a7e; --s-e: #7a4fc4; --band-n: rgba(15, 138, 126, .18); --band-e: rgba(122, 79, 196, .26); --s-n2: #a6ddd6; --s-e2: #d2c2ef; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --s-n: #2fb8aa; --s-e: #a98ae6; --band-n: rgba(47, 184, 170, .22); --band-e: rgba(169, 138, 230, .32); --s-n2: #145e56; --s-e2: #4a3480; } }
+/* figura: com o que cada método trabalha */
+.insumos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1.25rem; }
+.insumos .col { display: grid; gap: .45rem; align-content: start; border-top: 3px solid var(--s-n); padding-top: .6rem; }
+.insumos .col.m { border-top-color: var(--s-e); }
+.insumos h3 { font-size: 1.05rem; display: flex; align-items: center; gap: .45rem; } .insumos h3 .sw { transform: none; } .insumos h3 small { font-weight: 400; color: var(--ink-3); }
+.insumos .rot { font: 500 .72rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-top: .2rem; }
+.ins-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+.ins { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: .45rem .65rem; font-size: .9rem; line-height: 1.35; color: var(--ink-2); }
+.ins b { color: var(--ink); font-weight: 600; }
+.ins.ext { border-style: dashed; border-color: var(--warn); background: color-mix(in srgb, var(--warn) 7%, var(--surface)); }
+.insumos .seta { text-align: center; color: var(--ink-3); line-height: 1; font-size: 1.1rem; }
+.insumos .motor { border: 2px solid var(--s-n); border-radius: 8px; padding: .6rem .75rem; display: grid; gap: .35rem; font-size: .92rem; line-height: 1.4; }
+.insumos .col.m .motor { border-color: var(--s-e); }
+.insumos .motor b { font-family: var(--f-display); font-size: 1.05rem; }
+.insumos .motor p { color: var(--ink-2); } .insumos .motor .nada { color: var(--ink-3); font-size: .85rem; }
+.insumos .saida { background: var(--surface); border: 1px solid var(--axis); border-radius: 6px; padding: .5rem .65rem; font-size: .92rem; }
+.insumos .saida small { display: block; color: var(--ink-3); margin-top: .15rem; }
+
+section { scroll-margin-top: 4rem; }
+.prosa table td, .prosa table th { text-align: left; }
+#fig-p1 .nota { border: 0; padding: 0; max-width: none; }
+.t-pesos { font-variant-numeric: tabular-nums; }
+.t-pesos th, .t-pesos td { padding-left: .55rem; padding-right: .55rem; }
+nav.indice { padding-top: .25rem; }
+
+#fig-p1 .pfig { max-width: 760px; margin: 0 auto; padding: 20px 16px 14px; }
+#fig-p1 .eyebrow { font: 600 12px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+#fig-p1 .ftit { font-size: 26px; line-height: 1.12; margin: 6px 0 6px; font-weight: 750; letter-spacing: -.01em; }
+#fig-p1 .sub { font-size: 15px; line-height: 1.35; color: var(--ink-2); margin: 0 0 10px; }
+#fig-p1 .leg { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13.5px; color: var(--ink-2); margin-bottom: 4px; }
+#fig-p1 .leg span { display: inline-flex; align-items: center; gap: 6px; }
+#fig-p1 .leg i { display: inline-block; width: 18px; height: 0; border-top: 3px solid; }
+#fig-p1 .leida { display: flex; align-items: baseline; gap: 10px; font-variant-numeric: tabular-nums; min-height: 30px; }
+#fig-p1 .leida b { font-size: 24px; font-weight: 750; }
+#fig-p1 .leida span { font-size: 14px; color: var(--ink-2); }
+#fig-p1 svg { display: block; width: 100%; overflow: visible; }
+#fig-p1 svg text { font-family: var(--f); }
+#fig-p1 .nota { font-size: 12px; line-height: 1.4; color: var(--ink-3); margin: 8px 0 0; }
+#fig-p1 .ctl { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+#fig-p1 .ctl button { font: 600 13px var(--f); color: var(--ink); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+#fig-p1 .ctl input { flex: 1; }
+#fig-p1 .tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 6px 8px; font-size: 12.5px; line-height: 1.45; box-shadow: 0 2px 8px rgba(0,0,0,.15); font-variant-numeric: tabular-nums;
+  display: none; white-space: nowrap; }
+#fig-p1 .tip i { display: inline-block; width: 10px; height: 0; border-top: 3px solid; margin-right: 5px; vertical-align: middle; }
+#fig-p1 .marca { display: flex; flex-wrap: wrap; gap: 2px 12px; justify-content: space-between; font-size: 12px; color: var(--ink-3); margin-top: 10px; }
+#fig-p1 .marca b { color: var(--ink); }
+#fig-p1 /* formato X (vídeo/GIF 720x900): tipos maiores, #fig-p1 sem controles */
+body.x .pfig { width: 720px; height: 900px; max-width: none; padding: 34px 34px 22px; display: flex; flex-direction: column; }
+#fig-p1 .pfig { max-width: none; padding: 0; }
+
+</style>
+</head>
+<body>
+<header class="topo"><div class="in">
+  <span class="tit"><a href="./">Apuração comparada</a></span><span class="selo">ARTIGO</span>
+  <span class="dir"><a href="./">Painel</a><a href="governador.html">Governadores</a><a href="estudos/dalmolin_x_mahlmeister.html">Apêndice técnico</a><button type="button" class="compartilhar">Compartilhar</button></span>
+</div></header>
+<div class="wrap">
+<article>
+<header class="topo-art">
+  <div class="eyebrow">Artigo · 5 de novembro de 2026</div>
+  <h1>O swing simples basta para projetar um 2º turno?</h1>
+  <p class="lede">Dois métodos, uma noite: o que a apuração de 25 de outubro de 2026 me mostrou sobre comparar o 2º turno com o 1º.</p>
+  <p class="byline"><b>Matheus Dalmolin</b> · autor do painel · <a href="https://x.com/MatheusDalmolin">@MatheusDalmolin</a></p>
+  <nav class="indice" aria-label="Seções"><a href="#19h17">19h17</a><a href="#a-pergunta">A pergunta</a><a href="#cada-problema-seu-metodo">Cada problema, seu método</a><a href="#o-que-a-noite-mostrou">O que a noite mostrou</a><a href="#foi-a-eleicao-de-2022">Foi a eleição de 2022?</a><a href="#saber-o-quanto-se-sabe">Saber o quanto se sabe</a><a href="#nao-foi-so-o-presidente">Não foi só o presidente</a><a href="#a-resposta">A resposta</a><a href="#dados-e-referencias">Dados e referências</a></nav>
+</header>
+<section id="19h17"><header><h2>19h17</h2></header><div class="prosa">
+<p>Às 19h17 de 25 de outubro, com 2,04% das seções apuradas, meu painel projetava Lula com 51,79% dos votos válidos (<a href="https://apuracao.dalmolin.dev">painel</a>). O resultado oficial, arredondado, seria também 51,79%. O placar do TSE marcava 51,78% naquele minuto, mas ainda viraria duas vezes antes do fim.</p>
+<p>Pouco depois, com 2,42% das seções, a página de Rodrigo Mahlmeister mostrava Lula com 51,58% (<a href="https://projecao.2026elections.workers.dev">site do modelo</a>). A projeção foi contratada pelo Estadão, que destacou o resultado "com apenas 2,42% das urnas apuradas" (<a href="https://www.terra.com.br/noticias/brasil/politica/modelo-estatistico-usado-pelo-estadao-antecipou-resultado-com-apenas-242-das-urnas-apuradas,709f2274cefa2fb2584af4341fedede8h60p3q65.html">Estadão, via Terra</a>). Até 5% apurado, a página marcou de 51,43% a 51,75%. Hoje o site mostra a noite com o método que ele planejou antes da eleição. Nessa série, o valor com 2,42% é 51,75%, e o trecho até 5% fica entre 51,75% e 51,99%.</p>
+<p>Nas séries que comparo aqui, a dele com esse método e a minha sem 9 leituras afetadas por um defeito que corrigi depois, os dois métodos chegaram quase ao mesmo número por caminhos diferentes e, mais adiante, se separaram. De 5% a 8% das seções, o modelo de Mahlmeister ficou em média a 0,03 ponto do resultado, e meu painel, a 0,25; de 8% a 30%, meu painel ficou a 0,13, e o dele, a 0,37. Uso essa noite para responder a uma pergunta de método, não para dizer quem acertou mais.</p>
+</div><figure class="fig" id="fig-p1"><div class="pfig">
+  <div class="eyebrow">Noite de 25/10/2026 · 2º turno para presidente</div>
+  <p class="ftit">O placar virou duas vezes. As projeções, não.</p>
+  <p class="sub">Lula, em % dos votos válidos: o placar do TSE e as projeções dos dois métodos, a cada leitura</p>
+  <div class="leg">
+    <span><i style="border-color:var(--placar)"></i>Placar do TSE</span>
+    <span><i style="border-color:var(--s-n)"></i>Método Dalmolin</span>
+    <span><i style="border-color:var(--s-e)"></i>Método de Mahlmeister</span>
+  </div>
+  <div class="leida" id="p1-leida"></div>
+  <div id="p1-graf" style="position:relative"><svg id="p1-svg"></svg><div class="tip" id="p1-tip"></div></div>
+  <div class="ctl"><button id="p1-play">▶ Rever a noite</button><input id="p1-rel" type="range" min="0" max="1000" value="1000" aria-label="Momento da noite"></div>
+  <p class="nota" id="p1-nota"></p>
+  </div></figure></section><section id="a-pergunta"><header><h2>A pergunta</h2></header><div class="prosa">
+<p>Num 2º turno com o 1º turno três semanas antes, comparar um com o outro basta para projetar o resultado? Ou as camadas de um modelo estatístico robusto fazem diferença?</p>
+<p>O placar parcial engana porque as primeiras urnas não representam o país. Os votos do Nordeste e do Norte costumam entrar quando a apuração já está adiantada (<a href="https://www.terra.com.br/noticias/brasil/votos-do-nordeste-demoram-mais-para-chegar-ao-tse-tudo-para-acompanhar-a-apuracao,eee634a6a5ed0783b6e5c6022d505436t82a6p3h.html">BBC News Brasil</a>). Em 2022, passados os primeiros minutos de votos do exterior, Jair Bolsonaro liderou até cerca de 67% das seções e perdeu.</p>
+<p>Em 2026, o placar enganou de outro jeito. Com a votação prorrogada até as 19h pelo STF, o TSE suspendeu a totalização (<a href="https://www.infomoney.com.br/politica/tse-pausa-totalizacao-dos-votos-apos-zanin-prorrogar-votacao-ate-as-19h/">InfoMoney</a>), e o placar ficou quase duas horas parado em 0,25% das seções, com Lula em 57,7%. Sete em cada dez desses votos vinham do exterior. Na retomada, Lula seguiu à frente até 13,3% das seções. Na leitura seguinte, com 13,7%, Flávio Bolsonaro passou à frente e liderou até 47,6%, quando Lula retomou a liderança para não perder mais: duas viradas em cerca de 40 minutos (<a href="https://www.terra.com.br/ao-vivo/noticias/eleicoes/eleicoes-2026-confira-como-foi-a-apuracao-do-2-turno,c1edbcf56b98dcf79864578a36a476336470wsfv.html">Terra</a>). Quem projeta precisa corrigir esse viés de chegada.</p>
+<p>O swing é a correção mais simples: medir quanto o voto mudou em cada lugar e aplicar essa mudança ao que ainda falta. Por exemplo: contando só Lula e Flávio, as seções já apuradas de um município deram 48% a Lula no 1º turno. Se agora, no 2º, as mesmas seções dão 51%, o swing ali é de 3 pontos. Como cada lugar é comparado com ele mesmo, não importa que as primeiras urnas venham de onde Lula ou Flávio é mais forte.</p>
+<p>Um modelo estatístico robusto vai além. Ele pode medir o swing numa escala mais adequada, emprestar informação entre estados quando há poucos dados e partir de uma expectativa prévia, como as pesquisas. Cada camada tem razão de existir; a pergunta é quanto ela acrescenta num 2º turno.</p>
+</div></section><section id="cada-problema-seu-metodo"><header><h2>Cada problema, seu método</h2></header><div class="prosa">
+<p>Os dois métodos usam swing. Mudam a eleição usada como comparação e o quanto de estatística vai por cima, e cada escolha responde ao problema que seu autor quis resolver.</p>
+<p><strong>Fiz o método do painel para qualquer 2º turno</strong>, de presidente ou de governador. Em 2026 ele projetou ao vivo o presidente e os governadores de AC, AM, DF, ES, RN e TO (<a href="https://apuracao.dalmolin.dev">painel</a>). A comparação é sempre com o 1º turno de 2026, nas mesmas seções: as 499.248 seções do 2º turno têm par exato pelo código.</p>
+<p>O TSE publica o 2º turno por município. Em cada município que já tem urna, meu método compara o resultado contado com o 1º turno das mesmas seções e aplica esse swing ao que falta. Onde ainda não chegou urna, usa a média de dois modelos simples: a transferência dos votos dos outros candidatos e uma regressão por UF.</p>
+<p>Esses modelos pesam no começo e somem com a noite. Os municípios ainda sem nenhuma urna concentravam 75% dos votos válidos projetados com 2% apurado, 39% com 20% e 13% com 50%. Sem pesquisas: o único insumo é o TSE.</p>
+<p><strong>O método de Mahlmeister foi feito também para o 1º turno.</strong> O site valida o modelo em reproduções dos dois turnos de 2022, e a NeoFeed contou como ele projetou o 1º turno de 2026 (<a href="https://projecao.2026elections.workers.dev">site do modelo</a>; <a href="https://neofeed.com.br/finde/como-um-pesquisador-brasileiro-criou-um-algoritmo-que-simulou-e-acertou-o-resultado-do-1o-turno/">NeoFeed</a>). No 1º turno não existe eleição próxima, e a referência natural é a anterior.</p>
+<p>O modelo principal dá a cada seção de 2026 o resultado de 2022 do seu local de votação, pareado por critérios geográficos (93% do eleitorado com par exato). Em cada município, mede o swing em razões log entre o apurado e essa base. Uma regressão hierárquica Brasil, região e UF, com encolhimento e ponto de partida nas pesquisas finais ou em swing nulo, estende esse swing às seções que faltam. Nos municípios que já começaram a apurar, segundo os detalhes técnicos do site, o que falta parte do 1º turno de 2026 das mesmas seções. No método planejado, até 5% do eleitorado apurado vale a transferência sobre o 1º turno; entre 5% e 15%, a projeção passa aos poucos para o modelo principal (<a href="https://projecao.2026elections.workers.dev">site do modelo</a>).</p>
+<p>Meu método só existe porque há um 1º turno, e por isso não serve para o 1º. O de Mahlmeister leva para o 2º turno a estrutura que o 1º exige.</p>
+<blockquote>
+<p><strong>Termos.</strong> <em>Transferência</em>: os votos que no 1º turno foram para outros candidatos são divididos entre Lula e Flávio na proporção medida onde já há votos. <em>Razão log</em>: em vez da diferença em pontos, compara a razão entre os votos de cada candidato e os dos demais, em escala logarítmica. <em>Regressão hierárquica com encolhimento</em>: onde há poucos dados, a estimativa de um estado é puxada para a da região e a do país. <em>Ponto de partida</em>: o valor esperado antes dos votos, que perde peso à medida que eles chegam. <em>Reamostragem</em>: sortear municípios muitas vezes para ver quanto a projeção varia.</p>
+</blockquote>
+</div><aside class="entra" id="fig-fluxo"><p class="rot">O que entra na projeção de cada método</p><dl><dt><i class="sw sw-n"></i>Dalmolin</dt><dd><b>2º turno de 2026</b> ao vivo e <b>1º turno de 2026</b>, nas mesmas seções.</dd><dt><i class="sw sw-e"></i>Mahlmeister</dt><dd><b>2º turno de 2026</b> ao vivo; <b>2º turno de 2022</b> por local de votação, como base; <b>1º turno de 2026</b>, até 15% do eleitorado apurado e, depois, nos municípios já em apuração; <b>pesquisas finais ou swing nulo</b>, como ponto de partida; e uma <b>regressão hierárquica</b> por cima.</dd></dl><p class="nota-entra">A diferença maior está no que entra: de um lado, só os dois turnos de 2026; do outro, um modelo estatístico que também usa 2022 e um ponto de partida externo. A descrição do método dele vem do site do modelo; o passo a passo dos dois está no <a href="estudos/dalmolin_x_mahlmeister.html#metodos">apêndice técnico</a>.</p></aside></section><section id="o-que-a-noite-mostrou"><header><h2>O que a noite mostrou</h2></header><div class="prosa">
+<p>Os dois métodos ficaram perto do resultado no começo e no fim, e se afastaram no meio da noite.</p>
+</div><figure class="fig" id="fig-erro"><figcaption>Erro da projeção de Lula ao longo da apuração<small>Dalmolin = meu painel: leituras gravadas na noite de 25/10/2026, sem 9 leituras (ver Dados). Mahlmeister: série do método planejado, que o site do modelo mostra hoje (igual à que foi ao ar depois de 19h46). De 2% a 100% das seções, escala logarítmica.</small></figcaption>
+<div class="legenda"><span><i class="sw sw-n"></i>Método Dalmolin</span><span><i class="sw sw-e"></i>Método de Mahlmeister</span><span><i class="sw sw-q sw-sh"></i>±0,2 ponto</span></div>
+<div class="chart"></div>
+</figure><div class="prosa">
+<ul>
+<li><strong>Até 5% apurado:</strong> erro médio de 0,11 ponto no meu painel e de 0,09 no modelo de Mahlmeister. Nesse trecho, os dois partiam do 1º turno de 2026.</li>
+<li><strong>De 5% a 8%:</strong> meu painel oscilou, com 0,25 em média e pontos a quase 0,5 abaixo do resultado. O de Mahlmeister ficou em 0,03.</li>
+<li><strong>De 8% a 30%:</strong> 0,13 ponto no meu painel e 0,37 no de Mahlmeister, abaixo do resultado em todos os pontos (de 0,19 a 0,56). O site do modelo registra: "Entre 8% e 30% ficou de 0,3 a 0,6 ponto abaixo do resultado" (<a href="https://projecao.2026elections.workers.dev">Como foi</a>). A diferença está no eixo: o site mede o trecho pelo % do eleitorado, o que deixa de fora a leitura de 0,19; as demais vão de 0,26 a 0,56.</li>
+<li><strong>De 30% a 50%:</strong> 0,08 no meu painel e 0,16 no de Mahlmeister.</li>
+<li><strong>A partir de 50%:</strong> os dois a cerca de 0,1 ponto ou menos, com erro médio de 0,01.</li>
+</ul>
+<p>Outra forma de ver: a partir de quando a projeção não saiu mais de perto do resultado. A ±0,5 ponto, desde 3,3% das seções no meu painel e desde 18% no de Mahlmeister; a ±0,2 ponto, desde 13,3% e desde 35,5%.</p>
+<p>As duas séries foram revistas depois da noite: a minha sem as 9 leituras do defeito, a dele com o método planejado. Na versão que foi ao ar, o erro médio foi de 0,11 e 0,17 até 5%; 0,25 e 0,14 de 5% a 8%; 0,16 e 0,38 de 8% a 30%; e 0,24 e 0,16 de 30% a 50% (meu painel e o de Mahlmeister, nessa ordem). Meus marcos de ±0,5 e ±0,2 iriam para 46,5%; os dele não mudam.</p>
+</div></section><section id="foi-a-eleicao-de-2022"><header><h2>Foi a eleição de 2022?</h2></header><div class="prosa">
+<p>A explicação mais fácil para o desvio do modelo de Mahlmeister entre 8% e 30% seria a referência: três semanas contra quatro anos. Um teste que fiz para este texto mostra que ela não basta.</p>
+<p>O teste aplica a mesma regra de swing simples duas vezes, na ordem real de chegada das seções de 2026. Na primeira, a referência é o 1º turno de 2026; na segunda, o 2º turno de 2022. Não é o modelo de Mahlmeister: só troco a eleição de comparação.</p>
+<p>Cada conta sai com dois pesos, que mudam só quanto vale cada município. Com os votos finais de 2026, o peso é igual nas duas referências, para que só a referência mude; é mais limpo, mas usa um dado que só se conhece no fim. Com o voto contado como contado, o que falta pesa pela referência, como aconteceria na hora.</p>
+<div class="tabela-wrap"><table class="t-pesos">
+<thead>
+<tr><th rowspan="2">Seções apuradas</th><th colspan="2">Peso: votos finais de 2026</th><th colspan="2">Peso: voto contado como contado</th></tr>
+<tr><th>1º turno</th><th>2022</th><th>1º turno</th><th>2022</th></tr>
+</thead>
+<tbody>
+<tr><td>2% a 5%</td><td>0,10</td><td>0,16 ↓</td><td>0,18 ↑</td><td>0,34 ↓</td></tr>
+<tr><td>8% a 30%</td><td>0,01</td><td>0,24 ↑</td><td>0,09 ↑</td><td>0,08 ↑</td></tr>
+<tr><td>50% a 90%</td><td>0,02 ↑</td><td>0,08 ↑</td><td>0,01 ↓</td><td>0,02 ↑</td></tr>
+</tbody>
+</table></div>
+
+<p><em>Erro médio da projeção de Lula, em pontos, do mesmo swing simples com cada referência, medido em 2, 3 e 5%; 8, 10, 15, 20 e 30%; e 50, 70 e 90% apurado. ↑ acima do resultado e ↓ abaixo em todos os pontos do trecho; sem seta, o sinal muda. Para comparar: o modelo de Mahlmeister ficou 0,37 abaixo entre 8% e 30%.</em></p>
+<p>A tabela diz duas coisas. A primeira: até 5%, o 1º turno é a referência melhor nos dois pesos; depois, depende do peso. Com o voto contado, as duas empatam. Com os votos finais, ele continua errando menos, e entre 8% e 30%, de 60% a 87% do erro com 2022, conforme o ponto, vem dos municípios ainda sem urna, que recebem a mudança medida no resto do estado. Isso sugere que, em quatro anos, o voto mudou de modo desigual dentro de cada estado; em três semanas, quase não.</p>
+<p>A segunda: nos dois pesos, com 2022 o swing simples erra para cima entre 8% e 30%, e o modelo de Mahlmeister errou para baixo. Então a escolha de 2022, aplicada ao swing simples, não explica o desvio dele. O Observatório de Gil Miranda, outro painel que projetou a noite ao vivo, aponta na mesma direção: não usa 2022 como referência, compara cada seção com o 1º turno e também ficou abaixo do resultado em todas as leituras entre 7% e 30%, de 0,18 a 0,44 ponto (<a href="https://apuracao-tse-2026.pages.dev">Observatório</a>). O teste mostra só o que não explica o desvio. O motivo, só Mahlmeister pode dizer: o código dele é privado.</p>
+<blockquote>
+<p><strong>Como o teste foi feito.</strong> Pareamento exato por UF, município, zona e seção: 92% das seções de 2026 têm par em 2022. Município com seção apurada recebe o swing medido nas próprias seções; sem seção, o swing da UF.</p>
+<p>O teste não reproduz o pareamento por local, a razão log, a regressão hierárquica, o uso do 1º turno nos municípios já em apuração nem as pesquisas. O script está no <a href="estudos/dalmolin_x_mahlmeister.html">apêndice técnico</a>.</p>
+</blockquote>
+</div></section><section id="saber-o-quanto-se-sabe"><header><h2>Saber o quanto se sabe</h2></header><div class="prosa">
+<p>Na margem de erro, os dois métodos foram para lados opostos, e cada um acertou numa coisa diferente.</p>
+</div><figure class="fig" id="fig-faixas"><figcaption>Uma faixa disse cedo quem vence; a outra quase nunca deixou o resultado de fora<small>Faixas de 95% da projeção de Lula: Dalmolin = meu painel (gravado na noite de 25/10/2026, sem 9 leituras) e série do método planejado de Mahlmeister, que o site do modelo mostra hoje. De 2% a 100% das seções, escala logarítmica, mesma escala nos dois painéis.</small></figcaption>
+<div class="dupla">
+  <div class="painel"><h3><i class="sw sw-n"></i>Dalmolin <small>faixa de erro histórico</small></h3><div class="chart" data-s="n"></div></div>
+  <div class="painel"><h3><i class="sw sw-e"></i>Mahlmeister <small>faixa por reamostragem</small></h3><div class="chart" data-s="m"></div></div>
+</div>
+</figure><div class="prosa">
+<p>A faixa de Mahlmeister mede a incerteza reamostrando municípios, com largura média de 0,35 ponto de 5% a 50% apurado. Ela ficou toda acima de 50% desde a primeira projeção, às 19h21, e nunca apontou o vencedor errado. O custo: em 33 de 97 leituras, entre 8,6% e 56,8% apurado, deixou o número final de fora. Ali, o erro do modelo foi maior que a faixa.</p>
+<p>A faixa do meu painel mede a incerteza pelo erro de eleições passadas no mesmo ponto da apuração. Teve largura média de 8,1 pontos, de 5% a 50% apurado, e conteve o resultado em todas as leituras menos a última, quando já tinha largura zero e a diferença era de arredondamento. O custo: só ficou toda acima de 50% com 41,6% das seções. É larga no presidente porque a calibrei em 28 reproduções de 2018 e 2022, 26 delas de governador, onde o erro é maior.</p>
+<blockquote>
+<p><strong>Como cada faixa é feita.</strong> Dalmolin: o maior de três números, que são o percentil 95 do erro das 28 reproduções no mesmo % apurado, uma autovalidação ao vivo e a divergência entre os modelos. Mahlmeister: reamostragem de municípios (bootstrap), calibrada nas reproduções de 2022 e do 1º turno de 2026; o site cita 90% numa seção e 95% em outra, e os dados publicados são de 95% (<a href="https://projecao.2026elections.workers.dev">site do modelo</a>).</p>
+</blockquote>
+</div></section><section id="nao-foi-so-o-presidente"><header><h2>Não foi só o presidente</h2></header><div class="prosa">
+<p>Na mesma noite, o painel projetou seis governadores com o mesmo método do presidente, sem ajuste por estado. Ele dá a cada projeção um nível de confiança, e nenhuma "alta", o nível mais forte, foi para quem perdeu. Tudo foi fora da amostra: as faixas tinham sido calibradas antes da eleição. No presidente, a "alta" só veio com 49% das seções, às 20h27.</p>
+<div class="tabela-wrap"><table>
+<thead>
+<tr>
+<th>UF</th>
+<th>Vencedor × 2º colocado</th>
+<th>Resultado (%)</th>
+<th>1ª "alta" confiança</th>
+<th>Sempre a ±1 ponto desde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AC</td>
+<td>Mailza × Alan Rick</td>
+<td>66,2 × 33,8</td>
+<td>5,0% (19h09)</td>
+<td>10,4%</td>
+</tr>
+<tr>
+<td>TO</td>
+<td>Vicentinho × Dorinha</td>
+<td>64,5 × 35,5</td>
+<td>7,8% (19h17)</td>
+<td>8,6%</td>
+</tr>
+<tr>
+<td>AM</td>
+<td>Omar × Maria do Carmo</td>
+<td>61,4 × 38,6</td>
+<td>8,7% (19h10)</td>
+<td>78,2%</td>
+</tr>
+<tr>
+<td>DF</td>
+<td>Celina × Grass</td>
+<td>57,2 × 42,8</td>
+<td>11,5% (19h11)</td>
+<td>1,6%</td>
+</tr>
+<tr>
+<td>ES</td>
+<td>Pazolini × Ferraço</td>
+<td>52,2 × 47,8</td>
+<td>33,2% (19h56)</td>
+<td>3,4%</td>
+</tr>
+<tr>
+<td>RN</td>
+<td>Cadu × Allyson</td>
+<td>50,8 × 49,2</td>
+<td>56,5% (20h17)</td>
+<td>36,3%</td>
+</tr>
+</tbody>
+</table></div>
+<p>Nos governadores, o erro foi maior que no presidente. O AM só ficou a ±1 ponto com 78% apurado, e em cinco das seis UFs a confiança ainda oscilou antes de firmar. Mas a confiança acompanhou a dificuldade: no RN, decidido por menos de 2 pontos, a "alta" só veio com 56,5%.</p>
+<p>Antes de 2026, eu tinha testado o método em 28 reproduções de 2018 e 2022, na ordem real das urnas (2 presidentes e 26 governadores). Em 26 das 28, o vencedor já estava certo desde 1% apurado. Nos dois presidentes, o erro máximo a partir de 1% apurado foi de 0,8 ponto em 2018 e 0,4 em 2022. Em presidentes de 2002 a 2014, com a ordem de chegada emprestada de 2022, foi de 0,45. O método de Mahlmeister tem validação própria, descrita no site dele, que não comparo aqui.</p>
+<p>A comparação com o 1º turno também foi usada fora do meu painel. A <a href="https://apuracaoaberta.com.br">Apuração Aberta</a>, de Diogo Machado, parte dos boletins de urna do TSE e compara cada seção com ela mesma no 1º turno. Ficou a ±0,1 ponto do resultado desde 3,6% das seções e, a partir de 5%, foi melhor que os dois métodos comparados aqui. O Observatório de Gil Miranda, que também parte do 1º turno, foi o mais preciso de 2% a 5%, mas teve no meio da noite o desvio que citei na seção sobre 2022. Partir do 1º turno, portanto, não garante ficar perto o tempo todo.</p>
+</div></section><section id="a-resposta"><header><h2>A resposta</h2></header><div class="prosa">
+<p>Nesta noite, sim: com o 1º turno como referência, o swing simples bastou para chegar perto cedo e ficar perto. No teste, sem nenhum outro modelo e com o voto contado como contado, ele ficou em média a 0,18 ponto até 5% e a 0,09 entre 8% e 30%. O teste não é o meu painel, que nos municípios sem urna usa transferência e regressão. Até 5%, o 1º turno é referência melhor que 2022 nos dois pesos; entre 8% e 30% e depois de 50%, com o voto contado, as duas empatam.</p>
+<p>Até 8% apurado, o modelo de Mahlmeister ficou tão perto do resultado quanto o meu painel, ou mais; a partir de 50%, os dois praticamente coincidem. No meio da noite, ficou abaixo do resultado por um motivo que o teste com 2022 não esclarece, e a faixa não cobriu esse afastamento. Em troca, ela ficou toda acima de 50% desde a primeira projeção, às 19h21. Meu painel pagou de outro jeito: oscilou entre 5% e 8%, e a faixa só ficou toda acima de 50% com 41,6% das seções, ou 46,5% na versão que foi ao ar.</p>
+<p>O que uma camada estatística a mais compra depende do problema. No 1º turno não há eleição próxima para comparar, e meu método não se aplica. É ali que a referência antiga, as pesquisas e a regressão hierárquica parecem mais necessárias, embora eu não teste o 1º turno aqui.</p>
+<p><strong>Limites.</strong> Estou comparando o meu próprio método com o de outra pessoa, sozinho, a partir das séries públicas dos dois sites: leia os números com esse desconto. A minha série exclui 9 leituras de um defeito que corrigi já conhecendo o resultado; a dele é a do método planejado, recalculada depois, não a que a página exibiu até 19h46. Entre os dois métodos, é uma noite só. O código de Mahlmeister é privado, e a descrição dele aqui vem do site do modelo; se ele apontar imprecisões, corrijo o texto. O teste com 2022 é uma aproximação e não reproduz o modelo dele.</p>
+</div></section><section id="dados-e-referencias"><header><h2>Dados e referências</h2></header><div class="prosa">
+<ul>
+<li><strong>Resultado:</strong> Lula 51,79% dos votos válidos (64.256.232 votos) e Flávio Bolsonaro 48,21% (59.826.041), pelos arquivos de divulgação do <a href="https://resultados.tse.jus.br">TSE</a>. Os erros são a projeção de Lula menos esse resultado, em pontos, a partir de 2% das seções apuradas. O site de Mahlmeister só mostra a projeção a partir de 2% do eleitorado apurado, o que aconteceu às 19h21, com 1,9% das seções. Antes disso, meu painel já projetava, com oscilações grandes: às 17h06, com 0,21% das seções, marcava 48,8%.</li>
+<li><strong>Placar:</strong> as leituras do arquivo nacional do TSE gravadas pelo painel, nos horários do TSE. Parado de 17h07 a 19h01 em 0,25% das seções; Flávio Bolsonaro à frente às 19h44 (13,7%) e Lula de novo às 20h24 (47,6%). A participação do exterior vem da hora de totalização de cada seção, nos arquivos por seção do TSE.</li>
+<li><strong>Série do painel ("Dalmolin" nas figuras):</strong> as leituras gravadas pelo <a href="https://apuracao.dalmolin.dev">painel</a> na noite, sem 9 leituras, de 20h02 a 20h24, afetadas por um defeito do painel no alinhamento dos arquivos do TSE, corrigido depois (explicado no "Como funciona" do painel). Na versão que foi ao ar, por causa desse defeito, a projeção só ficou sempre a ±0,5 e a ±0,2 ponto do resultado a partir de 46,5% das seções, e a faixa só ficou toda acima de 50% nesse mesmo ponto.</li>
+<li><strong>Série Mahlmeister:</strong> a do método planejado antes da eleição, que o <a href="https://projecao.2026elections.workers.dev">site do modelo</a> mostra hoje e descreve em "Como foi". Na noite, até 15% do eleitorado apurado, a página exibiu uma versão mais conservadora, com o menor valor de Lula entre os dois modelos dele (a transferência e o modelo principal). Por isso a série que foi ao ar difere desta até 19h46 e é igual depois.</li>
+<li><strong>Apêndice técnico:</strong> <a href="estudos/dalmolin_x_mahlmeister.html">a comparação etapa por etapa, as tabelas completas e o script do teste com 2022</a>.</li>
+</ul>
+<p>Referências citadas:</p>
+<ol>
+<li>Rodrigo Mahlmeister, <a href="https://projecao.2026elections.workers.dev">site do modelo</a>, seções "Método" e "Como foi", consultado em 30/10/2026; <a href="https://rodrigomahlmeister.com">página pessoal</a>.</li>
+<li>Estadão, via Terra, 26/10/2026: <a href="https://www.terra.com.br/noticias/brasil/politica/modelo-estatistico-usado-pelo-estadao-antecipou-resultado-com-apenas-242-das-urnas-apuradas,709f2274cefa2fb2584af4341fedede8h60p3q65.html">"Modelo estatístico usado pelo 'Estadão' antecipou resultado com apenas 2,42% das urnas apuradas"</a>.</li>
+<li>BBC News Brasil, via Terra, 25/10/2026: <a href="https://www.terra.com.br/noticias/brasil/votos-do-nordeste-demoram-mais-para-chegar-ao-tse-tudo-para-acompanhar-a-apuracao,eee634a6a5ed0783b6e5c6022d505436t82a6p3h.html">"Votos do Nordeste demoram mais para chegar ao TSE? Tudo para acompanhar a apuração"</a>.</li>
+<li>InfoMoney, 25/10/2026: <a href="https://www.infomoney.com.br/politica/tse-pausa-totalizacao-dos-votos-apos-zanin-prorrogar-votacao-ate-as-19h/">"TSE pausa totalização dos votos após Zanin prorrogar votação até as 19h"</a>.</li>
+<li>Terra, 25/10/2026: <a href="https://www.terra.com.br/ao-vivo/noticias/eleicoes/eleicoes-2026-confira-como-foi-a-apuracao-do-2-turno,c1edbcf56b98dcf79864578a36a476336470wsfv.html">"Eleições 2026: confira como foi a apuração do 2º turno"</a> (cobertura ao vivo).</li>
+<li>NeoFeed, 10/10/2026: <a href="https://neofeed.com.br/finde/como-um-pesquisador-brasileiro-criou-um-algoritmo-que-simulou-e-acertou-o-resultado-do-1o-turno/">"Como um pesquisador brasileiro criou um algoritmo que simulou e acertou o resultado do 1º turno"</a>.</li>
+<li>Matheus Dalmolin (eu), <a href="https://apuracao.dalmolin.dev">painel da apuração 2026</a>, com o "Como funciona" e o replay da noite.</li>
+<li>Gil Miranda, <a href="https://apuracao-tse-2026.pages.dev">Observatório da apuração</a>.</li>
+<li>Diogo Machado, <a href="https://apuracaoaberta.com.br">Apuração Aberta</a>.</li>
+</ol></div></section>
+<footer class="fim">
+  <p>Projeção é estimativa estatística, não resultado oficial. O resultado oficial é o do TSE (<a href="https://resultados.tse.jus.br">resultados.tse.jus.br</a>).</p>
+  <p><a href="./">Painel da apuração</a> · <a href="estudos/dalmolin_x_mahlmeister.html">Apêndice técnico: Dalmolin × Mahlmeister</a> · <a href="governador.html">Governadores</a></p>
+</footer>
+</article>
+</div>
+<script>window.__DADOS__ = {"noite":{"final":51.7851828842626,"placar":[{"m":1026.6333333333334,"x":0.2125196295228023,"v":58.58722871452421},{"m":1027.1666666666667,"x":0.24536903502868315,"v":57.655409047992066},{"m":1141.2333333333333,"x":0.29163862449123484,"v":56.70349893757994},{"m":1142.7333333333333,"x":0.3745633432682755,"v":55.53099970942249},{"m":1144.4666666666667,"x":0.3823750921385764,"v":55.53099970942249},{"m":1145.4,"x":1.103860205749447,"v":50.38985206656654},{"m":1146.0,"x":1.5142774733198732,"v":52.270416528702484},{"m":1147.6166666666666,"x":1.5589446527577477,"v":52.157731917827505},{"m":1148.15,"x":1.561548569047848,"v":52.157742730931844},{"m":1148.6666666666667,"x":1.5811780918501426,"v":52.15476662498348},{"m":1149.4666666666667,"x":1.6034115309425376,"v":52.14103067661699},{"m":1150.4,"x":1.6254446687818478,"v":52.141516418193696},{"m":1151.0833333333333,"x":1.6460756978495656,"v":52.131630696262754},{"m":1151.8333333333333,"x":1.6472775053680735,"v":52.128172608015326},{"m":1152.3333333333333,"x":1.66870973944813,"v":52.12130462268525},{"m":1153.0833333333333,"x":1.6907428772874402,"v":52.09260582344466},{"m":1153.6166666666666,"x":1.693146492324456,"v":52.102819600900354},{"m":1154.1,"x":1.7374130692561613,"v":52.08444208732273},{"m":1154.6333333333334,"x":1.7524356632375093,"v":52.10623491762997},{"m":1155.1166666666666,"x":1.785885972502644,"v":52.106488336944516},{"m":1155.6333333333334,"x":1.8171329679838477,"v":52.094152401251954},{"m":1156.4,"x":1.8626013524340608,"v":52.019121657682426},{"m":1156.65,"x":1.937914623593885,"v":51.95804129007501},{"m":1157.2166666666667,"x":1.986988430599622,"v":51.82724937728778},{"m":1157.8333333333333,"x":2.0448754927410824,"v":51.779041008362945},{"m":1158.4333333333334,"x":2.106367977438067,"v":51.72237436518529},{"m":1158.7166666666667,"x":2.1438243117648943,"v":51.71637313221523},{"m":1159.2166666666667,"x":2.1750713072460983,"v":51.66171018681245},{"m":1159.7,"x":2.242973432041791,"v":51.65075371038837},{"m":1160.2166666666667,"x":2.327901163349678,"v":51.49243889497025},{"m":1160.7,"x":2.4220427522994585,"v":51.406379858872356},{"m":1161.9166666666667,"x":2.593300323686825,"v":51.49793239911267},{"m":1162.3,"x":2.665408774797295,"v":51.491899698146504},{"m":1162.7666666666667,"x":2.7773771752716083,"v":51.451775431031},{"m":1163.6,"x":2.9135820273691633,"v":51.32637616506015},{"m":1164.0166666666667,"x":3.0822356824664294,"v":51.34299412026997},{"m":1164.5,"x":3.186792936576611,"v":51.304573961285655},{"m":1164.9333333333334,"x":3.2933532032176394,"v":51.34062309850174},{"m":1165.3166666666666,"x":3.351640867865269,"v":51.30422787910145},{"m":1166.0666666666666,"x":3.6154376181777392,"v":51.28228059134621},{"m":1166.5,"x":3.77047078806525,"v":51.197194726458314},{"m":1166.9666666666667,"x":3.976180174983175,"v":51.194814560218944},{"m":1167.4166666666667,"x":4.101969361920328,"v":51.2643419520004},{"m":1167.8666666666666,"x":4.242580841585745,"v":51.18217332397619},{"m":1168.5833333333333,"x":4.512386629490754,"v":51.175264237261395},{"m":1168.9833333333333,"x":4.6826426946126976,"v":51.19209957402172},{"m":1169.4166666666667,"x":4.796213505111688,"v":51.21857907751848},{"m":1169.9833333333333,"x":5.018948498541807,"v":51.15771339484237},{"m":1170.4666666666667,"x":5.232269333076948,"v":51.13097161321861},{"m":1170.9333333333334,"x":5.404127808223568,"v":51.05211055779629},{"m":1171.4333333333334,"x":5.558960676857994,"v":51.011151462085216},{"m":1171.8833333333334,"x":5.730418549498446,"v":51.02264888151719},{"m":1172.3166666666666,"x":6.178692753901869,"v":50.887792147388275},{"m":1172.8833333333334,"x":6.629370573342307,"v":50.85393725927922},{"m":1173.5333333333333,"x":6.969281799826939,"v":50.837079517223735},{"m":1174.2833333333333,"x":7.143543890010576,"v":50.826474303480964},{"m":1175.0166666666667,"x":7.667732269333077,"v":50.758549723558225},{"m":1175.45,"x":8.119411595038939,"v":50.68332860832567},{"m":1176.1833333333334,"x":8.311500496747108,"v":50.63844483175925},{"m":1176.6666666666667,"x":8.635988526744223,"v":50.60849976140891},{"m":1177.35,"x":8.883360574303753,"v":50.54615999382426},{"m":1178.05,"x":9.101488638912926,"v":50.54865984984674},{"m":1178.7166666666667,"x":9.655121302438868,"v":50.43512793662771},{"m":1179.3333333333333,"x":9.9898246963433,"v":50.48071918973958},{"m":1180.0,"x":10.400041662660641,"v":50.45627230668665},{"m":1180.65,"x":10.868946896131781,"v":50.41407169804859},{"m":1181.9333333333334,"x":11.662540460853123,"v":50.35717008472754},{"m":1182.5166666666667,"x":11.895290516937473,"v":50.332941300243455},{"m":1183.55,"x":12.232597827132006,"v":50.27561250928579},{"m":1184.1666666666667,"x":12.66885395635035,"v":50.23269358248251},{"m":1184.85,"x":12.90801365253341,"v":50.198037126390524},{"m":1185.5333333333333,"x":13.34927731307887,"v":50.050794751255},{"m":1186.1,"x":13.650730698971254,"v":49.98850119583458},{"m":1186.6333333333334,"x":13.98222927282633,"v":49.96608849959381},{"m":1187.3,"x":14.289090792551999,"v":49.97514408522887},{"m":1187.8333333333333,"x":14.570514053135916,"v":49.954902170136066},{"m":1188.4333333333334,"x":14.827099958337339,"v":49.96111142976895},{"m":1188.9333333333334,"x":15.383737140659552,"v":49.90411574589189},{"m":1192.7,"x":16.38784732237285,"v":49.789315494339945},{"m":1193.8166666666666,"x":16.65945582155562,"v":49.77077111455786},{"m":1194.5666666666666,"x":17.20006890363106,"v":49.76084092428156},{"m":1195.1666666666667,"x":17.490706021856873,"v":49.725274965108866},{"m":1195.75,"x":18.032320610197736,"v":49.677723562438494},{"m":1196.4166666666667,"x":18.372832740441623,"v":49.65463387537188},{"m":1197.0833333333333,"x":19.199075409415762,"v":49.606282228879806},{"m":1197.7833333333333,"x":19.623113162195942,"v":49.56739412594497},{"m":1198.5333333333333,"x":20.05175784379707,"v":49.590905609223576},{"m":1199.1666666666667,"x":20.76683331730923,"v":49.51089041296686},{"m":1199.8333333333333,"x":21.11215267762715,"v":49.49714935306639},{"m":1200.5666666666666,"x":21.840648335095985,"v":49.53149825374435},{"m":1201.25,"x":22.30294362721533,"v":49.53812979243598},{"m":1202.0333333333333,"x":22.67850847674903,"v":49.52933033668252},{"m":1202.85,"x":23.26779476332404,"v":49.53056669909509},{"m":1203.7666666666667,"x":24.406106784604045,"v":49.50847980756138},{"m":1204.6,"x":25.19048649168349,"v":49.4899577062554},{"m":1205.3833333333334,"x":25.793192962215173,"v":49.54690721257804},{"m":1206.3166666666666,"x":26.30476236259334,"v":49.541184333836235},{"m":1207.2,"x":27.731708489568312,"v":49.566015101469354},{"m":1208.0333333333333,"x":28.222246258372593,"v":49.553008373345364},{"m":1208.85,"x":29.162860942858057,"v":49.532771747291505},{"m":1209.5333333333333,"x":29.622151716181136,"v":49.55476391284787},{"m":1210.25,"x":30.816748389577924,"v":49.561324502516314},{"m":1210.9666666666667,"x":31.241186744864276,"v":49.56961991391801},{"m":1211.6666666666667,"x":32.30378489247829,"v":49.579952096036315},{"m":1212.45,"x":32.84920520462776,"v":49.6031192278541},{"m":1213.25,"x":34.071643752203315,"v":49.6689635766584},{"m":1214.0833333333333,"x":34.454619748101145,"v":49.67840256837072},{"m":1214.9333333333334,"x":35.524028138320034,"v":49.700828022177696},{"m":1215.6333333333334,"x":36.7723055475435,"v":49.684264001709366},{"m":1216.3833333333334,"x":37.395643047142904,"v":49.70199790592712},{"m":1217.2666666666667,"x":38.52153639073166,"v":49.715407288482076},{"m":1218.1833333333334,"x":38.905914495401085,"v":49.73968980411571},{"m":1219.05,"x":39.8445261673557,"v":49.78000605434677},{"m":1219.8833333333334,"x":40.91814088388937,"v":49.81436665366867},{"m":1220.7666666666667,"x":41.580136525334105,"v":49.82828775957504},{"m":1221.5,"x":42.83542447841554,"v":49.850600345561766},{"m":1222.3666666666666,"x":43.23983270839342,"v":49.86954286598272},{"m":1223.15,"x":44.366326955741435,"v":49.893975197783526},{"m":1223.9166666666667,"x":44.9209611255328,"v":49.91885775354317},{"m":1224.7833333333333,"x":46.03483639393648,"v":49.97490773851828},{"m":1225.55,"x":46.48491330961767,"v":49.98870830968064},{"m":1226.35,"x":47.62242412588533,"v":50.011425396098566},{"m":1227.15,"x":48.96744704034869,"v":50.05377080525524},{"m":1227.95,"x":49.59939749383072,"v":50.09110646558512},{"m":1228.6,"x":50.76194596673397,"v":50.14877806306497},{"m":1229.3333333333333,"x":51.34722622824729,"v":50.15076664770871},{"m":1230.1833333333334,"x":52.458297279107775,"v":50.18907806542536},{"m":1231.05,"x":53.12550075313271,"v":50.22853685882961},{"m":1231.9,"x":54.39761401147326,"v":50.312096467134644},{"m":1232.6666666666667,"x":55.55695766432715,"v":50.37440773595483},{"m":1233.4166666666667,"x":56.205733423068295,"v":50.393686835751986},{"m":1234.2666666666667,"x":56.761168797872,"v":50.41070110901965},{"m":1234.9833333333333,"x":57.64710124026536,"v":50.4464402760788},{"m":1235.85,"x":59.071643752203315,"v":50.49580467058693},{"m":1236.5666666666666,"x":59.76829151043169,"v":50.51947147454901},{"m":1237.2,"x":60.850519180847996,"v":50.54594101137042},{"m":1237.9666666666667,"x":62.03470018908438,"v":50.5740081150584},{"m":1239.0666666666666,"x":62.69829824055379,"v":50.600291052086014},{"m":1239.6833333333334,"x":63.37591737973913,"v":50.64211414302712},{"m":1240.3833333333334,"x":64.16971124571356,"v":50.68794742679549},{"m":1241.1333333333334,"x":65.37151876422139,"v":50.750550991993705},{"m":1241.9166666666667,"x":65.93937281671634,"v":50.7915188396645},{"m":1242.5666666666666,"x":67.06286254526809,"v":50.84823184266758},{"m":1243.2333333333333,"x":67.38875268403679,"v":50.85063364022902},{"m":1243.8666666666666,"x":68.21759926930103,"v":50.87545520868134},{"m":1244.5,"x":69.50713873665994,"v":50.89994440468654},{"m":1245.15,"x":69.92036022177355,"v":50.91699728722543},{"m":1245.7833333333333,"x":70.550908566484,"v":50.92419277430319},{"m":1246.4166666666667,"x":71.23694035829888,"v":50.95262849468066},{"m":1247.0833333333333,"x":72.36123129186296,"v":51.00444752107745},{"m":1247.7833333333333,"x":72.77325096945806,"v":51.01078670624713},{"m":1248.3833333333334,"x":73.31025862897798,"v":51.02779599254384},{"m":1248.9,"x":74.81592314841522,"v":51.07781717858471},{"m":1249.3833333333334,"x":75.23555427362754,"v":51.089620043534445},{"m":1249.9333333333334,"x":75.86510111207255,"v":51.11379922040729},{"m":1251.0833333333333,"x":76.97797487421082,"v":51.17329463526862},{"m":1252.1666666666667,"x":78.08163477870717,"v":51.20946980017982},{"m":1253.1,"x":79.06150850879723,"v":51.23780105429644},{"m":1253.65,"x":79.60152068711342,"v":51.251404574312126},{"m":1254.2333333333333,"x":80.01714578726404,"v":51.271725425852004},{"m":1254.8,"x":80.74844566227607,"v":51.31065970915182},{"m":1255.4333333333334,"x":81.84008749158735,"v":51.3557122018883},{"m":1255.9,"x":82.3246162227991,"v":51.37516141693404},{"m":1256.45,"x":83.04129410633593,"v":51.38245345758568},{"m":1256.95,"x":83.6884674550524,"v":51.395433406112204},{"m":1257.4666666666667,"x":84.20684709803544,"v":51.40497239706712},{"m":1257.9833333333333,"x":84.73223728487645,"v":51.420295308125866},{"m":1258.5,"x":85.24320578149536,"v":51.431165940337486},{"m":1259.0833333333333,"x":85.83729929814442,"v":51.44022042347605},{"m":1259.5666666666666,"x":86.40915937570105,"v":51.4491916711564},{"m":1260.0833333333333,"x":86.97981764573919,"v":51.47089944275102},{"m":1260.5333333333333,"x":87.65663557991219,"v":51.50041666627443},{"m":1261.0166666666667,"x":88.32564176521488,"v":51.51769454677512},{"m":1261.5333333333333,"x":88.71062077364356,"v":51.5237315897402},{"m":1261.9833333333333,"x":89.31352754542833,"v":51.5346003026371},{"m":1262.4166666666667,"x":89.7427731307887,"v":51.55562700041965},{"m":1262.8833333333334,"x":90.35188924141909,"v":51.57989570730491},{"m":1263.3,"x":90.86345864179727,"v":51.59467002949356},{"m":1263.7833333333333,"x":91.50282024164343,"v":51.62215136964585},{"m":1264.5833333333333,"x":91.94548601096048,"v":51.62395156568524},{"m":1265.3333333333333,"x":92.7340720443547,"v":51.66330638571684},{"m":1265.7666666666667,"x":93.15350286831395,"v":51.673204092977876},{"m":1266.5166666666667,"x":93.82411146364132,"v":51.690423800807196},{"m":1266.9333333333334,"x":94.29081338332853,"v":51.69781315057515},{"m":1267.3166666666666,"x":94.92556805435375,"v":51.71876208550831},{"m":1267.9166666666667,"x":95.32677146428227,"v":51.720762054660085},{"m":1268.3333333333333,"x":95.88661346665384,"v":51.729179559094284},{"m":1269.0333333333333,"x":96.13879274428741,"v":51.72527750269158},{"m":1269.4333333333334,"x":96.83063327244176,"v":51.740749959531094},{"m":1269.8666666666666,"x":97.6853187193539,"v":51.73669938348216},{"m":1270.2833333333333,"x":98.26559144954011,"v":51.74584873905578},{"m":1270.9666666666667,"x":98.75953433964683,"v":51.75094364195004},{"m":1271.3,"x":99.31637182322213,"v":51.74758736743992},{"m":1271.6333333333334,"x":99.66629811236099,"v":51.74968067037825},{"m":1272.2333333333333,"x":99.75202704868121,"v":51.75335468419965},{"m":1272.75,"x":99.75302855494664,"v":51.75332255732617},{"m":1273.25,"x":99.75923789379226,"v":51.75372325383137},{"m":1273.7166666666667,"x":99.76104060507002,"v":51.753980356207144},{"m":1274.2166666666667,"x":99.76464602762555,"v":51.7544778894265},{"m":1274.7166666666667,"x":99.76965355895267,"v":51.756009694488185},{"m":1275.2833333333333,"x":99.77105566772426,"v":51.75639910797021},{"m":1275.7333333333333,"x":99.77245777649586,"v":51.75687393261574},{"m":1276.2166666666667,"x":99.78147133288466,"v":51.758469950342224},{"m":1276.7333333333333,"x":99.78627856295869,"v":51.75952071229768},{"m":1276.9833333333333,"x":99.78768067173029,"v":51.75960821415252},{"m":1277.4833333333333,"x":99.78988398551421,"v":51.75991133609444},{"m":1278.7333333333333,"x":99.79609332435983,"v":51.75980933203792},{"m":1279.2333333333333,"x":99.80290356696472,"v":51.760370782357946},{"m":1279.7333333333333,"x":99.81291862961895,"v":51.761519481605696},{"m":1279.9833333333333,"x":99.81852706470532,"v":51.760777565958584},{"m":1281.2333333333333,"x":99.82333429477934,"v":51.760605255948704},{"m":1281.7333333333333,"x":99.82734031984104,"v":51.7605677436259},{"m":1282.2333333333333,"x":99.82854212735955,"v":51.76047391998904},{"m":1282.7333333333333,"x":99.83495176745826,"v":51.76014173197125},{"m":1283.2333333333333,"x":99.83975899753229,"v":51.76079927731515},{"m":1283.7333333333333,"x":99.84176201006314,"v":51.761434751481815},{"m":1284.2333333333333,"x":99.85378008524822,"v":51.762867301600934},{"m":1284.7333333333333,"x":99.85478159151364,"v":51.762909791496234},{"m":1284.9833333333333,"x":99.8577861103099,"v":51.762664338756146},{"m":1285.75,"x":99.86059032785309,"v":51.76292064711991},{"m":1285.9833333333333,"x":99.86639906419255,"v":51.763129419831586},{"m":1286.7333333333333,"x":99.86820177547031,"v":51.76331133808564},{"m":1287.4833333333333,"x":99.87000448674807,"v":51.763162869254835},{"m":1287.9833333333333,"x":99.87260840303817,"v":51.76341182488986},{"m":1288.7333333333333,"x":99.87581322308752,"v":51.76358744220932},{"m":1288.9833333333333,"x":99.8760135243406,"v":51.76364146189428},{"m":1289.7333333333333,"x":99.87701503060603,"v":51.76379645840722},{"m":1290.2333333333333,"x":99.8826234656924,"v":51.764822866502534},{"m":1290.4833333333333,"x":99.88342467070474,"v":51.764980968764114},{"m":1290.9833333333333,"x":99.88703009326026,"v":51.765620788942094},{"m":1291.4833333333333,"x":99.88863250328494,"v":51.76600242651101},{"m":1292.7333333333333,"x":99.89083581706888,"v":51.76624874907782},{"m":1293.2333333333333,"x":99.89143672082812,"v":51.76637876522171},{"m":1293.4833333333333,"x":99.89584334839599,"v":51.76672446876513},{"m":1293.9833333333333,"x":99.89664455340832,"v":51.766773919203104},{"m":1294.4833333333333,"x":99.89684485466141,"v":51.766772606502926},{"m":1294.9833333333333,"x":99.89804666217992,"v":51.76697396081554},{"m":1296.2333333333333,"x":99.89884786719226,"v":51.767040878990564},{"m":1296.7333333333333,"x":99.8996490722046,"v":51.76709346815649},{"m":1296.9833333333333,"x":99.89984937345768,"v":51.76714868122209},{"m":1298.7333333333333,"x":99.90085087972311,"v":51.76734306285351},{"m":1298.9833333333333,"x":99.90145178348236,"v":51.76748368755028},{"m":1299.2333333333333,"x":99.90085087972311,"v":51.76734306285351},{"m":1299.5,"x":99.90185238598853,"v":51.76757939064946},{"m":1300.2333333333333,"x":99.90345479601321,"v":51.76784464304261},{"m":1300.7333333333333,"x":99.91066564112425,"v":51.76945484109788},{"m":1300.9833333333333,"x":99.9138704611736,"v":51.77004406720401},{"m":1301.4833333333333,"x":99.91507226869211,"v":51.770377677371826},{"m":1302.2333333333333,"x":99.91767618498221,"v":51.770973681717265},{"m":1302.5,"x":99.91927859500689,"v":51.77148925879328},{"m":1302.9833333333333,"x":99.92208281255007,"v":51.77219935459871},{"m":1303.7333333333333,"x":99.92268371630932,"v":51.77232969715989},{"m":1303.9833333333333,"x":99.92989456142038,"v":51.77383868192415},{"m":1305.25,"x":99.93289908021664,"v":51.77430183751383},{"m":1305.7333333333333,"x":99.93490209274749,"v":51.774712680457625},{"m":1306.0,"x":99.93650450277217,"v":51.774741206304284},{"m":1306.5,"x":99.93790661154377,"v":51.77512500442199},{"m":1307.2333333333333,"x":99.94331474537705,"v":51.77667152539242},{"m":1308.2333333333333,"x":99.94531775790789,"v":51.777395463152054},{"m":1308.7333333333333,"x":99.94571836041406,"v":51.77752828963629},{"m":1309.2333333333333,"x":99.94692016793257,"v":51.77783251520288},{"m":1309.75,"x":99.947921674198,"v":51.77805663533304},{"m":1309.9833333333333,"x":99.94892318046341,"v":51.77831005543575},{"m":1310.75,"x":99.94992468672883,"v":51.77845258259749},{"m":1311.0,"x":99.95212800051277,"v":51.77877953613594},{"m":1311.5,"x":99.95593372432138,"v":51.77919722079354},{"m":1312.3,"x":99.95653462808063,"v":51.779258437267856},{"m":1312.75,"x":99.95733583309297,"v":51.77941198843206},{"m":1313.25,"x":99.9581370381053,"v":51.7795891633237},{"m":1313.5166666666667,"x":99.9583373393584,"v":51.779675627187785},{"m":1315.0,"x":99.96194276191392,"v":51.78046053428686},{"m":1315.5,"x":99.962143063167,"v":51.78052403064416},{"m":1317.25,"x":99.97055571579656,"v":51.78137578357603},{"m":1318.5,"x":99.97075601704964,"v":51.78136066289309},{"m":1319.0,"x":99.97195782456815,"v":51.78134107283089},{"m":1319.5,"x":99.97215812582124,"v":51.7813575914622},{"m":1320.2666666666667,"x":99.97416113835209,"v":51.78161293028442},{"m":1320.5,"x":99.97616415088292,"v":51.78197105546961},{"m":1321.0166666666667,"x":99.97676505464219,"v":51.78205864565694},{"m":1321.5166666666667,"x":99.97696535589526,"v":51.78208170910581},{"m":1322.0166666666667,"x":99.97776656090761,"v":51.782198825292554},{"m":1322.5,"x":99.97816716341377,"v":51.78225143194153},{"m":1323.0166666666667,"x":99.97856776591995,"v":51.7822947541496},{"m":1323.7666666666667,"x":99.97896836842611,"v":51.782338493491295},{"m":1325.2666666666667,"x":99.9791686696792,"v":51.78234837194239},{"m":1326.0166666666667,"x":99.97996987469153,"v":51.78255481493317},{"m":1330.5166666666667,"x":99.98057077845078,"v":51.78266796545503},{"m":1331.0166666666667,"x":99.98117168221005,"v":51.78279140738012},{"m":1331.7666666666667,"x":99.98157228471621,"v":51.78284162143656},{"m":1332.7666666666667,"x":99.98217318847547,"v":51.7829298680108},{"m":1333.2666666666667,"x":99.98297439348781,"v":51.78302207755033},{"m":1333.5166666666667,"x":99.98457680351248,"v":51.78320633531404},{"m":1334.2666666666667,"x":99.98537800852482,"v":51.783321024463675},{"m":1334.7666666666667,"x":99.98637951479024,"v":51.78348832301434},{"m":1335.2666666666667,"x":99.988182226068,"v":51.7837178642232},{"m":1335.5166666666667,"x":99.98878312982725,"v":51.783817904893816},{"m":1336.0166666666667,"x":99.98978463609268,"v":51.78395645036276},{"m":1336.5166666666667,"x":99.98998493734577,"v":51.78397496330014},{"m":1341.0166666666667,"x":99.9907861423581,"v":51.78400183054897},{"m":1341.7666666666667,"x":99.99118674486428,"v":51.7840424365729},{"m":1342.2666666666667,"x":99.99158734737044,"v":51.78407243634746},{"m":1342.5166666666667,"x":99.99198794987662,"v":51.7841006808948},{"m":1343.5166666666667,"x":99.99238855238278,"v":51.784110618661735},{"m":1344.2666666666667,"x":99.99298945614204,"v":51.78418008292006},{"m":1345.0166666666667,"x":99.9933900586482,"v":51.7842195232162},{"m":1345.7666666666667,"x":99.99459186616672,"v":51.78437333139173},{"m":1346.0166666666667,"x":99.9947921674198,"v":51.7843836680233},{"m":1346.5166666666667,"x":99.99499246867289,"v":51.78439623402117},{"m":1351.2666666666667,"x":99.99519276992596,"v":51.78442250177195},{"m":1351.5166666666667,"x":99.99559337243214,"v":51.78449547503594},{"m":1352.2666666666667,"x":99.99579367368523,"v":51.78453076687126},{"m":1352.7666666666667,"x":99.9959939749383,"v":51.78456402929501},{"m":1353.5166666666667,"x":99.99639457744448,"v":51.78461961469611},{"m":1354.5333333333333,"x":99.99679517995065,"v":51.78466824758241},{"m":1355.5333333333333,"x":99.99699548120373,"v":51.78470326510202},{"m":1357.5166666666667,"x":99.99759638496299,"v":51.784797060344395},{"m":1358.2833333333333,"x":99.99779668621606,"v":51.78482302406779},{"m":1359.0166666666667,"x":99.99859789122841,"v":51.784983136608},{"m":1363.0333333333333,"x":99.99879819248149,"v":51.78502257108137},{"m":1364.2833333333333,"x":99.99899849373458,"v":51.785065459543354},{"m":1365.5333333333333,"x":99.99939909624075,"v":51.78504419175404},{"m":1366.2833333333333,"x":99.99959939749382,"v":51.78507416977701},{"m":1391.3,"x":99.99979969874691,"v":51.78509696626273},{"m":1403.05,"x":100.0,"v":51.7851828842626}],"dalmolin":[{"m":1157.0,"x":2.0448754927410824,"v":51.788154,"lo":44.259153999999995,"hi":59.317154},{"m":1158.0,"x":2.106367977438067,"v":51.86447,"lo":44.33547,"hi":59.39346999999999},{"m":1158.0,"x":2.1438243117648943,"v":51.862674,"lo":44.333674,"hi":59.391673999999995},{"m":1159.0,"x":2.1750713072460983,"v":51.991055,"lo":44.46205500000001,"hi":59.520055},{"m":1159.0,"x":2.242973432041791,"v":51.861404,"lo":44.332404,"hi":59.390404000000004},{"m":1160.0,"x":2.327901163349678,"v":51.760039,"lo":44.231038999999996,"hi":59.289039},{"m":1160.0,"x":2.4220427522994585,"v":51.759417,"lo":44.230417,"hi":59.288416999999995},{"m":1161.0,"x":2.593300323686825,"v":51.776766,"lo":44.247766,"hi":59.305766000000006},{"m":1162.0,"x":2.665408774797295,"v":51.778292,"lo":44.249292,"hi":59.307292000000004},{"m":1162.0,"x":2.7773771752716083,"v":51.783782,"lo":44.254782000000006,"hi":59.312782},{"m":1163.0,"x":2.9135820273691633,"v":52.007107,"lo":44.478106999999994,"hi":59.536107},{"m":1164.0,"x":3.0822356824664294,"v":52.024446,"lo":45.407446,"hi":58.641445999999995},{"m":1164.0,"x":3.186792936576611,"v":52.344598,"lo":45.727598,"hi":58.961597999999995},{"m":1164.0,"x":3.2933532032176394,"v":51.983465,"lo":45.366465000000005,"hi":58.600465},{"m":1165.0,"x":3.351640867865269,"v":51.85949,"lo":45.242490000000004,"hi":58.47649},{"m":1166.0,"x":3.6154376181777392,"v":51.895275,"lo":45.278275,"hi":58.512274999999995},{"m":1166.0,"x":3.77047078806525,"v":51.931513,"lo":45.314513000000005,"hi":58.548513},{"m":1166.0,"x":3.976180174983175,"v":51.902844,"lo":45.285844000000004,"hi":58.519844},{"m":1167.0,"x":4.101969361920328,"v":51.743185,"lo":45.126185,"hi":58.360184999999994},{"m":1167.0,"x":4.242580841585745,"v":51.687217,"lo":45.070217,"hi":58.304216999999994},{"m":1168.0,"x":4.512386629490754,"v":51.686782,"lo":45.069782000000004,"hi":58.303782},{"m":1168.0,"x":4.6826426946126976,"v":51.766912,"lo":45.149912,"hi":58.383911999999995},{"m":1169.0,"x":4.796213505111688,"v":51.800364,"lo":45.183364000000005,"hi":58.417364},{"m":1169.0,"x":5.018948498541807,"v":51.940729,"lo":45.323729,"hi":58.557728999999995},{"m":1170.0,"x":5.232269333076948,"v":51.903703,"lo":45.286703,"hi":58.520703},{"m":1170.0,"x":5.404127808223568,"v":51.646714,"lo":45.029714000000006,"hi":58.263714},{"m":1171.0,"x":5.558960676857994,"v":51.640343,"lo":45.023343000000004,"hi":58.257343},{"m":1171.0,"x":5.730418549498446,"v":51.658579,"lo":45.041579000000006,"hi":58.275579},{"m":1172.0,"x":6.178692753901869,"v":51.335562,"lo":44.718562000000006,"hi":57.952562},{"m":1172.0,"x":6.629370573342307,"v":51.436654,"lo":44.819654,"hi":58.053653999999995},{"m":1173.0,"x":6.969281799826939,"v":51.570499,"lo":44.953499,"hi":58.187498999999995},{"m":1174.0,"x":7.143543890010576,"v":51.456648,"lo":45.243648,"hi":57.669648},{"m":1175.0,"x":7.667732269333077,"v":51.295383,"lo":45.082383,"hi":57.508383},{"m":1175.0,"x":8.119411595038939,"v":51.721793,"lo":45.984792999999996,"hi":57.458793},{"m":1176.0,"x":8.311500496747108,"v":51.682026,"lo":45.945026,"hi":57.419026},{"m":1176.0,"x":8.635988526744223,"v":51.604132,"lo":45.867132,"hi":57.341132},{"m":1177.0,"x":8.883360574303753,"v":51.592727,"lo":45.855726999999995,"hi":57.329727},{"m":1178.0,"x":9.101488638912926,"v":51.593057,"lo":45.864057,"hi":57.322057},{"m":1178.0,"x":9.655121302438868,"v":51.544294,"lo":45.815294,"hi":57.273294},{"m":1179.0,"x":9.9898246963433,"v":51.518257,"lo":45.789257,"hi":57.247257},{"m":1180.0,"x":10.400041662660641,"v":51.708203,"lo":45.979203,"hi":57.437203},{"m":1180.0,"x":10.868946896131781,"v":51.703879,"lo":45.974879,"hi":57.432879},{"m":1181.0,"x":11.662540460853123,"v":51.545081,"lo":45.816081000000004,"hi":57.274081},{"m":1182.0,"x":11.895290516937473,"v":51.533775,"lo":45.804775,"hi":57.262775},{"m":1183.0,"x":12.232597827132006,"v":51.50715,"lo":45.778150000000004,"hi":57.23615},{"m":1184.0,"x":12.66885395635035,"v":51.465765,"lo":45.736765,"hi":57.194765},{"m":1184.0,"x":12.90801365253341,"v":51.466322,"lo":45.737322,"hi":57.195322},{"m":1185.0,"x":13.34927731307887,"v":51.709436,"lo":46.971436,"hi":56.447435999999996},{"m":1186.0,"x":13.650730698971254,"v":51.697301,"lo":46.959301,"hi":56.435301},{"m":1186.0,"x":13.98222927282633,"v":51.682914,"lo":46.944914,"hi":56.420913999999996},{"m":1187.0,"x":14.289090792551999,"v":51.665666,"lo":47.054666000000005,"hi":56.276666},{"m":1187.0,"x":14.570514053135916,"v":51.649163,"lo":47.038163000000004,"hi":56.260163},{"m":1188.0,"x":14.827099958337339,"v":51.627116,"lo":47.016116000000004,"hi":56.238116},{"m":1188.0,"x":15.383737140659552,"v":51.608693,"lo":46.997693000000005,"hi":56.219693},{"m":1192.0,"x":16.38784732237285,"v":51.67835,"lo":47.17635,"hi":56.180350000000004},{"m":1193.0,"x":16.65945582155562,"v":51.622592,"lo":47.120591999999995,"hi":56.124592},{"m":1194.0,"x":17.20006890363106,"v":51.621629,"lo":47.119628999999996,"hi":56.123629},{"m":1195.0,"x":17.490706021856873,"v":51.626804,"lo":47.124804,"hi":56.128804},{"m":1195.0,"x":18.032320610197736,"v":51.885337,"lo":47.650337,"hi":56.120337},{"m":1196.0,"x":18.372832740441623,"v":51.889236,"lo":47.654236,"hi":56.124235999999996},{"m":1197.0,"x":19.199075409415762,"v":51.866247,"lo":47.631247,"hi":56.101247},{"m":1197.0,"x":19.623113162195942,"v":51.921275,"lo":47.686275,"hi":56.156275},{"m":1198.0,"x":20.05175784379707,"v":51.895715,"lo":47.660715,"hi":56.130715},{"m":1199.0,"x":20.76683331730923,"v":51.847328,"lo":47.612328,"hi":56.082328},{"m":1199.0,"x":21.11215267762715,"v":51.857259,"lo":48.166259,"hi":55.548259},{"m":1200.0,"x":21.840648335095985,"v":51.709345,"lo":48.018345,"hi":55.400345},{"m":1201.0,"x":22.30294362721533,"v":51.736859,"lo":48.373859,"hi":55.099859},{"m":1206.0,"x":26.30476236259334,"v":51.77696,"lo":48.699960000000004,"hi":54.85396},{"m":1207.0,"x":27.731708489568312,"v":51.797353,"lo":49.249353,"hi":54.345353},{"m":1208.0,"x":28.222246258372593,"v":51.771526,"lo":49.474526000000004,"hi":54.068526},{"m":1208.0,"x":29.162860942858057,"v":51.767014,"lo":49.632014000000005,"hi":53.902014},{"m":1209.0,"x":29.622151716181136,"v":51.697363,"lo":49.562363000000005,"hi":53.832363},{"m":1210.0,"x":30.816748389577924,"v":51.677178,"lo":49.622178,"hi":53.732178},{"m":1210.0,"x":31.241186744864276,"v":51.66543,"lo":49.64843,"hi":53.682430000000004},{"m":1211.0,"x":32.30378489247829,"v":51.629538,"lo":49.687537999999996,"hi":53.571538},{"m":1212.0,"x":32.84920520462776,"v":51.630544,"lo":49.688544,"hi":53.572544},{"m":1213.0,"x":34.071643752203315,"v":51.660664,"lo":49.733664,"hi":53.587664},{"m":1215.0,"x":36.7723055475435,"v":51.730095,"lo":49.869095,"hi":53.591094999999996},{"m":1216.0,"x":37.395643047142904,"v":51.724519,"lo":49.900519,"hi":53.548519},{"m":1217.0,"x":38.52153639073166,"v":51.714239,"lo":49.901239,"hi":53.527239},{"m":1218.0,"x":38.905914495401085,"v":51.685676,"lo":49.872676,"hi":53.498676},{"m":1219.0,"x":39.8445261673557,"v":51.729307,"lo":49.945307,"hi":53.513307},{"m":1219.0,"x":40.91814088388937,"v":51.688949,"lo":49.924949,"hi":53.452949000000004},{"m":1220.0,"x":41.580136525334105,"v":51.789173,"lo":50.117173,"hi":53.461172999999995},{"m":1221.0,"x":42.83542447841554,"v":51.791051,"lo":50.146051,"hi":53.436051000000006},{"m":1222.0,"x":43.23983270839342,"v":51.844978,"lo":50.226977999999995,"hi":53.462978},{"m":1223.0,"x":44.366326955741435,"v":51.862481,"lo":50.333481000000006,"hi":53.391481},{"m":1225.0,"x":46.48491330961767,"v":51.822027,"lo":50.768027,"hi":52.876027},{"m":1226.0,"x":47.62242412588533,"v":51.827806,"lo":50.773806,"hi":52.881806000000005},{"m":1227.0,"x":48.96744704034869,"v":51.83831,"lo":50.78431,"hi":52.89231},{"m":1227.0,"x":49.59939749383072,"v":51.830123,"lo":50.841123,"hi":52.819123},{"m":1228.0,"x":50.76194596673397,"v":51.846798,"lo":50.961798,"hi":52.731798},{"m":1229.0,"x":51.34722622824729,"v":51.871625,"lo":50.986625000000004,"hi":52.756625},{"m":1230.0,"x":52.458297279107775,"v":51.802115,"lo":50.989115,"hi":52.615115},{"m":1231.0,"x":53.12550075313271,"v":51.761024,"lo":50.948024,"hi":52.574024},{"m":1231.0,"x":54.39761401147326,"v":51.755228,"lo":50.995228000000004,"hi":52.515228},{"m":1232.0,"x":55.55695766432715,"v":51.791474,"lo":51.031474,"hi":52.551474},{"m":1233.0,"x":56.205733423068295,"v":51.789405,"lo":51.029405000000004,"hi":52.549405},{"m":1234.0,"x":56.761168797872,"v":51.796304,"lo":51.036304,"hi":52.556304},{"m":1234.0,"x":57.64710124026536,"v":51.829826,"lo":51.069826,"hi":52.589825999999995},{"m":1235.0,"x":59.071643752203315,"v":51.834857,"lo":51.111857,"hi":52.557857},{"m":1236.0,"x":59.76829151043169,"v":51.767712,"lo":51.044712000000004,"hi":52.490712},{"m":1237.0,"x":60.850519180847996,"v":51.770774,"lo":51.073774,"hi":52.467774000000006},{"m":1237.0,"x":62.03470018908438,"v":51.763752,"lo":51.078751999999994,"hi":52.448752},{"m":1239.0,"x":62.69829824055379,"v":51.789255,"lo":51.104254999999995,"hi":52.474255},{"m":1239.0,"x":63.37591737973913,"v":51.811186,"lo":51.126186,"hi":52.496186},{"m":1240.0,"x":64.16971124571356,"v":51.849765,"lo":51.164764999999996,"hi":52.534765},{"m":1241.0,"x":65.37151876422139,"v":51.86339,"lo":51.17839,"hi":52.548390000000005},{"m":1241.0,"x":65.93937281671634,"v":51.876062,"lo":51.191061999999995,"hi":52.561062},{"m":1242.0,"x":67.06286254526809,"v":51.894176,"lo":51.256176,"hi":52.532176},{"m":1243.0,"x":67.38875268403679,"v":51.890856,"lo":51.252856,"hi":52.528856},{"m":1243.0,"x":68.21759926930103,"v":51.901472,"lo":51.327472,"hi":52.475471999999996},{"m":1244.0,"x":69.50713873665994,"v":51.88952,"lo":51.347519999999996,"hi":52.43152},{"m":1245.0,"x":69.92036022177355,"v":51.886975,"lo":51.344975,"hi":52.428975},{"m":1245.0,"x":70.550908566484,"v":51.799088,"lo":51.367087999999995,"hi":52.231088},{"m":1246.0,"x":71.23694035829888,"v":51.782307,"lo":51.378307,"hi":52.186307000000006},{"m":1247.0,"x":72.36123129186296,"v":51.794952,"lo":51.427952000000005,"hi":52.161952},{"m":1247.0,"x":72.77325096945806,"v":51.7983,"lo":51.4313,"hi":52.165299999999995},{"m":1248.0,"x":73.31025862897798,"v":51.777939,"lo":51.410939000000006,"hi":52.144939},{"m":1248.0,"x":74.81592314841522,"v":51.76836,"lo":51.41836,"hi":52.11836},{"m":1249.0,"x":75.23555427362754,"v":51.76989,"lo":51.419889999999995,"hi":52.11989},{"m":1249.0,"x":75.86510111207255,"v":51.78612,"lo":51.436119999999995,"hi":52.13612},{"m":1251.0,"x":76.97797487421082,"v":51.781037,"lo":51.431036999999996,"hi":52.131037},{"m":1252.0,"x":78.08163477870717,"v":51.790929,"lo":51.444929,"hi":52.136928999999995},{"m":1253.0,"x":79.06150850879723,"v":51.793431,"lo":51.475431,"hi":52.111430999999996},{"m":1253.0,"x":79.60152068711342,"v":51.786916,"lo":51.468916,"hi":52.104915999999996},{"m":1254.0,"x":80.01714578726404,"v":51.786024,"lo":51.473023999999995,"hi":52.099024},{"m":1254.0,"x":80.74844566227607,"v":51.814778,"lo":51.501777999999995,"hi":52.127778},{"m":1255.0,"x":81.84008749158735,"v":51.810376,"lo":51.497375999999996,"hi":52.123376},{"m":1255.0,"x":82.3246162227991,"v":51.813464,"lo":51.507464000000006,"hi":52.119464},{"m":1256.0,"x":83.04129410633593,"v":51.799131,"lo":51.508131000000006,"hi":52.090131},{"m":1256.0,"x":83.6884674550524,"v":51.799364,"lo":51.508364,"hi":52.090363999999994},{"m":1257.0,"x":84.20684709803544,"v":51.79659,"lo":51.54359,"hi":52.04959},{"m":1257.0,"x":84.73223728487645,"v":51.769115,"lo":51.516115,"hi":52.022115},{"m":1258.0,"x":85.24320578149536,"v":51.767932,"lo":51.514932,"hi":52.020932},{"m":1259.0,"x":85.83729929814442,"v":51.750262,"lo":51.497262,"hi":52.003262},{"m":1259.0,"x":86.40915937570105,"v":51.75018,"lo":51.49718,"hi":52.00318},{"m":1260.0,"x":86.97981764573919,"v":51.794749,"lo":51.541749,"hi":52.047749},{"m":1260.0,"x":87.65663557991219,"v":51.792733,"lo":51.539733,"hi":52.045733},{"m":1261.0,"x":88.32564176521488,"v":51.794015,"lo":51.541015,"hi":52.047015},{"m":1261.0,"x":88.71062077364356,"v":51.78988,"lo":51.53688,"hi":52.04288},{"m":1261.0,"x":89.31352754542833,"v":51.797085,"lo":51.544085,"hi":52.050085},{"m":1262.0,"x":89.7427731307887,"v":51.793718,"lo":51.540718,"hi":52.046718},{"m":1262.0,"x":90.35188924141909,"v":51.793276,"lo":51.540276,"hi":52.046276},{"m":1263.0,"x":90.86345864179727,"v":51.791326,"lo":51.538326,"hi":52.044326},{"m":1263.0,"x":91.50282024164343,"v":51.781044,"lo":51.528044,"hi":52.034044},{"m":1264.0,"x":91.94548601096048,"v":51.775617,"lo":51.522617,"hi":52.028617},{"m":1265.0,"x":92.7340720443547,"v":51.770362,"lo":51.589362,"hi":51.951361999999996},{"m":1265.0,"x":93.15350286831395,"v":51.775337,"lo":51.666337,"hi":51.884337},{"m":1266.0,"x":93.82411146364132,"v":51.776637,"lo":51.667637,"hi":51.885637},{"m":1266.0,"x":94.29081338332853,"v":51.773054,"lo":51.683054,"hi":51.863054000000005},{"m":1267.0,"x":94.92556805435375,"v":51.765603,"lo":51.675602999999995,"hi":51.855603},{"m":1267.0,"x":95.32677146428227,"v":51.77042,"lo":51.69442,"hi":51.84642},{"m":1268.0,"x":95.88661346665384,"v":51.753147,"lo":51.677147,"hi":51.829147},{"m":1269.0,"x":96.13879274428741,"v":51.752682,"lo":51.682682,"hi":51.822682},{"m":1269.0,"x":96.83063327244176,"v":51.755913,"lo":51.685913,"hi":51.825913},{"m":1269.0,"x":97.6853187193539,"v":51.770615,"lo":51.710615,"hi":51.830615},{"m":1270.0,"x":98.26559144954011,"v":51.767745,"lo":51.719744999999996,"hi":51.815745},{"m":1270.0,"x":98.75953433964683,"v":51.791273,"lo":51.743272999999995,"hi":51.839273},{"m":1271.0,"x":99.31637182322213,"v":51.783864,"lo":51.750864,"hi":51.816864},{"m":1271.0,"x":99.66629811236099,"v":51.778827,"lo":51.745827,"hi":51.811827},{"m":1272.0,"x":99.75202704868121,"v":51.775312,"lo":51.742312,"hi":51.808312},{"m":1272.0,"x":99.75302855494664,"v":51.776975,"lo":51.743975,"hi":51.809975},{"m":1273.0,"x":99.75923789379226,"v":51.775034,"lo":51.742034,"hi":51.808034},{"m":1273.0,"x":99.76104060507002,"v":51.775096,"lo":51.742096,"hi":51.808096},{"m":1274.0,"x":99.76464602762555,"v":51.775741,"lo":51.742740999999995,"hi":51.808741},{"m":1274.0,"x":99.76965355895267,"v":51.771857,"lo":51.738856999999996,"hi":51.804857},{"m":1275.0,"x":99.77105566772426,"v":51.78612,"lo":51.753119999999996,"hi":51.81912},{"m":1275.0,"x":99.77245777649586,"v":51.785994,"lo":51.752994,"hi":51.818994},{"m":1276.0,"x":99.78147133288466,"v":51.786268,"lo":51.753268,"hi":51.819268},{"m":1276.0,"x":99.78627856295869,"v":51.78692,"lo":51.75392,"hi":51.81992},{"m":1276.0,"x":99.78768067173029,"v":51.786911,"lo":51.753911,"hi":51.819911000000005},{"m":1277.0,"x":99.78988398551421,"v":51.787111,"lo":51.754111,"hi":51.820111000000004},{"m":1278.0,"x":99.79609332435983,"v":51.787036,"lo":51.754036,"hi":51.820036},{"m":1279.0,"x":99.80290356696472,"v":51.78676,"lo":51.75376,"hi":51.81976},{"m":1279.0,"x":99.81291862961895,"v":51.786072,"lo":51.753071999999996,"hi":51.819072},{"m":1279.0,"x":99.81852706470532,"v":51.784657,"lo":51.751657,"hi":51.817657000000004},{"m":1281.0,"x":99.82333429477934,"v":51.785644,"lo":51.752644,"hi":51.818644},{"m":1281.0,"x":99.82734031984104,"v":51.785709,"lo":51.752708999999996,"hi":51.818709},{"m":1282.0,"x":99.82854212735955,"v":51.785307,"lo":51.752307,"hi":51.818307000000004},{"m":1282.0,"x":99.83495176745826,"v":51.78531,"lo":51.75231,"hi":51.818310000000004},{"m":1283.0,"x":99.83975899753229,"v":51.785525,"lo":51.752525,"hi":51.818525},{"m":1283.0,"x":99.84176201006314,"v":51.785241,"lo":51.752241,"hi":51.818241},{"m":1284.0,"x":99.85378008524822,"v":51.785451,"lo":51.752451,"hi":51.818451},{"m":1284.0,"x":99.85478159151364,"v":51.785202,"lo":51.752202,"hi":51.818202},{"m":1284.0,"x":99.8577861103099,"v":51.785338,"lo":51.752338,"hi":51.818338000000004},{"m":1285.0,"x":99.86059032785309,"v":51.785488,"lo":51.752488,"hi":51.818488},{"m":1285.0,"x":99.86639906419255,"v":51.785891,"lo":51.752891,"hi":51.818891},{"m":1286.0,"x":99.86820177547031,"v":51.78591,"lo":51.75291,"hi":51.81891},{"m":1287.0,"x":99.87000448674807,"v":51.785948,"lo":51.752947999999996,"hi":51.818948},{"m":1287.0,"x":99.87260840303817,"v":51.78596,"lo":51.75296,"hi":51.818960000000004},{"m":1288.0,"x":99.87581322308752,"v":51.78602,"lo":51.75302,"hi":51.81902},{"m":1288.0,"x":99.8760135243406,"v":51.785992,"lo":51.752992,"hi":51.818992},{"m":1289.0,"x":99.87701503060603,"v":51.785413,"lo":51.752413,"hi":51.818413},{"m":1290.0,"x":99.8826234656924,"v":51.785453,"lo":51.752452999999996,"hi":51.818453},{"m":1290.0,"x":99.88342467070474,"v":51.785783,"lo":51.752783,"hi":51.818783},{"m":1290.0,"x":99.88703009326026,"v":51.785307,"lo":51.752307,"hi":51.818307000000004},{"m":1291.0,"x":99.88863250328494,"v":51.785511,"lo":51.752511,"hi":51.818511},{"m":1292.0,"x":99.89083581706888,"v":51.785282,"lo":51.752282,"hi":51.818282},{"m":1293.0,"x":99.89143672082812,"v":51.785338,"lo":51.752338,"hi":51.818338000000004},{"m":1293.0,"x":99.89584334839599,"v":51.785339,"lo":51.752339,"hi":51.818339},{"m":1293.0,"x":99.89664455340832,"v":51.785357,"lo":51.752356999999996,"hi":51.818357},{"m":1294.0,"x":99.89684485466141,"v":51.784958,"lo":51.751958,"hi":51.817958000000004},{"m":1294.0,"x":99.89804666217992,"v":51.785238,"lo":51.752238,"hi":51.818238},{"m":1296.0,"x":99.89884786719226,"v":51.785209,"lo":51.752209,"hi":51.818209},{"m":1296.0,"x":99.8996490722046,"v":51.785195,"lo":51.752195,"hi":51.818195},{"m":1296.0,"x":99.89984937345768,"v":51.785223,"lo":51.752223,"hi":51.818223},{"m":1298.0,"x":99.90085087972311,"v":51.785226,"lo":51.752226,"hi":51.818226},{"m":1298.0,"x":99.90145178348236,"v":51.785226,"lo":51.752226,"hi":51.818226},{"m":1299.0,"x":99.90085087972311,"v":51.785229,"lo":51.752229,"hi":51.818229},{"m":1299.0,"x":99.90185238598853,"v":51.785223,"lo":51.752223,"hi":51.818223},{"m":1300.0,"x":99.90345479601321,"v":51.785247,"lo":51.752247,"hi":51.818247},{"m":1300.0,"x":99.91066564112425,"v":51.785221,"lo":51.752221,"hi":51.818221},{"m":1300.0,"x":99.9138704611736,"v":51.785221,"lo":51.752221,"hi":51.818221},{"m":1301.0,"x":99.91507226869211,"v":51.785221,"lo":51.752221,"hi":51.818221},{"m":1302.0,"x":99.91767618498221,"v":51.784828,"lo":51.751827999999996,"hi":51.817828},{"m":1302.0,"x":99.91927859500689,"v":51.784809,"lo":51.751809,"hi":51.817809000000004},{"m":1302.0,"x":99.92208281255007,"v":51.784785,"lo":51.751785,"hi":51.817785},{"m":1303.0,"x":99.92268371630932,"v":51.784953,"lo":51.751953,"hi":51.817953},{"m":1303.0,"x":99.92989456142038,"v":51.784954,"lo":51.751954,"hi":51.817954},{"m":1305.0,"x":99.93289908021664,"v":51.785083,"lo":51.752083,"hi":51.818083},{"m":1305.0,"x":99.93490209274749,"v":51.785177,"lo":51.752176999999996,"hi":51.818177},{"m":1306.0,"x":99.93650450277217,"v":51.785177,"lo":51.752176999999996,"hi":51.818177},{"m":1306.0,"x":99.93790661154377,"v":51.785283,"lo":51.752283,"hi":51.818283},{"m":1307.0,"x":99.94331474537705,"v":51.785223,"lo":51.752223,"hi":51.818223},{"m":1308.0,"x":99.94531775790789,"v":51.785229,"lo":51.752229,"hi":51.818229},{"m":1308.0,"x":99.94571836041406,"v":51.785327,"lo":51.752327,"hi":51.818327000000004},{"m":1309.0,"x":99.94692016793257,"v":51.785327,"lo":51.752327,"hi":51.818327000000004},{"m":1309.0,"x":99.947921674198,"v":51.785318,"lo":51.752317999999995,"hi":51.818318},{"m":1309.0,"x":99.94892318046341,"v":51.785326,"lo":51.752326,"hi":51.818326},{"m":1310.0,"x":99.94992468672883,"v":51.785285,"lo":51.752285,"hi":51.818285},{"m":1311.0,"x":99.95212800051277,"v":51.785285,"lo":51.752285,"hi":51.818285},{"m":1311.0,"x":99.95593372432138,"v":51.785266,"lo":51.752266,"hi":51.818266},{"m":1312.0,"x":99.95653462808063,"v":51.785266,"lo":51.752266,"hi":51.818266},{"m":1312.0,"x":99.95733583309297,"v":51.784589,"lo":51.751588999999996,"hi":51.817589},{"m":1313.0,"x":99.9581370381053,"v":51.784583,"lo":51.751583,"hi":51.817583},{"m":1313.0,"x":99.9583373393584,"v":51.784585,"lo":51.751585,"hi":51.817585},{"m":1315.0,"x":99.96194276191392,"v":51.785171,"lo":51.752171,"hi":51.818171},{"m":1315.0,"x":99.962143063167,"v":51.785171,"lo":51.752171,"hi":51.818171},{"m":1317.0,"x":99.97055571579656,"v":51.784998,"lo":51.751998,"hi":51.817998},{"m":1318.0,"x":99.97075601704964,"v":51.78513,"lo":51.75213,"hi":51.818130000000004},{"m":1319.0,"x":99.97195782456815,"v":51.78513,"lo":51.75213,"hi":51.818130000000004},{"m":1319.0,"x":99.97215812582124,"v":51.785144,"lo":51.752144,"hi":51.818144000000004},{"m":1320.0,"x":99.97416113835209,"v":51.785158,"lo":51.752158,"hi":51.818158000000004},{"m":1320.0,"x":99.97616415088292,"v":51.785158,"lo":51.752158,"hi":51.818158000000004},{"m":1321.0,"x":99.97676505464219,"v":51.785158,"lo":51.752158,"hi":51.818158000000004},{"m":1321.0,"x":99.97696535589526,"v":51.785142,"lo":51.752142,"hi":51.818142},{"m":1322.0,"x":99.97776656090761,"v":51.785142,"lo":51.752142,"hi":51.818142},{"m":1322.0,"x":99.97816716341377,"v":51.785132,"lo":51.752131999999996,"hi":51.818132},{"m":1323.0,"x":99.97856776591995,"v":51.78518,"lo":51.752179999999996,"hi":51.81818},{"m":1323.0,"x":99.97896836842611,"v":51.785218,"lo":51.752218,"hi":51.818218},{"m":1325.0,"x":99.9791686696792,"v":51.78522,"lo":51.75222,"hi":51.818220000000004},{"m":1326.0,"x":99.97996987469153,"v":51.78522,"lo":51.75222,"hi":51.818220000000004},{"m":1330.0,"x":99.98057077845078,"v":51.785217,"lo":51.752217,"hi":51.818217000000004},{"m":1331.0,"x":99.98117168221005,"v":51.785151,"lo":51.752151,"hi":51.818151},{"m":1331.0,"x":99.98157228471621,"v":51.785221,"lo":51.752221,"hi":51.818221},{"m":1332.0,"x":99.98217318847547,"v":51.785224,"lo":51.752224,"hi":51.818224},{"m":1333.0,"x":99.98297439348781,"v":51.785213,"lo":51.752213,"hi":51.818213},{"m":1333.0,"x":99.98457680351248,"v":51.785188,"lo":51.752188,"hi":51.818188},{"m":1334.0,"x":99.98537800852482,"v":51.785188,"lo":51.752188,"hi":51.818188},{"m":1334.0,"x":99.98637951479024,"v":51.785184,"lo":51.752184,"hi":51.818184},{"m":1335.0,"x":99.988182226068,"v":51.785165,"lo":51.752165,"hi":51.818165},{"m":1335.0,"x":99.98878312982725,"v":51.785165,"lo":51.752165,"hi":51.818165},{"m":1336.0,"x":99.98978463609268,"v":51.785165,"lo":51.752165,"hi":51.818165},{"m":1336.0,"x":99.98998493734577,"v":51.785206,"lo":51.752206,"hi":51.818206},{"m":1341.0,"x":99.9907861423581,"v":51.785196,"lo":51.752196,"hi":51.818196},{"m":1341.0,"x":99.99118674486428,"v":51.785196,"lo":51.752196,"hi":51.818196},{"m":1342.0,"x":99.99158734737044,"v":51.785196,"lo":51.752196,"hi":51.818196},{"m":1342.0,"x":99.99198794987662,"v":51.785196,"lo":51.752196,"hi":51.818196},{"m":1343.0,"x":99.99238855238278,"v":51.785182,"lo":51.752182,"hi":51.818182},{"m":1344.0,"x":99.99298945614204,"v":51.785151,"lo":51.752151,"hi":51.818151},{"m":1345.0,"x":99.9933900586482,"v":51.78517,"lo":51.75217,"hi":51.81817},{"m":1345.0,"x":99.99459186616672,"v":51.785208,"lo":51.752207999999996,"hi":51.818208},{"m":1346.0,"x":99.9947921674198,"v":51.785232,"lo":51.752232,"hi":51.818232},{"m":1346.0,"x":99.99499246867289,"v":51.785231,"lo":51.752231,"hi":51.818231000000004},{"m":1351.0,"x":99.99519276992596,"v":51.785191,"lo":51.752190999999996,"hi":51.818191},{"m":1351.0,"x":99.99559337243214,"v":51.785191,"lo":51.752190999999996,"hi":51.818191},{"m":1352.0,"x":99.99579367368523,"v":51.785191,"lo":51.752190999999996,"hi":51.818191},{"m":1352.0,"x":99.9959939749383,"v":51.785191,"lo":51.752190999999996,"hi":51.818191},{"m":1353.0,"x":99.99639457744448,"v":51.785259,"lo":51.752259,"hi":51.818259000000005},{"m":1354.0,"x":99.99679517995065,"v":51.785269,"lo":51.752269,"hi":51.818269},{"m":1355.0,"x":99.99699548120373,"v":51.785164,"lo":51.752164,"hi":51.818164},{"m":1357.0,"x":99.99759638496299,"v":51.785164,"lo":51.752164,"hi":51.818164},{"m":1358.0,"x":99.99779668621606,"v":51.785164,"lo":51.752164,"hi":51.818164},{"m":1359.0,"x":99.99859789122841,"v":51.785164,"lo":51.752164,"hi":51.818164},{"m":1363.0,"x":99.99879819248149,"v":51.785193,"lo":51.752193,"hi":51.818193},{"m":1364.0,"x":99.99899849373458,"v":51.785199,"lo":51.752199,"hi":51.818199},{"m":1365.0,"x":99.99939909624075,"v":51.785184,"lo":51.752184,"hi":51.818184},{"m":1366.0,"x":99.99959939749382,"v":51.785184,"lo":51.752184,"hi":51.818184},{"m":1391.0,"x":99.99979969874691,"v":51.785188,"lo":51.752188,"hi":51.818188},{"m":1403.0,"x":100.0,"v":51.78519,"lo":51.78519,"hi":51.78519}],"mahlmeister":[{"m":1163,"x":2.42,"v":51.75,"lo":51.03,"hi":52.37},{"m":1164,"x":2.66,"v":51.99,"lo":51.11,"hi":52.46},{"m":1166,"x":3.29,"v":51.81,"lo":51.08,"hi":52.32},{"m":1167,"x":3.97,"v":51.86,"lo":51.19,"hi":52.56},{"m":1168,"x":4.24,"v":51.88,"lo":51.57,"hi":52.96},{"m":1170,"x":4.68,"v":51.92,"lo":51.54,"hi":52.86},{"m":1172,"x":5.4,"v":51.76,"lo":51.44,"hi":52.26},{"m":1173,"x":5.73,"v":51.72,"lo":51.36,"hi":52.17},{"m":1175,"x":6.97,"v":51.78,"lo":51.42,"hi":52.45},{"m":1176,"x":8.12,"v":51.6,"lo":51.38,"hi":51.89},{"m":1178,"x":8.63,"v":51.3,"lo":50.99,"hi":51.72},{"m":1180,"x":9.99,"v":51.23,"lo":51.0,"hi":51.62},{"m":1182,"x":10.86,"v":51.5,"lo":51.37,"hi":51.74},{"m":1184,"x":11.89,"v":51.44,"lo":51.37,"hi":51.76},{"m":1186,"x":12.91,"v":51.5,"lo":51.43,"hi":51.7},{"m":1188,"x":14.28,"v":51.46,"lo":51.38,"hi":51.58},{"m":1189,"x":15.06,"v":51.46,"lo":51.3,"hi":51.6},{"m":1191,"x":15.38,"v":51.47,"lo":51.35,"hi":51.63},{"m":1192,"x":15.38,"v":51.53,"lo":51.48,"hi":51.76},{"m":1194,"x":15.38,"v":51.52,"lo":51.44,"hi":51.72},{"m":1195,"x":16.93,"v":51.26,"lo":51.08,"hi":51.68},{"m":1197,"x":18.03,"v":51.45,"lo":51.38,"hi":51.66},{"m":1199,"x":19.61,"v":51.41,"lo":51.32,"hi":51.54},{"m":1200,"x":21.11,"v":51.33,"lo":51.21,"hi":51.54},{"m":1202,"x":21.84,"v":51.43,"lo":51.35,"hi":51.62},{"m":1203,"x":23.26,"v":51.34,"lo":51.26,"hi":51.46},{"m":1205,"x":24.4,"v":51.33,"lo":51.18,"hi":51.48},{"m":1207,"x":25.79,"v":51.43,"lo":51.33,"hi":51.61},{"m":1208,"x":28.22,"v":51.41,"lo":51.34,"hi":51.55},{"m":1210,"x":29.61,"v":51.38,"lo":51.18,"hi":51.61},{"m":1212,"x":32.29,"v":51.55,"lo":51.45,"hi":51.75},{"m":1214,"x":34.06,"v":51.53,"lo":51.4,"hi":51.71},{"m":1215,"x":35.52,"v":51.6,"lo":51.5,"hi":51.69},{"m":1218,"x":37.39,"v":51.59,"lo":51.42,"hi":51.68},{"m":1219,"x":38.9,"v":51.59,"lo":51.44,"hi":51.68},{"m":1220,"x":40.23,"v":51.61,"lo":51.49,"hi":51.7},{"m":1221,"x":42.27,"v":51.65,"lo":51.58,"hi":51.76},{"m":1223,"x":43.23,"v":51.66,"lo":51.57,"hi":51.74},{"m":1225,"x":44.92,"v":51.67,"lo":51.57,"hi":51.75},{"m":1226,"x":46.03,"v":51.69,"lo":51.61,"hi":51.79},{"m":1228,"x":48.95,"v":51.72,"lo":51.64,"hi":51.81},{"m":1229,"x":50.76,"v":51.7,"lo":51.6,"hi":51.8},{"m":1231,"x":52.45,"v":51.69,"lo":51.62,"hi":51.76},{"m":1232,"x":54.39,"v":51.72,"lo":51.6,"hi":51.77},{"m":1233,"x":56.2,"v":51.71,"lo":51.6,"hi":51.77},{"m":1235,"x":56.75,"v":51.72,"lo":51.6,"hi":51.77},{"m":1236,"x":59.07,"v":51.76,"lo":51.7,"hi":51.83},{"m":1238,"x":59.76,"v":51.75,"lo":51.67,"hi":51.84},{"m":1239,"x":62.03,"v":51.73,"lo":51.67,"hi":51.82},{"m":1241,"x":64.17,"v":51.77,"lo":51.71,"hi":51.89},{"m":1243,"x":66.5,"v":51.79,"lo":51.73,"hi":51.97},{"m":1245,"x":68.21,"v":51.8,"lo":51.71,"hi":51.95},{"m":1246,"x":70.55,"v":51.78,"lo":51.72,"hi":51.83},{"m":1247,"x":72.35,"v":51.78,"lo":51.73,"hi":51.84},{"m":1249,"x":73.31,"v":51.78,"lo":51.72,"hi":51.83},{"m":1250,"x":74.79,"v":51.78,"lo":51.73,"hi":51.83},{"m":1252,"x":76.97,"v":51.79,"lo":51.75,"hi":51.84},{"m":1253,"x":78.07,"v":51.78,"lo":51.74,"hi":51.84},{"m":1255,"x":80.02,"v":51.8,"lo":51.76,"hi":51.84},{"m":1257,"x":82.31,"v":51.8,"lo":51.76,"hi":51.84},{"m":1258,"x":83.68,"v":51.79,"lo":51.75,"hi":51.84},{"m":1259,"x":85.24,"v":51.79,"lo":51.75,"hi":51.85},{"m":1261,"x":86.41,"v":51.79,"lo":51.75,"hi":51.84},{"m":1262,"x":88.7,"v":51.8,"lo":51.76,"hi":51.85},{"m":1263,"x":90.35,"v":51.79,"lo":51.76,"hi":51.84},{"m":1265,"x":91.49,"v":51.79,"lo":51.75,"hi":51.84},{"m":1266,"x":92.73,"v":51.79,"lo":51.75,"hi":51.83},{"m":1268,"x":94.29,"v":51.8,"lo":51.76,"hi":51.84},{"m":1269,"x":95.88,"v":51.79,"lo":51.75,"hi":51.83},{"m":1270,"x":96.82,"v":51.79,"lo":51.76,"hi":51.83},{"m":1272,"x":99.32,"v":51.79,"lo":51.75,"hi":51.82},{"m":1273,"x":99.66,"v":51.78,"lo":51.75,"hi":51.82},{"m":1274,"x":99.76,"v":51.79,"lo":51.75,"hi":51.82},{"m":1275,"x":99.76,"v":51.78,"lo":51.75,"hi":51.82},{"m":1276,"x":99.77,"v":51.79,"lo":51.75,"hi":51.82},{"m":1277,"x":99.79,"v":51.79,"lo":51.75,"hi":51.82},{"m":1278,"x":99.79,"v":51.79,"lo":51.75,"hi":51.82},{"m":1279,"x":99.79,"v":51.79,"lo":51.75,"hi":51.82},{"m":1281,"x":99.8,"v":51.79,"lo":51.75,"hi":51.82},{"m":1282,"x":99.82,"v":51.79,"lo":51.75,"hi":51.82},{"m":1283,"x":99.83,"v":51.79,"lo":51.75,"hi":51.82},{"m":1286,"x":99.84,"v":51.79,"lo":51.75,"hi":51.82},{"m":1288,"x":99.87,"v":51.79,"lo":51.75,"hi":51.82},{"m":1289,"x":99.87,"v":51.79,"lo":51.75,"hi":51.82},{"m":1290,"x":99.88,"v":51.79,"lo":51.75,"hi":51.82},{"m":1292,"x":99.89,"v":51.79,"lo":51.75,"hi":51.82},{"m":1293,"x":99.89,"v":51.79,"lo":51.75,"hi":51.82},{"m":1294,"x":99.89,"v":51.79,"lo":51.75,"hi":51.82},{"m":1295,"x":99.9,"v":51.79,"lo":51.75,"hi":51.82},{"m":1296,"x":99.9,"v":51.79,"lo":51.75,"hi":51.82},{"m":1297,"x":99.9,"v":51.79,"lo":51.75,"hi":51.82},{"m":1299,"x":99.9,"v":51.79,"lo":51.75,"hi":51.82},{"m":1303,"x":99.9,"v":51.79,"lo":51.75,"hi":51.82},{"m":1304,"x":99.92,"v":51.79,"lo":51.75,"hi":51.82},{"m":1306,"x":99.93,"v":51.79,"lo":51.75,"hi":51.82},{"m":1308,"x":99.94,"v":51.79,"lo":51.75,"hi":51.82},{"m":1439,"x":100,"v":51.79,"lo":51.75,"hi":51.82}],"mahlmeister_ar1":{"m":1163,"x":2.42,"v":51.58,"ate":1186},"viradas":[{"m":1186.1,"x":13.650730698971254,"v":49.98850119583458,"lider":"Flávio"},{"m":1226.35,"x":47.62242412588533,"v":50.011425396098566,"lider":"Lula"}],"pausa":{"m0":1027.1666666666667,"m1":1141.2333333333333,"x":0.24536903502868315,"v":57.655409047992066}}}; window.__ETAPAS__ = [{"nome": "Dados", "igual": true, "d": "Arquivos de divulgação do TSE: votos por município e seções já totalizadas", "m": null}, {"nome": "Referência", "igual": false, "d": "1º turno de 2026, mesmas seções", "m": "2º turno de 2022, mesmo local de votação"}, {"nome": "Mudança medida", "igual": false, "d": "Swing em pontos, por município", "m": "Swing em escala log, por município"}, {"nome": "Seções que faltam", "igual": false, "d": "Com urna: swing do próprio município. Sem urna: transferência + regressão por UF", "m": "Até 5%: transferência sobre o 1º turno. De 15%: regressão hierárquica sobre 2022, com pesquisas"}, {"nome": "Projeção", "igual": true, "d": "Contado + estimado, somado no país", "m": null}, {"nome": "Faixa de 95%", "igual": false, "d": "Erro de 28 reproduções passadas + checagens ao vivo", "m": "Reamostragem de municípios (bootstrap)"}];</script>
+<script>
+
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, at, pai) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (pai) pai.appendChild(e); return e; };
+const txt = (s, at, pai) => { const e = el("text", at, pai); e.textContent = s; return e; };
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const brn = (v, c = 2) => v.toLocaleString("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c });
+const brs = (v, c = 2) => (v > 0.0049 ? "+" : v < -0.0049 ? "−" : "") + brn(Math.abs(v), c);
+const hm = m => `${Math.floor(m / 60)}h${String(Math.floor(m % 60)).padStart(2, "0")}`;
+const LX = v => Math.log10(v);
+function tipDe(box) { let t = box.querySelector(".tip"); if (!t) { t = document.createElement("div"); t.className = "tip"; box.appendChild(t); } return t; }
+function posTip(tip, box, px, py) {
+  tip.style.display = "block";
+  const w = box.clientWidth, tw = tip.offsetWidth;
+  let lx = px + 12; if (lx + tw > w) lx = Math.max(0, px - tw - 12);
+  tip.style.left = lx + "px"; tip.style.top = py + "px";
+}
+const redesenha = [];
+addEventListener("resize", () => redesenha.forEach(f => f()));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => redesenha.forEach(f => f()));
+
+(() => {
+
+const D = window.__DADOS__;
+const N = D.noite;
+const X = false;
+if (X) document.body.classList.add("x");
+
+// ---------- formatos ----------
+const br = (v, c = 1) => v.toLocaleString("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c });
+const hora = m => { const h = Math.floor(m / 60), mi = Math.floor(m % 60); return `${h}h${String(mi).padStart(2, "0")}`; };
+const dur = m => `${Math.floor(m / 60)}h${String(Math.round(m % 60)).padStart(2, "0")}`;
+
+// ---------- eixo do tempo com quebra na pausa ----------
+const P = N.pausa;
+const T0 = Math.floor(N.placar[0].m) - 2, T1 = Math.ceil(P.m0) + 2;          // antes da pausa
+const T2 = Math.floor(P.m1) - 2, T3 = 21 * 60 + 15;                          // depois da pausa
+const FR = { pre: 0.07, brk: 0.10 };                                         // frações da largura
+function tx(m, L, W) {
+  const a = FR.pre * W, b = (FR.pre + FR.brk) * W;
+  if (m <= T1) return L + a * (m - T0) / (T1 - T0);
+  if (m < T2) return L + a + (b - a) * (m - T1) / (T2 - T1);
+  return L + b + (W - b) * (Math.min(m, T3) - T2) / (T3 - T2);
+}
+// relógio da animação: segundos do vídeo -> minuto da noite
+const DUR = 14, CAPA = 14;
+const SEQ = [[0, T0], [0.3, T0], [1.0, T1], [2.2, T2], [11, T3], [DUR, T3]];
+function relogio(t) {
+  for (let i = 1; i < SEQ.length; i++) {
+    const [a, ma] = SEQ[i - 1], [b, mb] = SEQ[i];
+    if (t <= b) return ma + (mb - ma) * Math.max(0, (t - a) / (b - a || 1));
+  }
+  return T3;
+}
+const ultimo = (arr, m) => { let r = null; for (const p of arr) { if (p.m <= m) r = p; else break; } return r; };
+const ate = (arr, m) => arr.filter(p => p.m <= m && p.m <= T3);
+
+// ---------- marcos (todos lidos dos dados) ----------
+const D1 = N.dalmolin[0], M1 = N.mahlmeister[0];
+const V = N.viradas;
+const ultPlacar = ultimo(N.placar, T3);
+
+document.getElementById("p1-nota").textContent = X ?
+  `Projeções a partir de 2% das seções. Tempo comprimido na pausa (${hora(P.m0)} a ${hora(P.m1)}). Série Dalmolin corrigida; Mahlmeister: método planejado, que o site do modelo mostra hoje.` :
+  `Projeções a partir de 2% das seções, como no artigo. Dalmolin: leituras do painel na noite, sem 9 leituras de 20h02 a 20h24 ` +
+  `afetadas por um defeito corrigido depois. Mahlmeister: série do método planejado, que o site do modelo mostra hoje; ` +
+  `até ${hora(N.mahlmeister_ar1.ate)}, a página dele mostrou na hora valores de Lula iguais ou menores. ` +
+  `Eixo do tempo comprimido na pausa (${hora(P.m0)} a ${hora(P.m1)}). Placar até ${br(ultPlacar.x)}% das seções (${hora(ultPlacar.m)}).`;
+
+// ---------- desenho ----------
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, at, pai) { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (pai) pai.appendChild(e); return e; }
+function txt(s, at, pai) { const e = el("text", at, pai); e.textContent = s; return e; }
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+let ultimoT = CAPA;
+function desenha(t) {
+  ultimoT = t;
+  const svg = document.getElementById("p1-svg");
+  const box = document.getElementById("p1-graf");
+  const Wt = box.clientWidth;
+  const Ht = X ? box.clientHeight : Math.max(330, Math.min(460, Wt * 0.68));
+  const peq = Wt < 520;
+  const fs = X ? 15 : (peq ? 11.5 : 13);
+  svg.setAttribute("viewBox", `0 0 ${Wt} ${Ht}`); svg.setAttribute("height", Ht);
+  svg.setAttribute("role", "img"); svg.setAttribute("aria-label", "O placar virou duas vezes; as projeções, não");
+  svg.innerHTML = "";
+  const L = peq ? 30 : 36, R = peq ? 8 : 14, TOPO = 8, BASE = 26;
+  const W = Wt - L - R, H = Ht - TOPO - BASE;
+  const Y0 = 48.5, Y1 = 59;
+  const ty = v => TOPO + H * (1 - (Math.max(Y0, Math.min(Y1, v)) - Y0) / (Y1 - Y0));
+  const x = m => tx(m, L, W);
+  const m = relogio(t);
+  const C = { ink: css("--ink"), ink2: css("--ink-2"), ink3: css("--ink-3"), grid: css("--grid"), axis: css("--axis"),
+    n: css("--s-n"), e: css("--s-e"), pl: css("--placar"), bg: css("--bg") };
+
+  // grade e eixo y
+  for (let v = 50; v <= 58; v += 2) {
+    el("line", { x1: L, x2: L + W, y1: ty(v), y2: ty(v), stroke: v === 50 ? C.axis : C.grid, "stroke-width": v === 50 ? 1.5 : 1 }, svg);
+    txt(`${v}%`, { x: L - 6, y: ty(v) + 4, "text-anchor": "end", fill: C.ink3, "font-size": fs - 1 }, svg);
+  }
+
+  // eixo x: horas
+  const xa = el("g", {}, svg);
+  const horas = [17 * 60 + 5, 19 * 60, 19 * 60 + 30, 20 * 60, 20 * 60 + 30, 21 * 60];
+  for (const h of horas) txt(h === 1025 ? "17h05" : hora(h), { x: x(h), y: Ht - 6, "text-anchor": h === 1025 ? "start" : "middle", fill: C.ink3, "font-size": fs - 1 }, xa);
+  // quebra
+  const b0 = x(T1), b1 = x(T2);
+  el("rect", { x: b0 + 2, y: TOPO, width: b1 - b0 - 4, height: H, fill: C.grid, opacity: 0.55 }, svg);
+  for (const xx of [b0 + 2, b1 - 2]) el("path", { d: `M${xx - 4},${Ht - BASE + 6} l5,-10 M${xx},${Ht - BASE + 6} l5,-10`, stroke: C.ink3, fill: "none" }, svg);
+  const txtP = el("text", { x: (b0 + b1) / 2, y: ty(55.6), "text-anchor": "middle", fill: C.ink2, "font-size": fs - 1.5 }, svg);
+  const linhasP = peq ? ["pausa", dur(P.m1 - P.m0)] : ["pausa:", dur(P.m1 - P.m0), "parado"];
+  linhasP.forEach((s, i) => { const ts = el("tspan", { x: (b0 + b1) / 2, dy: i ? fs + 1 : 0 }, txtP); ts.textContent = s; });
+  txtP.style.opacity = m > T1 + 5 ? 1 : 0;
+
+  // resultado final
+  el("line", { x1: L, x2: L + W, y1: ty(N.final), y2: ty(N.final), stroke: C.ink3, "stroke-dasharray": "5 4", "stroke-width": 1.2 }, svg);
+  const fimOn = m >= T3 - 0.01;
+  const lf = txt(`Resultado final: ${br(N.final, 2)}%`, { x: L + W - 2, y: ty(N.final) - fs * 1.6, "text-anchor": "end", fill: C.ink, "font-size": fs, "font-weight": 700 }, svg);
+  lf.style.opacity = fimOn ? 1 : 0;
+
+  // linhas
+  const linha = (pts, cor, w) => { if (pts.length < 1) return; el("path", { d: pts.map((p, i) => `${i ? "L" : "M"}${x(p.m).toFixed(1)},${ty(p.v).toFixed(1)}`).join(""),
+      fill: "none", stroke: cor, "stroke-width": w, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg); };
+  // placar: estende a última leitura até o relógio (o placar fica parado entre leituras)
+  const pl0 = ate(N.placar, m), pl = [];
+  pl0.forEach((p, i) => { if (i) pl.push({ m: p.m, v: pl0[i - 1].v }); pl.push(p); });   // degrau: o placar fica parado entre leituras
+  if (pl.length) pl.push({ m: Math.min(m, T3), v: pl[pl.length - 1].v });
+  linha(ate(N.dalmolin, m), C.n, X ? 3 : 2.25);
+  linha(ate(N.mahlmeister, m), C.e, X ? 3 : 2.25);
+  linha(pl, C.pl, X ? 3.2 : 2.5);
+
+  // pontos-chave
+  const ponto = (mm, v, cor) => { el("circle", { cx: x(mm), cy: ty(v), r: X ? 6 : 5, fill: cor, stroke: C.bg, "stroke-width": 2 }, svg); };
+  const rotulo = (linhas, xx, yy, anc, peso0 = 700) => { const g = el("text", { x: xx, y: yy, "text-anchor": anc, "font-size": fs }, svg);
+    linhas.forEach((s, i) => { const ts = el("tspan", { x: xx, dy: i ? fs + 3 : 0, fill: i ? C.ink2 : C.ink, "font-weight": i ? 400 : peso0 }, g); ts.textContent = s; }); return g; };
+  const lider = (mm, yy) => el("line", { x1: x(mm), x2: x(mm), y1: yy, y2: yy, stroke: C.ink3 }, svg);
+
+  // 19h17: primeira leitura com 2% (Dalmolin)
+  const yy1 = ty(55.2);
+  const prim = [[D1, C.n, "Dalmolin"], [M1, C.e, "Mahlmeister"]].filter(([p]) => m >= p.m);
+  prim.forEach(([p, cor]) => { ponto(p.m, p.v, cor); el("line", { x1: x(p.m), x2: x(p.m), y1: ty(p.v) - 7, y2: yy1 + 6, stroke: C.ink3 }, svg); });
+  if (prim.length) {
+    const ls = ["Primeira projeção com 2% das seções", ...prim.map(([p, , n]) => `${hora(p.m)} · ${br(p.x)}% · ${n}: ${br(p.v, 2)}%`)];
+    // a série de Mahlmeister é a do método planejado; na hora, a página dele mostrou outro valor
+    if (prim.length > 1) ls.push(`(no ar, a página dele mostrou ${br(N.mahlmeister_ar1.v, 2)}%)`);
+    rotulo(ls, x(D1.m) - 4, yy1 - ls.length * (fs + 3) + 2, "start");
+  }
+  // viradas do placar
+  V.forEach((v, i) => {
+    if (m < v.m) return;
+    ponto(v.m, v.v, C.pl);
+    const yy = ty(49.25), esq = v.lider !== "Lula";      // 1ª virada: texto à esquerda (área livre); 2ª: à direita
+    el("path", { d: `M${x(v.m)},${ty(v.v) + 7} L${x(v.m)},${yy - 4} L${x(v.m) + (esq ? -6 : 6)},${yy - 4}`, stroke: C.ink3, fill: "none" }, svg);
+    const quem = v.lider === "Lula" ? "Lula volta à frente" : "Flávio passa à frente";
+    const ls = peq ? [quem.replace(/ à frente$/, ""), `à frente com ${br(v.x)}%`] : [quem, `com ${br(v.x)}% das seções`];
+    rotulo(ls, x(v.m) + (esq ? -9 : 9), yy, esq ? "end" : "start", 600);
+  });
+
+  // leitura do momento
+  const pk = ultimo(N.placar, m);
+  const dk = ultimo(N.dalmolin, m), mk = ultimo(N.mahlmeister, m);
+  const lei = document.getElementById("p1-leida");
+  if (fimOn) lei.innerHTML = `<b>${hora(ultPlacar.m)}</b><span>${br(ultPlacar.x)}% das seções · placar Lula ${br(ultPlacar.v)}%</span>`;
+  else if (pk) lei.innerHTML = `<b>${hora(m)}</b><span>${br(pk.x, pk.x < 1 ? 2 : 1)}% das seções · placar Lula ${br(pk.v)}%</span>`;
+  else lei.innerHTML = `<b>${hora(m)}</b><span>votação encerrada; aguardando o TSE</span>`;
+
+  // hover (só na página)
+  if (!X) hover(svg, x, ty, L, W, TOPO, H, C);
+}
+
+function hover(svg, x, ty, L, W, TOPO, H, C) {
+  const tip = document.getElementById("p1-tip");
+  const cr = el("line", { y1: TOPO, y2: TOPO + H, stroke: C.ink3, "stroke-dasharray": "2 3", opacity: 0 }, svg);
+  const alvo = el("rect", { x: L, y: TOPO, width: W, height: H, fill: "transparent" }, svg);
+  // inverte o eixo: procura a leitura de placar mais próxima em x
+  const todos = N.placar.filter(p => p.m <= T3);
+  alvo.addEventListener("pointermove", ev => {
+    const r = svg.getBoundingClientRect(), px = ev.clientX - r.left;
+    let best = todos[0]; for (const p of todos) if (Math.abs(x(p.m) - px) < Math.abs(x(best.m) - px)) best = p;
+    const d = ultimo(N.dalmolin, best.m), mm = ultimo(N.mahlmeister, best.m);
+    cr.setAttribute("x1", x(best.m)); cr.setAttribute("x2", x(best.m)); cr.setAttribute("opacity", 1);
+    tip.innerHTML = `<b>${hora(best.m)} · ${br(best.x, best.x < 1 ? 2 : 1)}% das seções</b><br>` +
+      `<i style="border-color:var(--placar)"></i>Placar: Lula ${br(best.v, 2)}%<br>` +
+      (d ? `<i style="border-color:var(--s-n)"></i>Dalmolin: ${br(d.v, 2)}%<br>` : "") +
+      (mm ? `<i style="border-color:var(--s-e)"></i>Mahlmeister: ${br(mm.v, 2)}%` : "");
+    tip.style.display = "block";
+    const tw = tip.offsetWidth; let lx = x(best.m) + 12; if (lx + tw > r.width) lx = x(best.m) - tw - 12;
+    tip.style.left = lx + "px"; tip.style.top = (TOPO + 4) + "px";
+  });
+  alvo.addEventListener("pointerleave", () => { tip.style.display = "none"; cr.setAttribute("opacity", 0); });
+}
+
+// ---------- controle ----------
+window.DUR = DUR; window.CAPA = CAPA;
+window.seek = t => desenha(t);
+const rel = document.getElementById("p1-rel");
+rel.addEventListener("input", () => desenha(DUR * rel.value / 1000));
+let anim = null;
+document.getElementById("p1-play").addEventListener("click", () => {
+  cancelAnimationFrame(anim); const t0 = performance.now();
+  const passo = now => { const t = (now - t0) / 1000; desenha(Math.min(t, DUR)); rel.value = 1000 * Math.min(t, DUR) / DUR; if (t < DUR) anim = requestAnimationFrame(passo); };
+  anim = requestAnimationFrame(passo);
+});
+addEventListener("resize", () => desenha(ultimoT));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => desenha(ultimoT));
+desenha(CAPA);
+
+
+})();
+
+(() => {
+  const N = window.__DADOS__.noite, F = N.final;
+  const box = document.querySelector("#fig-erro .chart"), svg = el("svg", {}, box), tip = tipDe(box);
+  const S = [{ id: "d", nome: "Método Dalmolin", cor: "--s-n", r: N.dalmolin.filter(p => p.x >= 2) },
+             { id: "m", nome: "Método de Mahlmeister", cor: "--s-e", r: N.mahlmeister.filter(p => p.x >= 2) }];
+  const Y0 = -0.7, Y1 = 0.7;
+  function desenha() {
+    const Wt = box.clientWidth, peq = Wt < 520, fs = peq ? 11.5 : 12.5;
+    const L = peq ? 38 : 46, R = 10, TOPO = 10, BASE = 30, Ht = peq ? 300 : 340;
+    const W = Wt - L - R, H = Ht - TOPO - BASE;
+    const x = v => L + (LX(v) - LX(2)) / (LX(100) - LX(2)) * W;
+    const y = v => TOPO + H * (1 - (Math.max(Y0, Math.min(Y1, v)) - Y0) / (Y1 - Y0));
+    const C = { ink: css("--ink"), ink2: css("--ink-2"), ink3: css("--ink-3"), grid: css("--grid"), axis: css("--axis"), bg: css("--surface"), shade: css("--shade") };
+    svg.setAttribute("viewBox", `0 0 ${Wt} ${Ht}`); svg.setAttribute("height", Ht); svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", "Erro da projeção de Lula, em pontos, por % das seções apuradas");
+    svg.innerHTML = "";
+    el("rect", { x: L, y: y(0.2), width: W, height: y(-0.2) - y(0.2), fill: C.shade }, svg);
+    for (let v = -0.6; v <= 0.61; v += 0.2) {
+      const r = Math.round(v * 10) / 10, z = Math.abs(r) < 1e-9;
+      el("line", { x1: L, x2: L + W, y1: y(r), y2: y(r), stroke: z ? C.ink3 : C.grid, "stroke-width": z ? 1.5 : 1 }, svg);
+      txt(z ? "0" : brs(r, 1), { x: L - 6, y: y(r) + 4, "text-anchor": "end", fill: C.ink3, "font-size": fs - 1 }, svg);
+    }
+    txt("±0,2", { x: L + W - 4, y: y(0.2) - 4, "text-anchor": "end", fill: C.ink3, "font-size": fs - 1.5 }, svg);
+    for (const v of [2, 3, 5, 10, 20, 30, 50, 100]) {
+      el("line", { x1: x(v), x2: x(v), y1: TOPO + H, y2: TOPO + H + 4, stroke: C.axis }, svg);
+      txt(`${v}%`, { x: x(v), y: Ht - 10, "text-anchor": "middle", fill: C.ink3, "font-size": fs - 1 }, svg);
+    }
+    el("line", { x1: L, x2: L + W, y1: TOPO + H, y2: TOPO + H, stroke: C.axis }, svg);
+    txt("acima do resultado ↑", { x: L + 6, y: TOPO + fs, fill: C.ink2, "font-size": fs - 1 }, svg);
+    txt("abaixo ↓", { x: L + 6, y: TOPO + H - 6, fill: C.ink2, "font-size": fs - 1 }, svg);
+    for (const s of S) {
+      el("path", { d: s.r.map((p, i) => `${i ? "L" : "M"}${x(p.x).toFixed(1)},${y(p.v - F).toFixed(1)}`).join(""), fill: "none",
+        stroke: css(s.cor), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    }
+    // hover
+    const cr = el("line", { y1: TOPO, y2: TOPO + H, stroke: C.ink3, "stroke-dasharray": "2 3", opacity: 0 }, svg);
+    const pts = S.map(() => el("circle", { r: 4, fill: C.bg, "stroke-width": 2, opacity: 0 }, svg));
+    const alvo = el("rect", { x: L, y: TOPO, width: W, height: H, fill: "transparent" }, svg);
+    alvo.addEventListener("pointermove", ev => {
+      const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * Wt / r.width;
+      const lv = LX(2) + (px - L) / W * (LX(100) - LX(2)), xv = Math.pow(10, lv);
+      const linhas = [];
+      S.forEach((s, i) => {
+        let b = s.r[0]; for (const p of s.r) if (Math.abs(LX(p.x) - lv) < Math.abs(LX(b.x) - lv)) b = p;
+        pts[i].setAttribute("cx", x(b.x)); pts[i].setAttribute("cy", y(b.v - F)); pts[i].setAttribute("stroke", css(s.cor)); pts[i].setAttribute("opacity", 1);
+        linhas.push(`<i class="sw ${s.id === "d" ? "sw-n" : "sw-e"}"></i>${s.nome.replace("Método de ", "").replace("Método ", "")}: ${brn(b.v)}% (${brs(b.v - F)} pt), com ${brn(b.x, 1)}% das seções`);
+      });
+      cr.setAttribute("x1", px); cr.setAttribute("x2", px); cr.setAttribute("opacity", 1);
+      tip.innerHTML = `<b>${brn(xv, 1)}% das seções apuradas</b><br>` + linhas.join("<br>") + `<br><span style="color:var(--ink-3)">resultado: ${brn(F)}%</span>`;
+      posTip(tip, box, px * r.width / Wt, TOPO + 6);
+    });
+    alvo.addEventListener("pointerleave", () => { tip.style.display = "none"; cr.setAttribute("opacity", 0); pts.forEach(p => p.setAttribute("opacity", 0)); });
+  }
+  redesenha.push(desenha); desenha();
+})();
+
+
+(() => {
+  const N = window.__DADOS__.noite, F = N.final;
+  const S = { n: { nome: "Método Dalmolin", cor: "--s-n", band: "--band-n", r: N.dalmolin.filter(p => p.x >= 2) },
+              m: { nome: "Método de Mahlmeister", cor: "--s-e", band: "--band-e", r: N.mahlmeister.filter(p => p.x >= 2) } };
+  const V0 = 43, V1 = 61;
+  document.querySelectorAll("#fig-faixas .chart").forEach(box => {
+    const s = S[box.dataset.s], svg = el("svg", {}, box), tip = tipDe(box);
+    const dentro = r => r.lo <= F && F <= r.hi;
+    const ok = s.r.filter(dentro), fora = s.r.filter(r => !dentro(r));
+    const k = s.r.findIndex((r, j) => s.r.slice(j).every(q => q.lo > 50)), xk = k >= 0 ? s.r[k].x : 100;
+    function desenha() {
+      const Wt = box.clientWidth, peq = Wt < 420, fs = peq ? 11.5 : 12.5;
+      const L = 38, R = 8, TOPO = 8, B = 230, Ht = B + 108;
+      const W = Wt - L - R;
+      const x = v => L + (LX(v) - LX(2)) / (LX(100) - LX(2)) * W;
+      const y = v => TOPO + (B - TOPO) * (1 - (Math.max(V0, Math.min(V1, v)) - V0) / (V1 - V0));
+      const C = { ink: css("--ink"), ink2: css("--ink-2"), ink3: css("--ink-3"), grid: css("--grid"), axis: css("--axis"), bg: css("--surface"), bad: css("--bad") };
+      svg.setAttribute("viewBox", `0 0 ${Wt} ${Ht}`); svg.setAttribute("height", Ht); svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", `${s.nome}: faixa de 95% da projeção de Lula por % das seções apuradas`);
+      svg.innerHTML = "";
+      for (const v of [45, 50, 55, 60]) {
+        el("line", { x1: L, x2: L + W, y1: y(v), y2: y(v), stroke: v === 50 ? C.axis : C.grid, "stroke-width": v === 50 ? 1.25 : 1, "stroke-dasharray": v === 50 ? "4 3" : "none" }, svg);
+        txt(`${v}%`, { x: L - 6, y: y(v) + 4, "text-anchor": "end", fill: C.ink3, "font-size": fs - 1 }, svg);
+      }
+      txt("empate", { x: L + W - 2, y: y(50) + fs, "text-anchor": "end", fill: C.ink3, "font-size": fs - 1.5 }, svg);
+      el("line", { x1: L, x2: L + W, y1: y(F), y2: y(F), stroke: C.ink, "stroke-width": 1.25 }, svg);
+      txt(`resultado ${brn(F)}%`, { x: L + W - 2, y: y(F) - 5, "text-anchor": "end", fill: C.ink2, "font-size": fs - 1.5 }, svg);
+      const area = "M" + s.r.map(r => `${x(r.x).toFixed(1)},${y(r.hi).toFixed(1)}`).join("L") + "L" + s.r.slice().reverse().map(r => `${x(r.x).toFixed(1)},${y(r.lo).toFixed(1)}`).join("L") + "Z";
+      el("path", { d: area, fill: css(s.band) }, svg);
+      el("path", { d: "M" + s.r.map(r => `${x(r.x).toFixed(1)},${y(r.v).toFixed(1)}`).join("L"), fill: "none", stroke: css(s.cor), "stroke-width": 1.75, "stroke-linejoin": "round" }, svg);
+      el("line", { x1: L, x2: L + W, y1: B, y2: B, stroke: C.axis }, svg);
+      for (const v of [2, 5, 10, 20, 50, 100]) txt(`${v}%`, { x: x(v), y: B + 14, "text-anchor": "middle", fill: C.ink3, "font-size": fs - 1 }, svg);
+      // código de barras da cobertura
+      for (const r of ok) el("line", { x1: x(r.x), x2: x(r.x), y1: B + 24, y2: B + 36, stroke: C.axis }, svg);
+      for (const r of fora) el("line", { x1: x(r.x), x2: x(r.x), y1: B + 21, y2: B + 39, stroke: C.bad, "stroke-width": 1.5 }, svg);
+      txt(`resultado dentro da faixa em ${ok.length} de ${s.r.length} leituras`, { x: L, y: B + 56, fill: C.ink, "font-size": fs }, svg);
+      txt(fora.length === 0 ? "" : fora.length === 1 ? `fora em 1, com ${brn(fora[0].x, 0)}% apurado` : `fora em ${fora.length}, de ${brn(fora[0].x, 1)}% a ${brn(fora[fora.length - 1].x, 1)}% apurado`,
+          { x: L, y: B + 72, fill: C.bad, "font-size": fs - 0.5 }, svg);
+      el("path", { d: `M${x(xk)},${B + 82}v6H${L + W}v-6`, fill: "none", stroke: css(s.cor), "stroke-width": 1.5 }, svg);
+      txt(k === 0 ? "faixa toda acima de 50% em todas as leituras" : `faixa toda acima de 50% desde ${brn(xk, 1)}% das seções`, { x: L, y: B + 103, fill: C.ink, "font-size": fs }, svg);
+      // hover
+      const cr = el("line", { y1: TOPO, y2: B, stroke: C.ink3, "stroke-dasharray": "2 3", opacity: 0 }, svg);
+      const pt = el("circle", { r: 4, fill: C.bg, stroke: css(s.cor), "stroke-width": 2, opacity: 0 }, svg);
+      const alvo = el("rect", { x: L, y: TOPO, width: W, height: B - TOPO, fill: "transparent" }, svg);
+      alvo.addEventListener("pointermove", ev => {
+        const rc = svg.getBoundingClientRect(), px = (ev.clientX - rc.left) * Wt / rc.width;
+        const lv = LX(2) + (px - L) / W * (LX(100) - LX(2));
+        let b = s.r[0]; for (const p of s.r) if (Math.abs(LX(p.x) - lv) < Math.abs(LX(b.x) - lv)) b = p;
+        cr.setAttribute("x1", x(b.x)); cr.setAttribute("x2", x(b.x)); cr.setAttribute("opacity", 1);
+        pt.setAttribute("cx", x(b.x)); pt.setAttribute("cy", y(b.v)); pt.setAttribute("opacity", 1);
+        tip.innerHTML = `<b>${brn(b.x, 1)}% das seções</b>${b.m ? " · " + hm(b.m) : ""}<br>projeção ${brn(b.v)}%<br>faixa de ${brn(b.lo)}% a ${brn(b.hi)}%<br>` +
+          (dentro(b) ? `<span style="color:var(--ink-3)">resultado dentro da faixa</span>` : `<span style="color:var(--bad)">resultado fora da faixa</span>`);
+        posTip(tip, box, x(b.x) * rc.width / Wt, TOPO + 4);
+      });
+      alvo.addEventListener("pointerleave", () => { tip.style.display = "none"; cr.setAttribute("opacity", 0); pt.setAttribute("opacity", 0); });
+    }
+    redesenha.push(desenha); desenha();
+  });
+})();
+
+document.querySelector("button.compartilhar").addEventListener("click", async ev => {
+  const b = ev.currentTarget, dados = { title: document.title, url: "https://apuracao.dalmolin.dev/artigo.html" };
+  if (navigator.share) { try { await navigator.share(dados); } catch (e) {} return; }
+  try { await navigator.clipboard.writeText(dados.url); const t = b.textContent; b.textContent = "Link copiado"; setTimeout(() => b.textContent = t, 1800); } catch (e) { prompt("Copie o link:", dados.url); }
+});
+</script>
+</body>
+</html>
