@@ -727,7 +727,7 @@ const P = {
           <p>Fontes: divulgação oficial de resultados do TSE (resultados.tse.jus.br) e dados abertos do TSE por seção (1º turno de 2026; 2º turnos de 2018 e 2022).</p>
         </div></details>
       </section>
-      <footer class="nota">A projeção é uma estimativa estatística, não resultado oficial. ${DEMO ? 'Demonstração com dados reais de eleições passadas.' : 'Atualiza sozinho.'}</footer>`;
+      <footer class="nota">A projeção é uma estimativa estatística, não resultado oficial. ${DEMO ? 'Demonstração com dados reais de eleições passadas.' : 'Atualiza sozinho.'}<br>Feito por Matheus Dalmolin · <a href="https://dalmolin.dev/">dalmolin.dev</a></footer>`;
     $('blocoUf').ontoggle = tabelaUf;
     const marcaGraf = () => { document.querySelectorAll('#segGraf button').forEach(b => b.classList.toggle('on', b.dataset.k === MODO_G)); txt('grafSub', SUB_GRAF[MODO_G]); };
     document.querySelectorAll('#segGraf button').forEach(b => b.onclick = () => {
