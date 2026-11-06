@@ -66,6 +66,9 @@ tbody tr:hover { background: var(--hl); }
 .topo .dir { margin-left: auto; display: flex; gap: 12px; align-items: center; font-size: 13px; }
 .aviso { background: var(--aviso-bg); color: var(--aviso); font-size: 12.5px; padding: 6px 20px; text-align: center; }
 .aviso b { color: inherit; }
+.aviso-artigo { background: var(--card); border-bottom: 1px solid var(--line); font-size: 14px; padding: 7px 20px; text-align: center; }
+.aviso-artigo a { font-weight: 650; }
+@media (max-width: 600px) { .topo .link-artigo { display: none; } }
 .demobar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 12px; padding: 10px 14px; }
 .demobar input[type=range] { flex: 1 1 220px; accent-color: var(--proj); min-height: 34px; }
 .demobar .hora { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; min-width: 9.5em; }
@@ -177,9 +180,10 @@ footer { margin-top: 22px; }
 <header class="topo"><div class="in">
   <span class="tit">2º turno · Presidente</span>
   <span id="selo"></span>
-  <span class="dir"><span class="nota" id="atu"></span><a href="https://apuracao.dalmolin.dev/governador.html">Governadores</a><a href="#como-funciona">Como funciona</a><button type="button" class="compartilhar">Compartilhar</button></span>
+  <span class="dir"><span class="nota" id="atu"></span><a href="https://apuracao.dalmolin.dev/governador.html">Governadores</a><a href="#como-funciona">Como funciona</a><a class="link-artigo" href="https://dalmolin.dev/textos/swing-simples-segundo-turno/">Artigo</a><button type="button" class="compartilhar">Compartilhar</button></span>
 </div></header>
 <div class="aviso"><b>Projeção é estimativa estatística, não resultado oficial.</b> O resultado oficial é o do TSE (<a href="https://resultados.tse.jus.br" style="color:inherit">resultados.tse.jus.br</a>).</div>
+<div class="aviso-artigo"><a href="https://dalmolin.dev/textos/swing-simples-segundo-turno/">Novo artigo: o swing simples basta para projetar um 2º turno?</a> Dois métodos, uma noite.</div>
 <main id="root"></main>
 <div id="tip"></div>
 
@@ -669,6 +673,7 @@ const P = {
       <section id="como-funciona">
         <h2>Como funciona</h2>
         <p class="sub">Método, validação e limites. Abra o que quiser ler.</p>
+        <p class="sub">A comparação com outro método, na mesma noite, está <a href="https://dalmolin.dev/textos/swing-simples-segundo-turno/">no artigo</a>.</p>
         <details class="bloco"><summary>O método: as mesmas urnas</summary><div class="metodo">
           <ol>
             <li><b>Mesmas urnas.</b> A cada atualização do TSE, somamos o 1º turno exatamente das seções já apuradas no 2º. Só os dois finalistas contam: a fatia de A é A ÷ (A + B).</li>
